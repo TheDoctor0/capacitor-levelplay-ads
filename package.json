@@ -1,7 +1,7 @@
 {
   "name": "capacitor-levelplay-ads",
-  "version": "1.0.0",
-  "description": "Unity LevelPlay mediation SDK for Capacitor. Banner, interstitial and rewarded ads across every mediated network.",
+  "version": "0.1.0",
+  "description": "Unity LevelPlay mediation SDK for Capacitor with banner, interstitial and rewarded ads supported.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -19,14 +19,18 @@
     "Package.swift",
     "scripts/"
   ],
-  "author": "EMI INDO",
+  "author": {
+    "name": "Dawid Janik",
+    "email": "dawid.janik@inception.dev",
+    "url": "https://github.com/TheDoctor0"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swaplab-engine/capacitor-levelplay-ads.git"
+    "url": "git+https://github.com/TheDoctor0/capacitor-levelplay-ads.git"
   },
   "bugs": {
-    "url": "https://github.com/swaplab-engine/capacitor-levelplay-ads/issues"
+    "url": "https://github.com/TheDoctor0/capacitor-levelplay-ads/issues"
   },
   "keywords": [
     "capacitor",
@@ -34,6 +38,8 @@
     "native",
     "levelplay",
     "ironsource",
+    "admob",
+    "meta",
     "ads",
     "monetization",
     "mediation"

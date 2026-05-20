@@ -4,7 +4,7 @@ export default {
     {
       file: 'dist/plugin.js',
       format: 'iife',
-      name: 'capacitorAdMobNextGen',
+      name: 'capacitorLevelPlayAds',
       globals: {
         '@capacitor/core': 'capacitorExports',
       },
