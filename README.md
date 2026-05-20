@@ -47,22 +47,6 @@ Ads can be served across every mediated demand source from a single, modular API
 
 ---
 
-## ⚠️ Important Notices
-
-### 1. Built from scratch
-This is **not** a fork of any existing Capacitor plugin. It is generated with
-the official [@capacitor/plugin](https://github.com/ionic-team/create-capacitor-plugin)
-generator. The core monetization logic inherits years of proven optimizations
-from the author's Cordova AdMob implementations.
-
-### 2. iOS integration paths
-CocoaPods is the primary, supported iOS integration path — it pulls the
-IronSource SDK via the podspec. Swift Package Manager is secondary; see
-`Package.swift` for details. Without the SDK the plugin still builds: all
-native SDK code is guarded and degrades to no-ops.
-
----
-
 ## 📦 Installation
 
 ```bash
@@ -178,6 +162,16 @@ async function showInterstitial() {
 > ⚠️ `initialize` and `requestConsentInfo` must complete **before** any
 > `loadInterstitial` / `loadRewarded` / `createBanner` call — ad loads are
 > rejected otherwise.
+
+---
+
+## ⚠️ Important Notices
+
+### 1. iOS integration paths
+CocoaPods is the primary, supported iOS integration path — it pulls the
+IronSource SDK via the podspec. Swift Package Manager is secondary; see
+`Package.swift` for details. Without the SDK the plugin still builds: all
+native SDK code is guarded and degrades to no-ops.
 
 ## API
 
