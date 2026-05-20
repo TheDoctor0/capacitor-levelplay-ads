@@ -5,7 +5,7 @@
 [![LevelPlay](https://img.shields.io/badge/SDK-Unity%20LevelPlay-blue)](https://unity.com/products/unity-levelplay)
 [![NPM version](https://img.shields.io/npm/v/capacitor-levelplay-ads.svg)](https://www.npmjs.com/package/capacitor-levelplay-ads)
 [![Downloads](https://img.shields.io/npm/dm/capacitor-levelplay-ads.svg)](https://www.npmjs.com/package/capacitor-levelplay-ads)
-[![License](https://img.shields.io/npm/l/capacitor-levelplay-ads.svg)](https://github.com/swaplab-engine/capacitor-levelplay-ads/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/capacitor-levelplay-ads.svg)](https://github.com/TheDoctor0/capacitor-levelplay-ads/blob/main/LICENSE)
 
 **Unity LevelPlay mediation for Capacitor.**
 
@@ -107,14 +107,6 @@ you explicitly declare the hook above.*
 
 ---
 
-## 🚀 Example Usage
-
-An interactive dashboard demonstrating consent, initialization, banner,
-interstitial and rewarded ads lives in the example app:
-👉 **[capacitor-welcome.js Example Project](https://github.com/swaplab-engine/capacitor-levelplay-ads/blob/main/example-app/src/js/capacitor-welcome.js)**
-
----
-
 ## Install
 
 To use npm:
@@ -134,6 +126,58 @@ Sync native files:
 ```bash
 npx cap sync
 ```
+
+## 🚀 Quick Setup
+
+A minimal flow: initialize the SDK, ask for consent, then load and show an interstitial.
+
+```ts
+import { LevelPlayAds } from 'capacitor-levelplay-ads';
+
+async function bootstrapAds() {
+  // 1. Initialize the LevelPlay SDK with your app key.
+  await LevelPlayAds.initialize({
+    appKey: 'YOUR_LEVELPLAY_APP_KEY',
+    isTesting: true, // remove or set to false in production
+  });
+
+  // 2. Request a GDPR / consent decision. The plugin shows a custom modal
+  //    on first run and reuses the stored decision afterwards.
+  const consent = await LevelPlayAds.requestConsentInfo({
+    privacyPolicyUrl: 'https://example.com/privacy',
+    networks: ['admob', 'meta'], // optional — must match your levelplay.networks
+  });
+
+  if (!consent.canRequestAds) {
+    console.log('User declined personalised ads.');
+  }
+
+  // 3. (iOS only) Ask for App Tracking Transparency. Resolves with
+  //    "NOT_APPLICABLE" on Android, so the same call works cross-platform.
+  await LevelPlayAds.requestTrackingAuthorization();
+
+  // 4. Pre-load an interstitial. Listen for load + display events.
+  LevelPlayAds.addListener('onInterstitialAdLoaded', () => {
+    console.log('Interstitial ready.');
+  });
+  LevelPlayAds.addListener('onInterstitialAdClosed', () => {
+    console.log('Interstitial closed — next ad is auto-reloading.');
+  });
+
+  await LevelPlayAds.loadInterstitial({ adUnitId: 'YOUR_INTERSTITIAL_AD_UNIT' });
+}
+
+async function showInterstitial() {
+  const { isReady } = await LevelPlayAds.isInterstitialReady();
+  if (isReady) {
+    await LevelPlayAds.showInterstitial();
+  }
+}
+```
+
+> ⚠️ `initialize` and `requestConsentInfo` must complete **before** any
+> `loadInterstitial` / `loadRewarded` / `createBanner` call — ad loads are
+> rejected otherwise.
 
 ## API
 
