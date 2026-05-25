@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.privacy;
+package com.capacitor.plugins.levelplay.privacy;
 
 import com.unity3d.mediation.LevelPlay;
 import com.unity3d.mediation.LevelPlayPrivacySettings;

@@ -56,6 +56,13 @@ export interface LevelPlayAdsPlugin {
   getConsentData(): Promise<ConsentData>;
 
   /**
+   * Clears the stored consent decision so the next `requestConsentInfo()`
+   * re-shows the modal. Useful for QA flows and a "reset privacy choice"
+   * button in your settings screen.
+   */
+  resetConsent(): Promise<ConsentData>;
+
+  /**
    * Sets the CCPA "do not sell my personal information" flag.
    */
   setCCPAConsent(options: { doNotSell: boolean }): Promise<void>;
@@ -70,6 +77,29 @@ export interface LevelPlayAdsPlugin {
    * No-op on Android (resolves with status `NOT_APPLICABLE`).
    */
   requestTrackingAuthorization(): Promise<TrackingAuthorizationResult>;
+
+  /**
+   * Returns the platform advertising identifier:
+   *
+   * - **Android** — Google Advertising ID (GAID), via Play Services.
+   *   `limited` is the `LimitAdTracking` flag.
+   * - **iOS** — IDFA, via `ASIdentifierManager`. The OS returns an all-zero
+   *   UUID until the user grants App Tracking Transparency authorization, in
+   *   which case `limited` is true and `id` is `"00000000-0000-0000-0000-000000000000"`.
+   *
+   * Call `requestTrackingAuthorization()` first on iOS to get a real value.
+   */
+  getAdvertisingId(): Promise<AdvertisingIdResult>;
+
+  /**
+   * Sets the dynamic user ID forwarded in server-to-server (S2S) reward
+   * callbacks. Call before `showRewarded()` to tag each reward with a
+   * verifiable token (e.g. a transaction ID or session nonce).
+   *
+   * Can be changed between ad shows — the value active at show time is
+   * the one included in the S2S callback.
+   */
+  setDynamicUserId(options: { userId: string }): Promise<void>;
 
   // ==========================================
   // BANNER ADS
@@ -94,6 +124,13 @@ export interface LevelPlayAdsPlugin {
    * Destroys the banner and removes it from the view hierarchy.
    */
   destroyBanner(): Promise<void>;
+
+  /**
+   * Reposition or restyle the active banner without destroying it.
+   * Only the provided fields change; omitted fields keep their current value.
+   * `isOverlap` only affects Android — iOS always overlays the WebView.
+   */
+  updateBannerStyle(options: BannerStyleOptions): Promise<void>;
 
   // ==========================================
   // INTERSTITIAL ADS
@@ -174,8 +211,60 @@ export interface LevelPlayAdsPlugin {
    *
    * ### Consent
    * - `onConsentStatusChanged` — `ConsentData`
+   *
+   * ### Orientation
+   * - `onOrientationChanged` — `OrientationChangedEvent`
+   *
+   * Prefer the typed `AdEvent` constants (e.g. `AdEvent.InterstitialLoaded`)
+   * over raw strings for compile-time safety.
    */
-  addListener(eventName: string, listenerFunc: (info: any) => void): Promise<PluginListenerHandle>;
+  addListener(eventName: AdEventName | string, listenerFunc: (info: any) => void): Promise<PluginListenerHandle>;
+}
+
+/**
+ * Typed event-name constants. Prefer `AdEvent.InterstitialLoaded` over the
+ * string literal — typos surface at compile time.
+ */
+export const AdEvent = {
+  InterstitialLoaded: 'onInterstitialAdLoaded',
+  InterstitialLoadFailed: 'onInterstitialAdLoadFailed',
+  InterstitialDisplayed: 'onInterstitialAdDisplayed',
+  InterstitialDisplayFailed: 'onInterstitialAdDisplayFailed',
+  InterstitialClicked: 'onInterstitialAdClicked',
+  InterstitialClosed: 'onInterstitialAdClosed',
+  InterstitialInfoChanged: 'onInterstitialAdInfoChanged',
+
+  RewardedLoaded: 'onRewardedAdLoaded',
+  RewardedLoadFailed: 'onRewardedAdLoadFailed',
+  RewardedDisplayed: 'onRewardedAdDisplayed',
+  RewardedDisplayFailed: 'onRewardedAdDisplayFailed',
+  RewardedClicked: 'onRewardedAdClicked',
+  RewardedClosed: 'onRewardedAdClosed',
+  RewardedInfoChanged: 'onRewardedAdInfoChanged',
+  RewardedRewarded: 'onRewardedAdRewarded',
+
+  BannerLoaded: 'onBannerAdLoaded',
+  BannerLoadFailed: 'onBannerAdLoadFailed',
+  BannerDisplayed: 'onBannerAdDisplayed',
+  BannerDisplayFailed: 'onBannerAdDisplayFailed',
+  BannerClicked: 'onBannerAdClicked',
+  BannerExpanded: 'onBannerAdExpanded',
+  BannerCollapsed: 'onBannerAdCollapsed',
+  BannerLeftApplication: 'onBannerAdLeftApplication',
+
+  AdRevenue: 'onAdRevenue',
+  ConsentStatusChanged: 'onConsentStatusChanged',
+  OrientationChanged: 'onOrientationChanged',
+} as const;
+
+export type AdEventName = (typeof AdEvent)[keyof typeof AdEvent];
+
+/**
+ * Emitted on `onOrientationChanged` when the device rotates.
+ */
+export interface OrientationChangedEvent {
+  /** `PORTRAIT` or `LANDSCAPE`. */
+  orientation: 'PORTRAIT' | 'LANDSCAPE';
 }
 
 // ==========================================
@@ -211,26 +300,28 @@ export interface InitializeResult {
 export interface ConsentOptions {
   /**
    * URL opened when the user taps the privacy policy link in the modal.
+   * Only used by the `custom` consent provider — ignored under InMobi
+   * (which renders its own privacy policy link inside the CMP UI).
    */
   privacyPolicyUrl?: string;
 
   /**
-   * Custom modal title.
+   * Custom modal title. `custom` provider only.
    */
   title?: string;
 
   /**
-   * Custom modal body text.
+   * Custom modal body text. `custom` provider only.
    */
   message?: string;
 
   /**
-   * Label for the accept/grant button.
+   * Label for the accept/grant button. `custom` provider only.
    */
   acceptButtonText?: string;
 
   /**
-   * Label for the decline/deny button.
+   * Label for the decline/deny button. `custom` provider only.
    */
   declineButtonText?: string;
 
@@ -240,6 +331,16 @@ export interface ConsentOptions {
    */
   networks?: string[];
 }
+
+/**
+ * Which consent UI the plugin shows. Configured at install time via
+ * `levelplay.consentProvider` in the host app's package.json — not via JS.
+ *
+ * - `inmobi` (default): IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
+ *   Requires `levelplay.inmobi.pCode` from https://choice.inmobi.com/.
+ * - `custom`: built-in alert dialog. Not TCF compliant; do not ship to EU.
+ */
+export type ConsentProvider = 'inmobi' | 'custom';
 
 export interface ConsentData {
   /**
@@ -259,6 +360,34 @@ export interface ConsentData {
    * True when ads may be requested (a decision exists, granted or denied).
    */
   canRequestAds: boolean;
+
+  /**
+   * Which provider produced this decision: `inmobi` or `custom`. Useful for
+   * deciding whether to trust the `tcString` field.
+   */
+  provider?: ConsentProvider;
+
+  /**
+   * IAB TCF v2.2 consent string. Populated only when the `inmobi` provider
+   * is active and the user has interacted with the CMP. Undefined under
+   * `custom` (which doesn't produce a real TCF payload).
+   */
+  tcString?: string;
+}
+
+export interface AdvertisingIdResult {
+  /**
+   * The advertising identifier. Empty string when unavailable; on iOS the
+   * all-zeros UUID `"00000000-0000-0000-0000-000000000000"` when ATT is not
+   * authorized.
+   */
+  id: string;
+
+  /**
+   * True when the user has limited / opted out of ad tracking.
+   * Android: `LimitAdTracking` flag. iOS: true when ATT is not authorized.
+   */
+  limited: boolean;
 }
 
 export interface TrackingAuthorizationResult {
@@ -283,7 +412,7 @@ export interface BannerOptions {
   /**
    * Banner position on screen. Default: `BOTTOM`.
    */
-  position?: 'TOP' | 'BOTTOM';
+  position?: BannerPosition;
 
   /**
    * Show the banner automatically once loaded. Default: true.
@@ -292,8 +421,35 @@ export interface BannerOptions {
 
   /**
    * If true the banner overlaps the webview; if false it pushes the webview.
-   * Default: true.
+   * Android only — iOS always overlays the WebView. Default: true.
    */
+  isOverlap?: boolean;
+
+  /**
+   * Minimum delay between consecutive load() calls, in **milliseconds**.
+   * Throttles invalid traffic. Default: 5000 (5 seconds).
+   */
+  retryInterval?: number;
+}
+
+/**
+ * Banner placement on screen. `TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` /
+ * `BOTTOM_RIGHT` anchor the banner to the corresponding screen corner;
+ * `CENTER` places it in the middle.
+ */
+export type BannerPosition =
+  | 'TOP'
+  | 'BOTTOM'
+  | 'TOP_LEFT'
+  | 'TOP_RIGHT'
+  | 'BOTTOM_LEFT'
+  | 'BOTTOM_RIGHT'
+  | 'CENTER';
+
+export interface BannerStyleOptions {
+  /** New banner position. */
+  position?: BannerPosition;
+  /** Android-only overlap flag. iOS ignores this. */
   isOverlap?: boolean;
 }
 
@@ -302,6 +458,19 @@ export interface AdLoadOptions {
    * LevelPlay ad unit ID. Required.
    */
   adUnitId: string;
+
+  /**
+   * If true, the ad is shown immediately after a successful load. The returned
+   * promise then resolves on display (or rejects with "Auto-show failed: …").
+   * Default: false.
+   */
+  autoShow?: boolean;
+
+  /**
+   * Minimum delay between consecutive load() calls, in **milliseconds**.
+   * Throttles invalid traffic. Default: 5000 (5 seconds).
+   */
+  retryInterval?: number;
 }
 
 export interface AdReadyResult {

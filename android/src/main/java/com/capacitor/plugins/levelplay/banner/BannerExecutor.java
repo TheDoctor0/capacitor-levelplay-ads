@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.banner;
+package com.capacitor.plugins.levelplay.banner;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
-import com.emi.plugins.levelplay.AdJsonUtil;
-import com.emi.plugins.levelplay.LevelPlayAdsPlugin;
+import com.capacitor.plugins.levelplay.AdJsonUtil;
+import com.capacitor.plugins.levelplay.LevelPlayPluginBridge;
 
 import com.unity3d.mediation.LevelPlayAdError;
 import com.unity3d.mediation.LevelPlayAdInfo;
@@ -29,7 +29,7 @@ import com.unity3d.mediation.banner.LevelPlayBannerAdViewListener;
  */
 public class BannerExecutor {
 
-    private final LevelPlayAdsPlugin plugin;
+    private final LevelPlayPluginBridge bridge;
 
     private LevelPlayBannerAdView bannerView;
     private FrameLayout capacitorAdLayout;
@@ -50,8 +50,8 @@ public class BannerExecutor {
     private String lastPosition = "BOTTOM";
     private long lastLoadTime = 0;
 
-    public BannerExecutor(LevelPlayAdsPlugin plugin) {
-        this.plugin = plugin;
+    public BannerExecutor(LevelPlayPluginBridge bridge) {
+        this.bridge = bridge;
     }
 
     public void createBanner(final PluginCall call) {
@@ -61,7 +61,7 @@ public class BannerExecutor {
             return;
         }
 
-        final Activity activity = plugin.getActivity();
+        final Activity activity = bridge.getActivity();
         if (activity == null) {
             call.reject("No foreground activity.");
             return;
@@ -174,7 +174,7 @@ public class BannerExecutor {
                         JSObject ret = AdJsonUtil.adInfoToJS(adInfo);
                         ret.put("width", adSize.getWidth());
                         ret.put("height", adSize.getHeight());
-                        plugin.notifyPluginListeners("onBannerAdLoaded", ret);
+                        bridge.fireEvent("onBannerAdLoaded", ret);
                         call.resolve(ret);
                     });
                 }
@@ -187,39 +187,39 @@ public class BannerExecutor {
                             ((ViewGroup) pendingView.getParent()).removeView(pendingView);
                         }
                         pendingView.destroy();
-                        plugin.notifyPluginListeners("onBannerAdLoadFailed", AdJsonUtil.adErrorToJS(error));
+                        bridge.fireEvent("onBannerAdLoadFailed", AdJsonUtil.adErrorToJS(error));
                         call.reject("Banner failed to load: " + error.getErrorMessage());
                     });
                 }
 
                 @Override
                 public void onAdDisplayed(@NonNull LevelPlayAdInfo adInfo) {
-                    plugin.notifyPluginListeners("onBannerAdDisplayed", AdJsonUtil.adInfoToJS(adInfo));
+                    bridge.fireEvent("onBannerAdDisplayed", AdJsonUtil.adInfoToJS(adInfo));
                 }
 
                 @Override
                 public void onAdDisplayFailed(@NonNull LevelPlayAdInfo adInfo, @NonNull LevelPlayAdError error) {
-                    plugin.notifyPluginListeners("onBannerAdDisplayFailed", AdJsonUtil.adErrorToJS(error));
+                    bridge.fireEvent("onBannerAdDisplayFailed", AdJsonUtil.adErrorToJS(error));
                 }
 
                 @Override
                 public void onAdClicked(@NonNull LevelPlayAdInfo adInfo) {
-                    plugin.notifyPluginListeners("onBannerAdClicked", AdJsonUtil.adInfoToJS(adInfo));
+                    bridge.fireEvent("onBannerAdClicked", AdJsonUtil.adInfoToJS(adInfo));
                 }
 
                 @Override
                 public void onAdExpanded(@NonNull LevelPlayAdInfo adInfo) {
-                    plugin.notifyPluginListeners("onBannerAdExpanded", AdJsonUtil.adInfoToJS(adInfo));
+                    bridge.fireEvent("onBannerAdExpanded", AdJsonUtil.adInfoToJS(adInfo));
                 }
 
                 @Override
                 public void onAdCollapsed(@NonNull LevelPlayAdInfo adInfo) {
-                    plugin.notifyPluginListeners("onBannerAdCollapsed", AdJsonUtil.adInfoToJS(adInfo));
+                    bridge.fireEvent("onBannerAdCollapsed", AdJsonUtil.adInfoToJS(adInfo));
                 }
 
                 @Override
                 public void onAdLeftApplication(@NonNull LevelPlayAdInfo adInfo) {
-                    plugin.notifyPluginListeners("onBannerAdLeftApplication", AdJsonUtil.adInfoToJS(adInfo));
+                    bridge.fireEvent("onBannerAdLeftApplication", AdJsonUtil.adInfoToJS(adInfo));
                 }
             });
 
@@ -260,16 +260,47 @@ public class BannerExecutor {
     private void updateBannerLayout() {
         if (bannerView == null || capacitorAdLayout == null) return;
 
+        // Stretch horizontally for non-side positions; wrap for *_LEFT / *_RIGHT
+        // / CENTER so the gravity actually takes effect.
+        boolean horizontalSide = currentPosition.endsWith("_LEFT")
+                || currentPosition.endsWith("_RIGHT")
+                || "CENTER".equals(currentPosition);
+        int width = horizontalSide
+                ? FrameLayout.LayoutParams.WRAP_CONTENT
+                : FrameLayout.LayoutParams.MATCH_PARENT;
         FrameLayout.LayoutParams bannerParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT);
+                width, FrameLayout.LayoutParams.WRAP_CONTENT);
 
-        if ("TOP".equals(currentPosition)) {
-            bannerParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-            bannerParams.setMargins(0, systemSafeTop, 0, 0);
-        } else {
-            bannerParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-            bannerParams.setMargins(0, 0, 0, systemSafeBottom);
+        switch (currentPosition) {
+            case "TOP":
+                bannerParams.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+                bannerParams.setMargins(0, systemSafeTop, 0, 0);
+                break;
+            case "TOP_LEFT":
+                bannerParams.gravity = Gravity.TOP | Gravity.START;
+                bannerParams.setMargins(0, systemSafeTop, 0, 0);
+                break;
+            case "TOP_RIGHT":
+                bannerParams.gravity = Gravity.TOP | Gravity.END;
+                bannerParams.setMargins(0, systemSafeTop, 0, 0);
+                break;
+            case "CENTER":
+                bannerParams.gravity = Gravity.CENTER;
+                bannerParams.setMargins(0, 0, 0, 0);
+                break;
+            case "BOTTOM_LEFT":
+                bannerParams.gravity = Gravity.BOTTOM | Gravity.START;
+                bannerParams.setMargins(0, 0, 0, systemSafeBottom);
+                break;
+            case "BOTTOM_RIGHT":
+                bannerParams.gravity = Gravity.BOTTOM | Gravity.END;
+                bannerParams.setMargins(0, 0, 0, systemSafeBottom);
+                break;
+            case "BOTTOM":
+            default:
+                bannerParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+                bannerParams.setMargins(0, 0, 0, systemSafeBottom);
+                break;
         }
 
         bannerView.setLayoutParams(bannerParams);
@@ -277,17 +308,20 @@ public class BannerExecutor {
     }
 
     private void updateWebViewMargins() {
-        View webViewView = plugin.getBridge().getWebView();
+        View webViewView = bridge.getWebView();
         if (webViewView == null) return;
 
         ViewGroup.LayoutParams lp = webViewView.getLayoutParams();
         if (!(lp instanceof ViewGroup.MarginLayoutParams)) return;
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) lp;
-        if (!isBannerVisible || isOverlapping) {
+        boolean isTop = currentPosition.startsWith("TOP");
+        boolean isBottom = currentPosition.startsWith("BOTTOM");
+        // CENTER never pushes the webview — always overlays.
+        if (!isBannerVisible || isOverlapping || (!isTop && !isBottom)) {
             params.topMargin = 0;
             params.bottomMargin = 0;
-        } else if ("TOP".equals(currentPosition)) {
+        } else if (isTop) {
             params.topMargin = lastAdHeight;
             params.bottomMargin = 0;
         } else {
@@ -300,8 +334,41 @@ public class BannerExecutor {
         webViewView.requestLayout();
     }
 
+    /**
+     * Reposition / restyle the existing banner without destroying it.
+     * Reads {@code position} and {@code isOverlap} from the call.
+     */
+    public void updateBannerStyle(final PluginCall call) {
+        final Activity activity = bridge.getActivity();
+        if (activity == null) {
+            call.reject("No foreground activity.");
+            return;
+        }
+        activity.runOnUiThread(() -> {
+            if (bannerView == null) {
+                call.reject("Banner not created yet.");
+                return;
+            }
+            String posOpt = call.getString("position");
+            if (posOpt != null && !posOpt.isEmpty()) {
+                this.currentPosition = posOpt.toUpperCase();
+                this.lastPosition = this.currentPosition;
+            }
+            Boolean overlapOpt = call.getBoolean("isOverlap");
+            if (overlapOpt != null) {
+                this.isOverlapping = overlapOpt;
+            }
+            updateBannerLayout();
+            updateWebViewMargins();
+            if (capacitorAdLayout != null) {
+                capacitorAdLayout.bringToFront();
+            }
+            call.resolve();
+        });
+    }
+
     public void showBanner(final PluginCall call) {
-        final Activity activity = plugin.getActivity();
+        final Activity activity = bridge.getActivity();
         if (activity == null) {
             if (call != null) call.reject("No foreground activity.");
             return;
@@ -324,7 +391,7 @@ public class BannerExecutor {
     }
 
     public void hideBanner(final PluginCall call) {
-        final Activity activity = plugin.getActivity();
+        final Activity activity = bridge.getActivity();
         if (activity == null) {
             if (call != null) call.reject("No foreground activity.");
             return;
@@ -339,7 +406,7 @@ public class BannerExecutor {
     }
 
     public void destroyBanner(final PluginCall call) {
-        final Activity activity = plugin.getActivity();
+        final Activity activity = bridge.getActivity();
         if (activity == null) {
             if (call != null) call.reject("No foreground activity.");
             return;

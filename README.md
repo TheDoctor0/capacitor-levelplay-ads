@@ -30,9 +30,10 @@ Ads can be served across every mediated demand source from a single, modular API
 
 - **Mediation-first:** One LevelPlay app key fans out to every network you
   enable — AdMob, AppLovin, Unity Ads, Vungle, Meta, Mintegral, Pangle.
-- **Custom consent gate:** A built-in consent modal (no IAB TCF CMP required)
-  records a GDPR decision, persists it, and gates ad loading until a decision
-  exists. Decisions are pushed to LevelPlay globally and per-network.
+- **IAB TCF v2.2 consent (default):** Bundles the InMobi Choice CMP for
+  GDPR-compliant consent — collects a TCF string and writes the standard
+  `IABTCF_*` keys every mediation adapter reads. Swappable for a built-in
+  non-TCF modal when shipping outside the EU.
 - **CCPA & COPPA:** First-class `setCCPAConsent()` and `setChildDirected()`.
 - **App Tracking Transparency:** `requestTrackingAuthorization()` prompts ATT
   on iOS and is a safe no-op on Android.
@@ -65,12 +66,35 @@ LevelPlay SDK; each demand source you want is wired in by a Capacitor CLI hook.
   "name": "your-app-name",
   "levelplay": {
     "networks": ["admob", "applovin", "unityads"],
-    "userTrackingDescription": "This identifier is used to deliver personalized ads to you."
+    "userTrackingDescription": "This identifier is used to deliver personalized ads to you.",
+    "consentProvider": "inmobi",
+    "inmobi": {
+      "pCode": "YOUR_PCODE_HERE"
+    }
   }
 }
 ```
 Supported network keys: `admob`, `applovin`, `unityads`, `vungle`, `meta`,
 `mintegral`, `pangle`.
+
+### Consent provider
+
+The `consentProvider` key picks how the plugin collects GDPR consent:
+
+| Value | What it does | When to use |
+|---|---|---|
+| `inmobi` (default) | Bundles InMobi Choice CMP. IAB TCF v2.2 compliant. Auto-shows the CMP on first launch and writes the standard `IABTCF_*` keys to `SharedPreferences` (Android) / `NSUserDefaults` (iOS). | Apps shipped in the EU/EEA. Required for GDPR audit compliance. |
+| `custom` | Built-in alert dialog. Writes a permissive `gdprApplies=0` stub. **Not** TCF compliant. | Apps that ship outside the EU only, or where you already integrate a different CMP. |
+
+When `consentProvider: "inmobi"`, set `levelplay.inmobi.pCode` to the pCode from
+your [InMobi Choice](https://choice.inmobi.com/) workspace (strip the leading
+`p-`). Optionally set `levelplay.inmobi.packageId` to override the property
+package id; defaults to the app's `applicationId`/bundle id.
+
+The CMP is initialized lazily when your JS code calls
+`LevelPlayAds.requestConsentInfo()`. Under `inmobi` the call resolves once
+the user has interacted with the CMP UI; subsequent calls return the stored
+decision without re-showing the dialog.
 
 2. Register the hook in the `scripts` section of your `package.json`:
 ```json
@@ -88,6 +112,52 @@ On every `npx cap sync` the hook injects, for each selected network:
 
 *Transparency note: the injection script is strictly OPT-IN and only runs if
 you explicitly declare the hook above.*
+
+### Manual alternative
+
+If you'd rather not run the hook, do the equivalent edits yourself:
+
+**Android** — add the adapters you need to `android/app/build.gradle`:
+```gradle
+dependencies {
+    implementation 'com.unity3d.ads-mediation:admob-adapter:4.3.46'
+    implementation 'com.unity3d.ads-mediation:applovin-adapter:4.3.39'
+    implementation 'com.unity3d.ads-mediation:unityads-adapter:4.3.44'
+    // …one per network from the supported list above
+}
+```
+
+**iOS** — add the matching pods to `ios/App/Podfile` inside the `App` target:
+```ruby
+pod 'IronSourceAdMobAdapter'
+pod 'IronSourceAppLovinAdapter'
+pod 'IronSourceUnityAdsAdapter'
+```
+
+**iOS — `ios/App/App/Info.plist`** (required for ATT prompt + attribution):
+
+```xml
+<key>NSUserTrackingUsageDescription</key>
+<string>This identifier will be used to deliver personalized ads to you.</string>
+<key>SKAdNetworkItems</key>
+<array>
+    <dict><key>SKAdNetworkIdentifier</key><string>su67r6k2v3.skadnetwork</string></dict> <!-- IronSource -->
+    <dict><key>SKAdNetworkIdentifier</key><string>cstr6suwn9.skadnetwork</string></dict> <!-- AdMob -->
+    <dict><key>SKAdNetworkIdentifier</key><string>ludvb6z3bs.skadnetwork</string></dict> <!-- AppLovin -->
+    <dict><key>SKAdNetworkIdentifier</key><string>4dzt52r2t5.skadnetwork</string></dict> <!-- UnityAds -->
+    <!-- Vungle: gta9lk7p23.skadnetwork -->
+    <!-- Meta: v9wttpbfk9.skadnetwork, n38lu8286q.skadnetwork -->
+    <!-- Mintegral: kbd757ywx3.skadnetwork -->
+    <!-- Pangle: 238da6jt44.skadnetwork, 22mmun2rn5.skadnetwork -->
+</array>
+```
+
+Without `NSUserTrackingUsageDescription` Apple **will reject** the build (the
+IronSource SDK calls `ATTrackingManager`). Without the matching `SKAdNetwork`
+IDs install attribution silently fails and mediation revenue reports go dark.
+
+Adapter versions are pinned in `scripts/levelplay-manifest.js` — check that
+file for the current set if you're maintaining the edits by hand.
 
 ---
 
@@ -140,15 +210,21 @@ async function bootstrapAds() {
   //    "NOT_APPLICABLE" on Android, so the same call works cross-platform.
   await LevelPlayAds.requestTrackingAuthorization();
 
-  // 4. Pre-load an interstitial. Listen for load + display events.
-  LevelPlayAds.addListener('onInterstitialAdLoaded', () => {
+  // 4. Pre-load an interstitial. Use AdEvent constants instead of raw
+  //    event-name strings so typos surface at compile time.
+  LevelPlayAds.addListener(AdEvent.InterstitialLoaded, () => {
     console.log('Interstitial ready.');
   });
-  LevelPlayAds.addListener('onInterstitialAdClosed', () => {
+  LevelPlayAds.addListener(AdEvent.InterstitialClosed, () => {
     console.log('Interstitial closed — next ad is auto-reloading.');
   });
 
-  await LevelPlayAds.loadInterstitial({ adUnitId: 'YOUR_INTERSTITIAL_AD_UNIT' });
+  // `autoShow: true` chains show() automatically once the ad loads —
+  // the same promise resolves on display or rejects on display failure.
+  await LevelPlayAds.loadInterstitial({
+    adUnitId: 'YOUR_INTERSTITIAL_AD_UNIT',
+    autoShow: false,
+  });
 }
 
 async function showInterstitial() {
@@ -157,11 +233,84 @@ async function showInterstitial() {
     await LevelPlayAds.showInterstitial();
   }
 }
+
+// Optional: a sticky bottom-right banner that flips to bottom-left on rotation.
+async function bannerWithRotation() {
+  await LevelPlayAds.createBanner({
+    adUnitId: 'YOUR_BANNER_AD_UNIT',
+    adSize: 'ADAPTIVE',
+    position: 'BOTTOM_RIGHT',
+    isOverlap: false, // Android only — pushes the WebView up by banner height
+  });
+
+  LevelPlayAds.addListener(AdEvent.OrientationChanged, ({ orientation }) => {
+    LevelPlayAds.updateBannerStyle({
+      position: orientation === 'LANDSCAPE' ? 'BOTTOM_LEFT' : 'BOTTOM_RIGHT',
+    });
+  });
+}
 ```
+
+> Import `AdEvent` alongside `LevelPlayAds`:
+> ```ts
+> import { LevelPlayAds, AdEvent } from 'capacitor-levelplay-ads';
+> ```
+>
+> Position and size strings are case- and separator-insensitive at the JS
+> layer — `'top-left'`, `'topLeft'` and `'TOP_LEFT'` all canonicalize to
+> `TOP_LEFT` before reaching the native side.
 
 > ⚠️ `initialize` and `requestConsentInfo` must complete **before** any
 > `loadInterstitial` / `loadRewarded` / `createBanner` call — ad loads are
 > rejected otherwise.
+
+---
+
+## 🔗 Server-to-Server (S2S) Reward Verification
+
+LevelPlay supports server-to-server callbacks for rewarded ads — your backend
+receives an HTTP request from LevelPlay's servers whenever a user earns a reward.
+Use `setDynamicUserId()` to attach a verifiable token so your server can match
+the callback to the right user/session.
+
+```ts
+import { LevelPlayAds, AdEvent } from 'capacitor-levelplay-ads';
+
+// Set a user-specific token before showing the rewarded ad.
+// This value is included in the S2S callback as the `dynamicUserId` parameter.
+await LevelPlayAds.setDynamicUserId({ userId: 'user_12345' });
+
+// You can encode multiple fields if needed:
+const payload = btoa(JSON.stringify({ uid: 'user_12345', txn: 'abc-def' }));
+await LevelPlayAds.setDynamicUserId({ userId: payload });
+
+// Load and show the rewarded ad — the active userId at show-time is sent in the callback.
+await LevelPlayAds.loadRewarded({ adUnitId: 'YOUR_REWARDED_AD_UNIT' });
+const { isReady } = await LevelPlayAds.isRewardedReady();
+if (isReady) {
+  await LevelPlayAds.showRewarded();
+}
+
+// Listen for the client-side reward event as a fallback.
+LevelPlayAds.addListener(AdEvent.RewardedAdRewarded, (reward) => {
+  console.log('Reward earned:', reward);
+});
+```
+
+### S2S callback flow
+
+1. User watches a rewarded ad.
+2. LevelPlay fires an HTTP GET to your configured callback URL with query
+   parameters including `dynamicUserId`.
+3. Your server decodes the token and credits the user.
+
+Configure your S2S callback URL in the
+[LevelPlay dashboard](https://platform.ironsrc.com/) under
+**Ad Units → Rewarded → Server-to-Server Callbacks**.
+
+> `setDynamicUserId()` can be called multiple times — the value active when
+> `showRewarded()` executes is the one LevelPlay includes in the callback.
+> Call it before each ad show if the token changes per session or transaction.
 
 ---
 
@@ -182,13 +331,17 @@ native SDK code is guarded and degrades to no-ops.
 * [`requestConsentInfo(...)`](#requestconsentinfo)
 * [`showPrivacyOptions(...)`](#showprivacyoptions)
 * [`getConsentData()`](#getconsentdata)
+* [`resetConsent()`](#resetconsent)
 * [`setCCPAConsent(...)`](#setccpaconsent)
 * [`setChildDirected(...)`](#setchilddirected)
 * [`requestTrackingAuthorization()`](#requesttrackingauthorization)
+* [`getAdvertisingId()`](#getadvertisingid)
+* [`setDynamicUserId(...)`](#setdynamicuserid)
 * [`createBanner(...)`](#createbanner)
 * [`showBanner()`](#showbanner)
 * [`hideBanner()`](#hidebanner)
 * [`destroyBanner()`](#destroybanner)
+* [`updateBannerStyle(...)`](#updatebannerstyle)
 * [`loadInterstitial(...)`](#loadinterstitial)
 * [`isInterstitialReady()`](#isinterstitialready)
 * [`showInterstitial()`](#showinterstitial)
@@ -197,6 +350,7 @@ native SDK code is guarded and degrades to no-ops.
 * [`showRewarded()`](#showrewarded)
 * [`addListener(string, ...)`](#addlistenerstring-)
 * [Interfaces](#interfaces)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -298,6 +452,21 @@ Returns the persisted consent decision without showing any UI.
 --------------------
 
 
+### resetConsent()
+
+```typescript
+resetConsent() => Promise<ConsentData>
+```
+
+Clears the stored consent decision so the next `requestConsentInfo()`
+re-shows the modal. Useful for QA flows and a "reset privacy choice"
+button in your settings screen.
+
+**Returns:** <code>Promise&lt;<a href="#consentdata">ConsentData</a>&gt;</code>
+
+--------------------
+
+
 ### setCCPAConsent(...)
 
 ```typescript
@@ -338,6 +507,47 @@ iOS only. Prompts the App Tracking Transparency (ATT) dialog.
 No-op on Android (resolves with status `NOT_APPLICABLE`).
 
 **Returns:** <code>Promise&lt;<a href="#trackingauthorizationresult">TrackingAuthorizationResult</a>&gt;</code>
+
+--------------------
+
+
+### getAdvertisingId()
+
+```typescript
+getAdvertisingId() => Promise<AdvertisingIdResult>
+```
+
+Returns the platform advertising identifier:
+
+- **Android** — Google Advertising ID (GAID), via Play Services.
+  `limited` is the `LimitAdTracking` flag.
+- **iOS** — IDFA, via `ASIdentifierManager`. The OS returns an all-zero
+  UUID until the user grants App Tracking Transparency authorization, in
+  which case `limited` is true and `id` is `"00000000-0000-0000-0000-000000000000"`.
+
+Call `requestTrackingAuthorization()` first on iOS to get a real value.
+
+**Returns:** <code>Promise&lt;<a href="#advertisingidresult">AdvertisingIdResult</a>&gt;</code>
+
+--------------------
+
+
+### setDynamicUserId(...)
+
+```typescript
+setDynamicUserId(options: { userId: string; }) => Promise<void>
+```
+
+Sets the dynamic user ID forwarded in server-to-server (S2S) reward
+callbacks. Call before `showRewarded()` to tag each reward with a
+verifiable token (e.g. a transaction ID or session nonce).
+
+Can be changed between ad shows — the value active at show time is
+the one included in the S2S callback.
+
+| Param         | Type                             |
+| ------------- | -------------------------------- |
+| **`options`** | <code>{ userId: string; }</code> |
 
 --------------------
 
@@ -386,6 +596,23 @@ destroyBanner() => Promise<void>
 ```
 
 Destroys the banner and removes it from the view hierarchy.
+
+--------------------
+
+
+### updateBannerStyle(...)
+
+```typescript
+updateBannerStyle(options: BannerStyleOptions) => Promise<void>
+```
+
+Reposition or restyle the active banner without destroying it.
+Only the provided fields change; omitted fields keep their current value.
+`isOverlap` only affects Android — iOS always overlays the WebView.
+
+| Param         | Type                                                              |
+| ------------- | ----------------------------------------------------------------- |
+| **`options`** | <code><a href="#bannerstyleoptions">BannerStyleOptions</a></code> |
 
 --------------------
 
@@ -471,7 +698,7 @@ Shows the loaded rewarded ad.
 ### addListener(string, ...)
 
 ```typescript
-addListener(eventName: string, listenerFunc: (info: any) => void) => Promise<PluginListenerHandle>
+addListener(eventName: AdEventName | string, listenerFunc: (info: any) => void) => Promise<PluginListenerHandle>
 ```
 
 Listens for native ad events.
@@ -509,7 +736,13 @@ Listens for native ad events.
 - `onAdRevenue` — `AdRevenueEvent` (impression-level ad revenue / ILRD)
 
 ### Consent
-- `onConsentStatusChanged` — <a href="#consentdata">`ConsentData`</a>
+- `onConsentStatusChanged` — `ConsentData`
+
+### Orientation
+- `onOrientationChanged` — `OrientationChangedEvent`
+
+Prefer the typed `AdEvent` constants (e.g. `AdEvent.InterstitialLoaded`)
+over raw strings for compile-time safety.
 
 | Param              | Type                                |
 | ------------------ | ----------------------------------- |
@@ -542,23 +775,25 @@ Listens for native ad events.
 
 #### ConsentData
 
-| Prop                | Type                                            | Description                                                                                                                                         |
-| ------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`status`**        | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code> | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent. |
-| **`granted`**       | <code>boolean</code>                            | Simplified boolean: true when `status === 'GRANTED'`.                                                                                               |
-| **`canRequestAds`** | <code>boolean</code>                            | True when ads may be requested (a decision exists, granted or denied).                                                                              |
+| Prop                | Type                                                        | Description                                                                                                                                                                                     |
+| ------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`status`**        | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code>             | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent.                                             |
+| **`granted`**       | <code>boolean</code>                                        | Simplified boolean: true when `status === 'GRANTED'`.                                                                                                                                           |
+| **`canRequestAds`** | <code>boolean</code>                                        | True when ads may be requested (a decision exists, granted or denied).                                                                                                                          |
+| **`provider`**      | <code><a href="#consentprovider">ConsentProvider</a></code> | Which provider produced this decision: `inmobi` or `custom`. Useful for deciding whether to trust the `tcString` field.                                                                         |
+| **`tcString`**      | <code>string</code>                                         | IAB TCF v2.2 consent string. Populated only when the `inmobi` provider is active and the user has interacted with the CMP. Undefined under `custom` (which doesn't produce a real TCF payload). |
 
 
 #### ConsentOptions
 
-| Prop                    | Type                  | Description                                                                                                  |
-| ----------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **`privacyPolicyUrl`**  | <code>string</code>   | URL opened when the user taps the privacy policy link in the modal.                                          |
-| **`title`**             | <code>string</code>   | Custom modal title.                                                                                          |
-| **`message`**           | <code>string</code>   | Custom modal body text.                                                                                      |
-| **`acceptButtonText`**  | <code>string</code>   | Label for the accept/grant button.                                                                           |
-| **`declineButtonText`** | <code>string</code>   | Label for the decline/deny button.                                                                           |
-| **`networks`**          | <code>string[]</code> | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally. |
+| Prop                    | Type                  | Description                                                                                                                                                                                          |
+| ----------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`privacyPolicyUrl`**  | <code>string</code>   | URL opened when the user taps the privacy policy link in the modal. Only used by the `custom` consent provider — ignored under InMobi (which renders its own privacy policy link inside the CMP UI). |
+| **`title`**             | <code>string</code>   | Custom modal title. `custom` provider only.                                                                                                                                                          |
+| **`message`**           | <code>string</code>   | Custom modal body text. `custom` provider only.                                                                                                                                                      |
+| **`acceptButtonText`**  | <code>string</code>   | Label for the accept/grant button. `custom` provider only.                                                                                                                                           |
+| **`declineButtonText`** | <code>string</code>   | Label for the decline/deny button. `custom` provider only.                                                                                                                                           |
+| **`networks`**          | <code>string[]</code> | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally.                                                                                         |
 
 
 #### TrackingAuthorizationResult
@@ -568,22 +803,41 @@ Listens for native ad events.
 | **`status`** | <code>string</code> | iOS ATT status: `AUTHORIZED`, `DENIED`, `RESTRICTED`, `NOT_DETERMINED`, or `NOT_APPLICABLE` (Android). |
 
 
+#### AdvertisingIdResult
+
+| Prop          | Type                 | Description                                                                                                                                               |
+| ------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`id`**      | <code>string</code>  | The advertising identifier. Empty string when unavailable; on iOS the all-zeros UUID `"00000000-0000-0000-0000-000000000000"` when ATT is not authorized. |
+| **`limited`** | <code>boolean</code> | True when the user has limited / opted out of ad tracking. Android: `LimitAdTracking` flag. iOS: true when ATT is not authorized.                         |
+
+
 #### BannerOptions
 
-| Prop             | Type                                                                                  | Description                                                                             |
-| ---------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| **`adUnitId`**   | <code>string</code>                                                                   | LevelPlay banner ad unit ID. Required.                                                  |
-| **`adSize`**     | <code>'BANNER' \| 'LARGE' \| 'MEDIUM_RECTANGLE' \| 'LEADERBOARD' \| 'ADAPTIVE'</code> | Banner size. Default: `ADAPTIVE`.                                                       |
-| **`position`**   | <code>'TOP' \| 'BOTTOM'</code>                                                        | Banner position on screen. Default: `BOTTOM`.                                           |
-| **`isAutoShow`** | <code>boolean</code>                                                                  | Show the banner automatically once loaded. Default: true.                               |
-| **`isOverlap`**  | <code>boolean</code>                                                                  | If true the banner overlaps the webview; if false it pushes the webview. Default: true. |
+| Prop                | Type                                                                                  | Description                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **`adUnitId`**      | <code>string</code>                                                                   | LevelPlay banner ad unit ID. Required.                                                                                                  |
+| **`adSize`**        | <code>'BANNER' \| 'LARGE' \| 'MEDIUM_RECTANGLE' \| 'LEADERBOARD' \| 'ADAPTIVE'</code> | Banner size. Default: `ADAPTIVE`.                                                                                                       |
+| **`position`**      | <code><a href="#bannerposition">BannerPosition</a></code>                             | Banner position on screen. Default: `BOTTOM`.                                                                                           |
+| **`isAutoShow`**    | <code>boolean</code>                                                                  | Show the banner automatically once loaded. Default: true.                                                                               |
+| **`isOverlap`**     | <code>boolean</code>                                                                  | If true the banner overlaps the webview; if false it pushes the webview. Android only — iOS always overlays the WebView. Default: true. |
+| **`retryInterval`** | <code>number</code>                                                                   | Minimum delay between consecutive load() calls, in **milliseconds**. Throttles invalid traffic. Default: 5000 (5 seconds).              |
+
+
+#### BannerStyleOptions
+
+| Prop            | Type                                                      | Description                                  |
+| --------------- | --------------------------------------------------------- | -------------------------------------------- |
+| **`position`**  | <code><a href="#bannerposition">BannerPosition</a></code> | New banner position.                         |
+| **`isOverlap`** | <code>boolean</code>                                      | Android-only overlap flag. iOS ignores this. |
 
 
 #### AdLoadOptions
 
-| Prop           | Type                | Description                     |
-| -------------- | ------------------- | ------------------------------- |
-| **`adUnitId`** | <code>string</code> | LevelPlay ad unit ID. Required. |
+| Prop                | Type                 | Description                                                                                                                                                          |
+| ------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`adUnitId`**      | <code>string</code>  | LevelPlay ad unit ID. Required.                                                                                                                                      |
+| **`autoShow`**      | <code>boolean</code> | If true, the ad is shown immediately after a successful load. The returned promise then resolves on display (or rejects with "Auto-show failed: …"). Default: false. |
+| **`retryInterval`** | <code>number</code>  | Minimum delay between consecutive load() calls, in **milliseconds**. Throttles invalid traffic. Default: 5000 (5 seconds).                                           |
 
 
 #### AdReadyResult
@@ -598,5 +852,34 @@ Listens for native ad events.
 | Prop         | Type                                      |
 | ------------ | ----------------------------------------- |
 | **`remove`** | <code>() =&gt; Promise&lt;void&gt;</code> |
+
+
+### Type Aliases
+
+
+#### ConsentProvider
+
+Which consent UI the plugin shows. Configured at install time via
+`levelplay.consentProvider` in the host app's package.json — not via JS.
+
+- `inmobi` (default): IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
+  Requires `levelplay.inmobi.pCode` from https://choice.inmobi.com/.
+- `custom`: built-in alert dialog. Not TCF compliant; do not ship to EU.
+
+<code>'inmobi' | 'custom'</code>
+
+
+#### BannerPosition
+
+Banner placement on screen. `TOP_LEFT` / `TOP_RIGHT` / `BOTTOM_LEFT` /
+`BOTTOM_RIGHT` anchor the banner to the corresponding screen corner;
+`CENTER` places it in the middle.
+
+<code>'TOP' | 'BOTTOM' | 'TOP_LEFT' | 'TOP_RIGHT' | 'BOTTOM_LEFT' | 'BOTTOM_RIGHT' | 'CENTER'</code>
+
+
+#### AdEventName
+
+<code>(typeof AdEvent)[keyof typeof AdEvent]</code>
 
 </docgen-api>

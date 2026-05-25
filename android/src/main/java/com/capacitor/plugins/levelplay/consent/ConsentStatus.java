@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.consent;
+package com.capacitor.plugins.levelplay.consent;
 
 /** Tri-state outcome of the consent flow. */
 public enum ConsentStatus {

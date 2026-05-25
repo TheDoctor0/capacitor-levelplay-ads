@@ -1,30 +1,33 @@
-package com.emi.plugins.levelplay.interstitial;
+package com.capacitor.plugins.levelplay.rewarded;
 
 import android.app.Activity;
 import androidx.annotation.NonNull;
 
+import com.getcapacitor.JSObject;
 import com.getcapacitor.PluginCall;
-import com.emi.plugins.levelplay.ActionCallback;
-import com.emi.plugins.levelplay.AdJsonUtil;
-import com.emi.plugins.levelplay.LevelPlayAdsPlugin;
+import com.capacitor.plugins.levelplay.ActionCallback;
+import com.capacitor.plugins.levelplay.AdJsonUtil;
+import com.capacitor.plugins.levelplay.LevelPlayPluginBridge;
 
 import com.unity3d.mediation.LevelPlayAdError;
 import com.unity3d.mediation.LevelPlayAdInfo;
-import com.unity3d.mediation.interstitial.LevelPlayInterstitialAd;
-import com.unity3d.mediation.interstitial.LevelPlayInterstitialAdListener;
+import com.unity3d.mediation.rewarded.LevelPlayReward;
+import com.unity3d.mediation.rewarded.LevelPlayRewardedAd;
+import com.unity3d.mediation.rewarded.LevelPlayRewardedAdListener;
 
 /**
- * Wraps a single reusable {@link LevelPlayInterstitialAd}. Flow:
+ * Wraps a single reusable {@link LevelPlayRewardedAd}. Flow:
  * {@code load} → {@code isReady} → {@code show}; auto-reloads after close.
+ * Carries the {@link LevelPlayReward} (name + amount) on {@code onAdRewarded}.
  *
  * The {@code load} promise resolves on {@code onAdLoaded}; the {@code show}
  * promise resolves on {@code onAdDisplayed} and rejects on
- * {@code onAdDisplayFailed} — so callers learn the real display outcome.
+ * {@code onAdDisplayFailed}.
  */
-public class InterstitialExecutor implements LevelPlayInterstitialAdListener {
+public class RewardedExecutor implements LevelPlayRewardedAdListener {
 
-    private final LevelPlayAdsPlugin plugin;
-    private LevelPlayInterstitialAd interstitialAd;
+    private final LevelPlayPluginBridge bridge;
+    private LevelPlayRewardedAd rewardedAd;
     private String currentAdUnitId = "";
     private long lastLoadTime = 0;
     private boolean autoReload = true;
@@ -34,8 +37,8 @@ public class InterstitialExecutor implements LevelPlayInterstitialAdListener {
     /** Callback for the in-flight show() call; cleared once fired. */
     private ActionCallback pendingShow;
 
-    public InterstitialExecutor(LevelPlayAdsPlugin plugin) {
-        this.plugin = plugin;
+    public RewardedExecutor(LevelPlayPluginBridge bridge) {
+        this.bridge = bridge;
     }
 
     public void load(Activity activity, PluginCall call, final ActionCallback callback) {
@@ -62,21 +65,21 @@ public class InterstitialExecutor implements LevelPlayInterstitialAdListener {
         this.autoReload = autoReloadOpt == null || autoReloadOpt;
 
         activity.runOnUiThread(() -> {
-            if (interstitialAd == null || !currentAdUnitId.equals(adUnitId)) {
+            if (rewardedAd == null || !currentAdUnitId.equals(adUnitId)) {
                 currentAdUnitId = adUnitId;
-                interstitialAd = new LevelPlayInterstitialAd(adUnitId);
-                interstitialAd.setListener(this);
+                rewardedAd = new LevelPlayRewardedAd(adUnitId);
+                rewardedAd.setListener(this);
             }
             // A prior load is still in flight — reject it so its promise settles.
             resolvePendingLoad(false, "Superseded by a new load request.");
             pendingLoad = callback;
-            interstitialAd.loadAd();
+            rewardedAd.loadAd();
         });
     }
 
     /** True when an ad is loaded and ready to show. */
     public boolean isReady() {
-        return interstitialAd != null && interstitialAd.isAdReady();
+        return rewardedAd != null && rewardedAd.isAdReady();
     }
 
     public void show(Activity activity, final ActionCallback callback) {
@@ -84,14 +87,14 @@ public class InterstitialExecutor implements LevelPlayInterstitialAdListener {
             callback.onError("No foreground activity.");
             return;
         }
-        if (interstitialAd == null || !interstitialAd.isAdReady()) {
-            callback.onError("The interstitial ad is not ready yet.");
+        if (rewardedAd == null || !rewardedAd.isAdReady()) {
+            callback.onError("The rewarded ad is not ready yet.");
             return;
         }
         activity.runOnUiThread(() -> {
             resolvePendingShow(false, "Superseded by a new show request.");
             pendingShow = callback;
-            interstitialAd.showAd(activity);
+            rewardedAd.showAd(activity);
         });
     }
 
@@ -111,47 +114,55 @@ public class InterstitialExecutor implements LevelPlayInterstitialAdListener {
         else cb.onError(error);
     }
 
-    // --- LevelPlayInterstitialAdListener ---------------------------------
+    // --- LevelPlayRewardedAdListener -------------------------------------
 
     @Override
     public void onAdLoaded(@NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdLoaded", AdJsonUtil.adInfoToJS(adInfo));
+        bridge.fireEvent("onRewardedAdLoaded", AdJsonUtil.adInfoToJS(adInfo));
         resolvePendingLoad(true, null);
     }
 
     @Override
     public void onAdLoadFailed(@NonNull LevelPlayAdError error) {
-        plugin.notifyPluginListeners("onInterstitialAdLoadFailed", AdJsonUtil.adErrorToJS(error));
+        bridge.fireEvent("onRewardedAdLoadFailed", AdJsonUtil.adErrorToJS(error));
         resolvePendingLoad(false, error.getErrorMessage());
     }
 
     @Override
     public void onAdDisplayed(@NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdDisplayed", AdJsonUtil.adInfoToJS(adInfo));
+        bridge.fireEvent("onRewardedAdDisplayed", AdJsonUtil.adInfoToJS(adInfo));
         resolvePendingShow(true, null);
     }
 
     @Override
+    public void onAdRewarded(@NonNull LevelPlayReward reward, @NonNull LevelPlayAdInfo adInfo) {
+        JSObject ret = AdJsonUtil.adInfoToJS(adInfo);
+        ret.put("rewardName", reward.getName());
+        ret.put("rewardAmount", reward.getAmount());
+        bridge.fireEvent("onRewardedAdRewarded", ret);
+    }
+
+    @Override
     public void onAdDisplayFailed(@NonNull LevelPlayAdError error, @NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdDisplayFailed", AdJsonUtil.adErrorToJS(error));
+        bridge.fireEvent("onRewardedAdDisplayFailed", AdJsonUtil.adErrorToJS(error));
         resolvePendingShow(false, error.getErrorMessage());
     }
 
     @Override
     public void onAdClicked(@NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdClicked", AdJsonUtil.adInfoToJS(adInfo));
+        bridge.fireEvent("onRewardedAdClicked", AdJsonUtil.adInfoToJS(adInfo));
     }
 
     @Override
     public void onAdClosed(@NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdClosed", AdJsonUtil.adInfoToJS(adInfo));
-        if (autoReload && interstitialAd != null) {
-            interstitialAd.loadAd();
+        bridge.fireEvent("onRewardedAdClosed", AdJsonUtil.adInfoToJS(adInfo));
+        if (autoReload && rewardedAd != null) {
+            rewardedAd.loadAd();
         }
     }
 
     @Override
     public void onAdInfoChanged(@NonNull LevelPlayAdInfo adInfo) {
-        plugin.notifyPluginListeners("onInterstitialAdInfoChanged", AdJsonUtil.adInfoToJS(adInfo));
+        bridge.fireEvent("onRewardedAdInfoChanged", AdJsonUtil.adInfoToJS(adInfo));
     }
 }

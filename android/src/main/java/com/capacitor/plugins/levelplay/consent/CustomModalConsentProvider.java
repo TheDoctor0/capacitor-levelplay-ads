@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.consent;
+package com.capacitor.plugins.levelplay.consent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,6 +42,10 @@ public class CustomModalConsentProvider implements ConsentProvider {
         prefs().edit()
                 .putString(KEY_STATUS, (granted ? ConsentStatus.GRANTED : ConsentStatus.DENIED).name())
                 .apply();
+        // Mirror the decision into the IAB TCF keys so mediation adapters
+        // see consistent state even without a real CMP. This is a stub —
+        // it sets gdprApplies=0 so adapters fall back to non-GDPR flow.
+        TcfPrefs.writeStub(context, granted);
     }
 
     @Override
@@ -106,6 +110,12 @@ public class CustomModalConsentProvider implements ConsentProvider {
                 callback.onError(e.getMessage());
             }
         });
+    }
+
+    @Override
+    public void resetConsent() {
+        prefs().edit().remove(KEY_STATUS).apply();
+        TcfPrefs.clear(context);
     }
 
     @Override

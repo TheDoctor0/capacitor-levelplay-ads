@@ -7,7 +7,9 @@ import type {
   ConsentOptions,
   ConsentData,
   TrackingAuthorizationResult,
+  AdvertisingIdResult,
   BannerOptions,
+  BannerStyleOptions,
   AdLoadOptions,
   AdReadyResult,
 } from './definitions';
@@ -21,6 +23,7 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
     status: 'GRANTED',
     granted: true,
     canRequestAds: true,
+    provider: 'custom',
   };
 
   // ==========================================
@@ -31,6 +34,10 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
   }
 
   async launchTestSuite(): Promise<void> {
+    // No-op for web
+  }
+
+  async setDynamicUserId(_options: { userId: string }): Promise<void> {
     // No-op for web
   }
 
@@ -49,6 +56,10 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
     return this.grantedConsent;
   }
 
+  async resetConsent(): Promise<ConsentData> {
+    return this.grantedConsent;
+  }
+
   async setCCPAConsent(_options: { doNotSell: boolean }): Promise<void> {
     // No-op for web
   }
@@ -59,6 +70,10 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
 
   async requestTrackingAuthorization(): Promise<TrackingAuthorizationResult> {
     return { status: 'NOT_APPLICABLE' };
+  }
+
+  async getAdvertisingId(): Promise<AdvertisingIdResult> {
+    return { id: '', limited: true };
   }
 
   // ==========================================
@@ -74,6 +89,9 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
     // No-op for web
   }
   async destroyBanner(): Promise<void> {
+    // No-op for web
+  }
+  async updateBannerStyle(_options: BannerStyleOptions): Promise<void> {
     // No-op for web
   }
 

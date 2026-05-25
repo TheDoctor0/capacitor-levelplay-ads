@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.consent;
+package com.capacitor.plugins.levelplay.consent;
 
 import android.app.Activity;
 
@@ -22,4 +22,7 @@ public interface ConsentProvider {
 
     /** Snapshot of the consent state for the JS layer. */
     JSObject getConsentData();
+
+    /** Clear the stored decision so the next requestConsent() re-prompts. */
+    void resetConsent();
 }

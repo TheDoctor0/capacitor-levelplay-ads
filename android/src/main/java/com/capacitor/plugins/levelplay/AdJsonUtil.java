@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay;
+package com.capacitor.plugins.levelplay;
 
 import com.getcapacitor.JSObject;
 import com.unity3d.mediation.LevelPlayAdError;

@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay.consent;
+package com.capacitor.plugins.levelplay.consent;
 
 /** Async result of a consent request. */
 public interface ConsentCallback {

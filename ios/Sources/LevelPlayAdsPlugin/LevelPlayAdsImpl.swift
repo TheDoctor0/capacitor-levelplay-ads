@@ -22,10 +22,26 @@ import IronSource
     private var initialized = false
     private var initializing = false
 
+    /// "inmobi" → use the InMobi Choice CMP (IAB TCF v2.2 compliant).
+    /// "custom" → use the plugin's built-in modal (boolean + TCF stub).
+    private var consentMode: String {
+        let v = Bundle.main.object(forInfoDictionaryKey: "LevelPlayCMPProvider") as? String
+        return (v ?? "inmobi").lowercased()
+    }
+    private var useInMobi: Bool { consentMode == "inmobi" }
+
+    /// Stored callback for the in-flight CMP UI dismissal.
+    private var inmobiPendingCallback: ((Bool, String?) -> Void)?
+    private var inmobiObserver: NSObjectProtocol?
+
 #if canImport(IronSource)
     private var interstitialAd: LPMInterstitialAd?
     private var rewardedAd: LPMRewardedAd?
     private var bannerAd: LPMBannerAdView?
+    private var bannerPosition: String = "BOTTOM"
+    private var bannerPositionConstraints: [NSLayoutConstraint] = []
+    private var bannerAdaptiveWidth: Bool = false
+    private weak var bannerHostViewController: UIViewController?
 
     private var interstitialDelegate: InterstitialDelegate?
     private var rewardedDelegate: RewardedDelegate?
@@ -58,6 +74,13 @@ import IronSource
         }
         let request = builder.build()
 
+        // The integration test suite is gated behind a metadata flag that
+        // must be set *before* init — otherwise launchTestSuite() opens
+        // nothing.
+        if isTesting {
+            IronSource.setMetaDataWithKey("is_test_suite", value: "enable")
+        }
+
         DispatchQueue.main.async {
             LevelPlay.initWith(request) { [weak self] _, error in
                 guard let self = self else { return }
@@ -81,6 +104,12 @@ import IronSource
 #endif
     }
 
+    public func setDynamicUserId(_ userId: String) {
+#if canImport(IronSource)
+        LevelPlay.setDynamicUserId(userId)
+#endif
+    }
+
     public func launchTestSuite(_ viewController: UIViewController) {
 #if canImport(IronSource)
         LevelPlay.launchTestSuite(viewController)
@@ -90,21 +119,40 @@ import IronSource
     // MARK: - Consent (custom modal)
 
     public func consentStatus() -> String {
+        if useInMobi {
+            if !TcfPrefs.hasDecision() { return "UNKNOWN" }
+            return TcfPrefs.isGranted() ? "GRANTED" : "DENIED"
+        }
         return UserDefaults.standard.string(forKey: consentKey) ?? "UNKNOWN"
     }
 
     public func consentData() -> [String: Any] {
         let status = consentStatus()
-        return [
+        var data: [String: Any] = [
             "status": status,
             "granted": status == "GRANTED",
-            "canRequestAds": status != "UNKNOWN"
+            "canRequestAds": status != "UNKNOWN",
+            "provider": consentMode
         ]
+        if useInMobi, let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
+            data["tcString"] = tc
+        }
+        return data
     }
 
     /// Shows the consent modal only if no decision exists yet.
     public func requestConsent(viewController: UIViewController?, options: [String: Any],
                                networks: [String], completion: @escaping (Bool, String?) -> Void) {
+        if useInMobi {
+            if TcfPrefs.hasDecision() {
+                applyUserConsent(granted: TcfPrefs.isGranted(), networks: networks)
+                completion(true, nil)
+                return
+            }
+            waitForTcfDecision(networks: networks, completion: completion)
+            InMobiConsentBridge.startIfConfigured()
+            return
+        }
         let status = consentStatus()
         if status != "UNKNOWN" {
             applyUserConsent(granted: status == "GRANTED", networks: networks)
@@ -122,11 +170,42 @@ import IronSource
     /// Always re-prompts so the user can revise an earlier decision.
     public func showPrivacyOptions(viewController: UIViewController?, options: [String: Any],
                                    networks: [String], completion: @escaping (Bool, String?) -> Void) {
+        if useInMobi {
+            InMobiConsentBridge.forceDisplayUI()
+            waitForTcfDecision(networks: networks, completion: completion)
+            return
+        }
         showConsentModal(viewController: viewController, options: options) { [weak self] granted in
             self?.applyUserConsent(granted: granted, networks: networks)
             completion(true, nil)
         } onError: { error in
             completion(false, error)
+        }
+    }
+
+    /// Waits for the InMobi SDK to write IABTCF_TCString to UserDefaults,
+    /// then completes. KVO-style observer on UserDefaults — cheaper than
+    /// polling and matches the SharedPreferences listener used on Android.
+    private func waitForTcfDecision(networks: [String],
+                                    completion: @escaping (Bool, String?) -> Void) {
+        // Tear down any previous wait.
+        if let prev = inmobiObserver {
+            NotificationCenter.default.removeObserver(prev)
+            inmobiObserver = nil
+        }
+        inmobiPendingCallback = completion
+        inmobiObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: nil, queue: .main
+        ) { [weak self] _ in
+            guard let self = self, TcfPrefs.hasDecision() else { return }
+            if let obs = self.inmobiObserver {
+                NotificationCenter.default.removeObserver(obs)
+                self.inmobiObserver = nil
+            }
+            self.applyUserConsent(granted: TcfPrefs.isGranted(), networks: networks)
+            self.inmobiPendingCallback?(true, nil)
+            self.inmobiPendingCallback = nil
         }
     }
 
@@ -169,6 +248,14 @@ import IronSource
 
     private func storeConsent(granted: Bool) {
         UserDefaults.standard.set(granted ? "GRANTED" : "DENIED", forKey: consentKey)
+        // Mirror to TCF stub so mediation adapters see consistent state.
+        TcfPrefs.writeStub(granted: granted)
+    }
+
+    /// Clears the stored decision so the next requestConsent() re-prompts.
+    public func resetConsent() {
+        UserDefaults.standard.removeObject(forKey: consentKey)
+        TcfPrefs.clear()
     }
 
     // MARK: - Privacy bridge
@@ -199,6 +286,15 @@ import IronSource
     }
 
     // MARK: - App Tracking Transparency
+
+    /// IDFA + a "zeroed" flag (true when ATT not authorized — the OS returns
+    /// `00000000-0000-0000-0000-000000000000` in that case).
+    public func advertisingId() -> (id: String, limited: Bool) {
+        let uuid = ASIdentifierManager.shared().advertisingIdentifier
+        let id = uuid.uuidString
+        let limited = uuid == UUID(uuidString: "00000000-0000-0000-0000-000000000000")
+        return (id, limited)
+    }
 
     public func requestTrackingAuthorization(completion: @escaping (String) -> Void) {
         if #available(iOS 14, *) {
@@ -321,28 +417,22 @@ import IronSource
 
             banner.translatesAutoresizingMaskIntoConstraints = false
             viewController.view.addSubview(banner)
-            let guide = viewController.view.safeAreaLayoutGuide
-            var constraints = [
-                banner.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
+            var sizeConstraints: [NSLayoutConstraint] = [
                 banner.heightAnchor.constraint(equalToConstant: CGFloat(size.height))
             ]
             // An adaptive banner reports width 0 — span the safe area instead of
             // pinning a zero-width constant that would collapse the view.
             if CGFloat(size.width) > 0 {
-                constraints.append(banner.widthAnchor.constraint(equalToConstant: CGFloat(size.width)))
-            } else {
-                constraints.append(banner.leadingAnchor.constraint(equalTo: guide.leadingAnchor))
-                constraints.append(banner.trailingAnchor.constraint(equalTo: guide.trailingAnchor))
+                sizeConstraints.append(banner.widthAnchor.constraint(equalToConstant: CGFloat(size.width)))
             }
-            if position.uppercased() == "TOP" {
-                constraints.append(banner.topAnchor.constraint(equalTo: guide.topAnchor))
-            } else {
-                constraints.append(banner.bottomAnchor.constraint(equalTo: guide.bottomAnchor))
-            }
-            NSLayoutConstraint.activate(constraints)
+            NSLayoutConstraint.activate(sizeConstraints)
 
             self.bannerAd = banner
             self.bannerDelegate = delegate
+            self.bannerHostViewController = viewController
+            self.bannerPosition = position.uppercased()
+            self.bannerAdaptiveWidth = CGFloat(size.width) <= 0
+            self.applyBannerPositionConstraints()
             // A prior load is still in flight — settle it before overwriting.
             self.resolveBannerLoad(success: false, error: "Superseded by a new banner request.")
             self.pendingBannerLoad = completion
@@ -371,12 +461,83 @@ import IronSource
 #endif
     }
 
+    /// Reposition the existing banner. {@code isOverlap} is accepted for API
+    /// parity but iOS always overlays the WKWebView.
+    public func updateBannerStyle(position: String?, isOverlap _: Bool?,
+                                  completion: @escaping (Bool, String?) -> Void) {
 #if canImport(IronSource)
+        DispatchQueue.main.async {
+            guard self.bannerAd != nil, self.bannerHostViewController != nil else {
+                completion(false, "Banner not created yet.")
+                return
+            }
+            if let pos = position, !pos.isEmpty {
+                self.bannerPosition = pos.uppercased()
+            }
+            self.applyBannerPositionConstraints()
+            completion(true, nil)
+        }
+#else
+        completion(false, "IronSourceSDK is not available.")
+#endif
+    }
+
+#if canImport(IronSource)
+    /// Activate position/horizontal constraints for {@code bannerPosition}.
+    /// Deactivates any previously activated set so callers can swap positions
+    /// without destroying the banner.
+    private func applyBannerPositionConstraints() {
+        let adaptiveWidth = bannerAdaptiveWidth
+        guard let banner = bannerAd, let host = bannerHostViewController else { return }
+        if !bannerPositionConstraints.isEmpty {
+            NSLayoutConstraint.deactivate(bannerPositionConstraints)
+            bannerPositionConstraints.removeAll()
+        }
+        let guide = host.view.safeAreaLayoutGuide
+        var c: [NSLayoutConstraint] = []
+        switch bannerPosition {
+        case "TOP":
+            c.append(banner.topAnchor.constraint(equalTo: guide.topAnchor))
+            c.append(banner.centerXAnchor.constraint(equalTo: guide.centerXAnchor))
+        case "TOP_LEFT":
+            c.append(banner.topAnchor.constraint(equalTo: guide.topAnchor))
+            c.append(banner.leadingAnchor.constraint(equalTo: guide.leadingAnchor))
+        case "TOP_RIGHT":
+            c.append(banner.topAnchor.constraint(equalTo: guide.topAnchor))
+            c.append(banner.trailingAnchor.constraint(equalTo: guide.trailingAnchor))
+        case "CENTER":
+            c.append(banner.centerYAnchor.constraint(equalTo: guide.centerYAnchor))
+            c.append(banner.centerXAnchor.constraint(equalTo: guide.centerXAnchor))
+        case "BOTTOM_LEFT":
+            c.append(banner.bottomAnchor.constraint(equalTo: guide.bottomAnchor))
+            c.append(banner.leadingAnchor.constraint(equalTo: guide.leadingAnchor))
+        case "BOTTOM_RIGHT":
+            c.append(banner.bottomAnchor.constraint(equalTo: guide.bottomAnchor))
+            c.append(banner.trailingAnchor.constraint(equalTo: guide.trailingAnchor))
+        default: // BOTTOM
+            c.append(banner.bottomAnchor.constraint(equalTo: guide.bottomAnchor))
+            c.append(banner.centerXAnchor.constraint(equalTo: guide.centerXAnchor))
+        }
+        // Adaptive banners report width 0 — stretch only when the position is
+        // centered (TOP/BOTTOM/CENTER); leave side-anchored variants intrinsic.
+        if adaptiveWidth && (bannerPosition == "TOP" || bannerPosition == "BOTTOM" || bannerPosition == "CENTER") {
+            c.append(banner.leadingAnchor.constraint(equalTo: guide.leadingAnchor))
+            c.append(banner.trailingAnchor.constraint(equalTo: guide.trailingAnchor))
+        }
+        NSLayoutConstraint.activate(c)
+        bannerPositionConstraints = c
+    }
+
     private func destroyBannerInternal() {
+        if !bannerPositionConstraints.isEmpty {
+            NSLayoutConstraint.deactivate(bannerPositionConstraints)
+            bannerPositionConstraints.removeAll()
+        }
         bannerAd?.destroy()
         bannerAd?.removeFromSuperview()
         bannerAd = nil
         bannerDelegate = nil
+        bannerHostViewController = nil
     }
 
     private func bannerSize(for sizeStr: String) -> LPMAdSize {

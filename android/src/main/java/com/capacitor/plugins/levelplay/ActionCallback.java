@@ -1,4 +1,4 @@
-package com.emi.plugins.levelplay;
+package com.capacitor.plugins.levelplay;
 
 public interface ActionCallback {
     void onSuccess();

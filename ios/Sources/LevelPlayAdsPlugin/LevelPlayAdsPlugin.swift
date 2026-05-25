@@ -14,19 +14,23 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "requestConsentInfo", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "showPrivacyOptions", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getConsentData", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "resetConsent", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setCCPAConsent", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setChildDirected", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "requestTrackingAuthorization", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "getAdvertisingId", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "createBanner", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "showBanner", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "hideBanner", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "destroyBanner", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "updateBannerStyle", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "loadInterstitial", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "isInterstitialReady", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "showInterstitial", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "loadRewarded", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "isRewardedReady", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "showRewarded", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "showRewarded", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "setDynamicUserId", returnType: CAPPluginReturnPromise)
     ]
 
     private let implementation = LevelPlayAdsImpl()
@@ -36,6 +40,28 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         implementation.emit = { [weak self] event, data in
             self?.notifyListeners(event, data: data)
         }
+        UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(orientationDidChange),
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        UIDevice.current.endGeneratingDeviceOrientationNotifications()
+    }
+
+    @objc private func orientationDidChange() {
+        let orientation: String
+        switch UIDevice.current.orientation {
+        case .landscapeLeft, .landscapeRight: orientation = "LANDSCAPE"
+        case .portrait, .portraitUpsideDown: orientation = "PORTRAIT"
+        default: return
+        }
+        notifyListeners("onOrientationChanged", data: ["orientation": orientation])
     }
 
     private var viewController: UIViewController? {
@@ -75,6 +101,15 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
                 call.reject("LevelPlay init failed: \(error ?? "unknown error")")
             }
         }
+    }
+
+    @objc func setDynamicUserId(_ call: CAPPluginCall) {
+        guard let userId = call.getString("userId"), !userId.isEmpty else {
+            call.reject("userId is required.")
+            return
+        }
+        implementation.setDynamicUserId(userId)
+        call.resolve()
     }
 
     @objc func launchTestSuite(_ call: CAPPluginCall) {
@@ -122,6 +157,13 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve(implementation.consentData())
     }
 
+    @objc func resetConsent(_ call: CAPPluginCall) {
+        implementation.resetConsent()
+        let data = implementation.consentData()
+        notifyListeners("onConsentStatusChanged", data: data)
+        call.resolve(data)
+    }
+
     @objc func setCCPAConsent(_ call: CAPPluginCall) {
         implementation.setCCPA(call.getBool("doNotSell", false))
         call.resolve()
@@ -136,6 +178,11 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         implementation.requestTrackingAuthorization { status in
             call.resolve(["status": status])
         }
+    }
+
+    @objc func getAdvertisingId(_ call: CAPPluginCall) {
+        let info = implementation.advertisingId()
+        call.resolve(["id": info.id, "limited": info.limited])
     }
 
     // MARK: - Banner
@@ -177,6 +224,14 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
+    @objc func updateBannerStyle(_ call: CAPPluginCall) {
+        let position = call.getString("position")
+        let isOverlap = call.options["isOverlap"] as? Bool
+        implementation.updateBannerStyle(position: position, isOverlap: isOverlap) { success, error in
+            if success { call.resolve() } else { call.reject(error ?? "Update banner style failed.") }
+        }
+    }
+
     // MARK: - Interstitial
 
     @objc func loadInterstitial(_ call: CAPPluginCall) {
@@ -185,8 +240,22 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("Ad Unit ID is required.")
             return
         }
-        implementation.loadInterstitial(adUnitId: adUnitId) { success, error in
-            if success { call.resolve() } else { call.reject("Failed: \(error ?? "unknown error")") }
+        let autoShow = call.getBool("autoShow", false)
+        implementation.loadInterstitial(adUnitId: adUnitId) { [weak self] success, error in
+            if !success {
+                call.reject("Failed: \(error ?? "unknown error")")
+                return
+            }
+            guard autoShow, let self = self else { call.resolve(); return }
+            DispatchQueue.main.async {
+                guard let vc = self.viewController else {
+                    call.reject("No view controller available for auto-show.")
+                    return
+                }
+                self.implementation.showInterstitial(viewController: vc) { ok, err in
+                    if ok { call.resolve() } else { call.reject("Auto-show failed: \(err ?? "")") }
+                }
+            }
         }
     }
 
@@ -214,8 +283,22 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
             call.reject("Ad Unit ID is required.")
             return
         }
-        implementation.loadRewarded(adUnitId: adUnitId) { success, error in
-            if success { call.resolve() } else { call.reject("Failed to load rewarded ad: \(error ?? "unknown error")") }
+        let autoShow = call.getBool("autoShow", false)
+        implementation.loadRewarded(adUnitId: adUnitId) { [weak self] success, error in
+            if !success {
+                call.reject("Failed to load rewarded ad: \(error ?? "unknown error")")
+                return
+            }
+            guard autoShow, let self = self else { call.resolve(); return }
+            DispatchQueue.main.async {
+                guard let vc = self.viewController else {
+                    call.reject("No view controller available for auto-show.")
+                    return
+                }
+                self.implementation.showRewarded(viewController: vc) { ok, err in
+                    if ok { call.resolve() } else { call.reject("Auto-show failed: \(err ?? "")") }
+                }
+            }
         }
     }
 
