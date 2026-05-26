@@ -20,6 +20,7 @@
 # Meta Audience Network adapter
 -keep public class com.facebook.ads.** { public protected *; }
 -dontwarn com.facebook.ads.internal.**
+-dontwarn com.facebook.infer.annotation.**
 -keeppackagenames com.facebook.*
 
 # AppLovin adapter
@@ -100,6 +101,7 @@
 # Amazon APS
 -keep class com.amazon.device.ads.** { *; }
 -dontwarn com.amazon.device.ads.**
+-dontwarn com.amazon.device.**
 
 # BidMachine
 -keep class io.bidmachine.** { *; }
