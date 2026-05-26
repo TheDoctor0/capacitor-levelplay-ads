@@ -30,10 +30,10 @@ Ads can be served across every mediated demand source from a single, modular API
 
 - **Mediation-first:** One LevelPlay app key fans out to every network you
   enable — AdMob, AppLovin, Unity Ads, Vungle, Meta, Mintegral, Pangle.
-- **IAB TCF v2.2 consent (default):** Bundles the InMobi Choice CMP for
-  GDPR-compliant consent — collects a TCF string and writes the standard
-  `IABTCF_*` keys every mediation adapter reads. Swappable for a built-in
-  non-TCF modal when shipping outside the EU.
+- **IAB TCF v2.3 consent (default):** Bundles the Usercentrics CMP
+  (Google-certified Gold tier partner) for GDPR-compliant consent — collects
+  a TCF string and writes the standard `IABTCF_*` keys every mediation adapter
+  reads. InMobi Choice CMP and a built-in non-TCF modal are also available.
 - **CCPA & COPPA:** First-class `setCCPAConsent()` and `setChildDirected()`.
 - **App Tracking Transparency:** `requestTrackingAuthorization()` prompts ATT
   on iOS and is a safe no-op on Android.
@@ -67,15 +67,17 @@ LevelPlay SDK; each demand source you want is wired in by a Capacitor CLI hook.
   "levelplay": {
     "networks": ["admob", "applovin", "unityads"],
     "userTrackingDescription": "This identifier is used to deliver personalized ads to you.",
-    "consentProvider": "inmobi",
-    "inmobi": {
-      "pCode": "YOUR_PCODE_HERE"
+    "consentProvider": "usercentrics",
+    "usercentrics": {
+      "settingsId": "YOUR_SETTINGS_ID"
     }
   }
 }
 ```
 Supported network keys: `admob`, `applovin`, `unityads`, `vungle`, `meta`,
-`mintegral`, `pangle`.
+`mintegral`, `pangle`, `inmobi`, `chartboost`, `fyber`, `moloco`, `bigo`,
+`hyprmx`, `mobilefuse`, `aps`, `bidmachine`, `smaato`, `verve`, `ogury`,
+`superawesome`, `yandex`, `mytarget`, `line`, `pubmatic`, `tencent`, `yso`, `voodoo`.
 
 ### Consent provider
 
@@ -83,18 +85,49 @@ The `consentProvider` key picks how the plugin collects GDPR consent:
 
 | Value | What it does | When to use |
 |---|---|---|
-| `inmobi` (default) | Bundles InMobi Choice CMP. IAB TCF v2.2 compliant. Auto-shows the CMP on first launch and writes the standard `IABTCF_*` keys to `SharedPreferences` (Android) / `NSUserDefaults` (iOS). | Apps shipped in the EU/EEA. Required for GDPR audit compliance. |
+| `usercentrics` (default) | Bundles the [Usercentrics](https://usercentrics.com/) CMP (Google-certified Gold tier partner). IAB TCF v2.3 compliant. Auto-shows the consent banner on first launch and writes the standard `IABTCF_*` keys to `SharedPreferences` (Android) / `NSUserDefaults` (iOS). | Apps shipped in the EU/EEA. Required for GDPR audit compliance. |
+| `inmobi` | Bundles InMobi Choice CMP. IAB TCF v2.2 compliant. Same TCF key behavior as Usercentrics. | Alternative CMP if you already have an InMobi Choice account. |
 | `custom` | Built-in alert dialog. Writes a permissive `gdprApplies=0` stub. **Not** TCF compliant. | Apps that ship outside the EU only, or where you already integrate a different CMP. |
 
-When `consentProvider: "inmobi"`, set `levelplay.inmobi.pCode` to the pCode from
-your [InMobi Choice](https://choice.inmobi.com/) workspace (strip the leading
+#### Usercentrics (default)
+
+Set `levelplay.usercentrics.settingsId` to the Settings ID from your
+[Usercentrics admin dashboard](https://admin.usercentrics.com/). Optionally
+set `levelplay.usercentrics.rulesetId` for geolocation-based rulesets.
+
+```json
+{
+  "levelplay": {
+    "consentProvider": "usercentrics",
+    "usercentrics": {
+      "settingsId": "YOUR_SETTINGS_ID"
+    }
+  }
+}
+```
+
+#### InMobi Choice
+
+Set `levelplay.inmobi.pCode` to the pCode from your
+[InMobi Choice](https://choice.inmobi.com/) workspace (strip the leading
 `p-`). Optionally set `levelplay.inmobi.packageId` to override the property
 package id; defaults to the app's `applicationId`/bundle id.
 
+```json
+{
+  "levelplay": {
+    "consentProvider": "inmobi",
+    "inmobi": {
+      "pCode": "YOUR_PCODE_HERE"
+    }
+  }
+}
+```
+
 The CMP is initialized lazily when your JS code calls
-`LevelPlayAds.requestConsentInfo()`. Under `inmobi` the call resolves once
-the user has interacted with the CMP UI; subsequent calls return the stored
-decision without re-showing the dialog.
+`LevelPlayAds.requestConsentInfo()`. The call resolves once the user has
+interacted with the CMP UI; subsequent calls return the stored decision
+without re-showing the dialog.
 
 2. Register the hook in the `scripts` section of your `package.json`:
 ```json
@@ -120,12 +153,17 @@ If you'd rather not run the hook, do the equivalent edits yourself:
 **Android** — add the adapters you need to `android/app/build.gradle`:
 ```gradle
 dependencies {
-    implementation 'com.unity3d.ads-mediation:admob-adapter:4.3.46'
-    implementation 'com.unity3d.ads-mediation:applovin-adapter:4.3.39'
-    implementation 'com.unity3d.ads-mediation:unityads-adapter:4.3.44'
+    implementation 'com.unity3d.ads-mediation:admob-adapter:5.9.0'
+    implementation 'com.unity3d.ads-mediation:applovin-adapter:5.5.0'
+    implementation 'com.unity3d.ads-mediation:unityads-adapter:5.8.0'
     // …one per network from the supported list above
 }
 ```
+
+Some networks (Mintegral, Pangle, Chartboost, BidMachine, Smaato, Verve, Ogury,
+SuperAwesome, PubMatic, YSO, Voodoo) require extra Maven repositories. The
+manifest script injects them automatically; if wiring manually, check the
+`androidRepos` field in `scripts/levelplay-manifest.js` for the URLs.
 
 **iOS** — add the matching pods to `ios/App/Podfile` inside the `App` target:
 ```ruby
@@ -169,12 +207,6 @@ To use npm:
 npm install capacitor-levelplay-ads
 ```
 
-To use yarn:
-
-```bash
-yarn add capacitor-levelplay-ads
-```
-
 Sync native files:
 
 ```bash
@@ -195,8 +227,8 @@ async function bootstrapAds() {
     isTesting: true, // remove or set to false in production
   });
 
-  // 2. Request a GDPR / consent decision. The plugin shows a custom modal
-  //    on first run and reuses the stored decision afterwards.
+  // 2. Request a GDPR / consent decision. The plugin shows the Usercentrics
+  //    (or configured CMP) banner on first run and reuses the stored decision.
   const consent = await LevelPlayAds.requestConsentInfo({
     privacyPolicyUrl: 'https://example.com/privacy',
     networks: ['admob', 'meta'], // optional — must match your levelplay.networks
@@ -775,25 +807,25 @@ over raw strings for compile-time safety.
 
 #### ConsentData
 
-| Prop                | Type                                                        | Description                                                                                                                                                                                     |
-| ------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`status`**        | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code>             | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent.                                             |
-| **`granted`**       | <code>boolean</code>                                        | Simplified boolean: true when `status === 'GRANTED'`.                                                                                                                                           |
-| **`canRequestAds`** | <code>boolean</code>                                        | True when ads may be requested (a decision exists, granted or denied).                                                                                                                          |
-| **`provider`**      | <code><a href="#consentprovider">ConsentProvider</a></code> | Which provider produced this decision: `inmobi` or `custom`. Useful for deciding whether to trust the `tcString` field.                                                                         |
-| **`tcString`**      | <code>string</code>                                         | IAB TCF v2.2 consent string. Populated only when the `inmobi` provider is active and the user has interacted with the CMP. Undefined under `custom` (which doesn't produce a real TCF payload). |
+| Prop                | Type                                                        | Description                                                                                                                                                                                             |
+| ------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`status`**        | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code>             | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent.                                                     |
+| **`granted`**       | <code>boolean</code>                                        | Simplified boolean: true when `status === 'GRANTED'`.                                                                                                                                                   |
+| **`canRequestAds`** | <code>boolean</code>                                        | True when ads may be requested (a decision exists, granted or denied).                                                                                                                                  |
+| **`provider`**      | <code><a href="#consentprovider">ConsentProvider</a></code> | Which provider produced this decision: `usercentrics`, `inmobi`, or `custom`. Useful for deciding whether to trust the `tcString` field.                                                                |
+| **`tcString`**      | <code>string</code>                                         | IAB TCF consent string. Populated when the `usercentrics` or `inmobi` provider is active and the user has interacted with the CMP. Undefined under `custom` (which doesn't produce a real TCF payload). |
 
 
 #### ConsentOptions
 
-| Prop                    | Type                  | Description                                                                                                                                                                                          |
-| ----------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`privacyPolicyUrl`**  | <code>string</code>   | URL opened when the user taps the privacy policy link in the modal. Only used by the `custom` consent provider — ignored under InMobi (which renders its own privacy policy link inside the CMP UI). |
-| **`title`**             | <code>string</code>   | Custom modal title. `custom` provider only.                                                                                                                                                          |
-| **`message`**           | <code>string</code>   | Custom modal body text. `custom` provider only.                                                                                                                                                      |
-| **`acceptButtonText`**  | <code>string</code>   | Label for the accept/grant button. `custom` provider only.                                                                                                                                           |
-| **`declineButtonText`** | <code>string</code>   | Label for the decline/deny button. `custom` provider only.                                                                                                                                           |
-| **`networks`**          | <code>string[]</code> | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally.                                                                                         |
+| Prop                    | Type                  | Description                                                                                                                                                                                                             |
+| ----------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`privacyPolicyUrl`**  | <code>string</code>   | URL opened when the user taps the privacy policy link in the modal. Only used by the `custom` consent provider — ignored under Usercentrics and InMobi (which render their own privacy policy links inside the CMP UI). |
+| **`title`**             | <code>string</code>   | Custom modal title. `custom` provider only.                                                                                                                                                                             |
+| **`message`**           | <code>string</code>   | Custom modal body text. `custom` provider only.                                                                                                                                                                         |
+| **`acceptButtonText`**  | <code>string</code>   | Label for the accept/grant button. `custom` provider only.                                                                                                                                                              |
+| **`declineButtonText`** | <code>string</code>   | Label for the decline/deny button. `custom` provider only.                                                                                                                                                              |
+| **`networks`**          | <code>string[]</code> | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally.                                                                                                            |
 
 
 #### TrackingAuthorizationResult
@@ -862,11 +894,14 @@ over raw strings for compile-time safety.
 Which consent UI the plugin shows. Configured at install time via
 `levelplay.consentProvider` in the host app's package.json — not via JS.
 
-- `inmobi` (default): IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
+- `usercentrics` (default): IAB TCF v2.3 compliant. Google-certified Gold
+  tier CMP partner. Requires `levelplay.usercentrics.settingsId` from
+  https://usercentrics.com/.
+- `inmobi`: IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
   Requires `levelplay.inmobi.pCode` from https://choice.inmobi.com/.
 - `custom`: built-in alert dialog. Not TCF compliant; do not ship to EU.
 
-<code>'inmobi' | 'custom'</code>
+<code>'usercentrics' | 'inmobi' | 'custom'</code>
 
 
 #### BannerPosition

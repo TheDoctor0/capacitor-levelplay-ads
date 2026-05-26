@@ -18,6 +18,7 @@ import com.capacitor.plugins.levelplay.consent.ConsentProvider;
 import com.capacitor.plugins.levelplay.consent.ConsentStatus;
 import com.capacitor.plugins.levelplay.consent.CustomModalConsentProvider;
 import com.capacitor.plugins.levelplay.consent.InMobiConsentProvider;
+import com.capacitor.plugins.levelplay.consent.UsercentricsConsentProvider;
 import com.capacitor.plugins.levelplay.interstitial.InterstitialExecutor;
 import com.capacitor.plugins.levelplay.privacy.PrivacyExecutor;
 import com.capacitor.plugins.levelplay.rewarded.RewardedExecutor;
@@ -83,11 +84,14 @@ public class LevelPlayAdsPlugin extends Plugin implements LevelPlayPluginBridge 
     private ConsentProvider buildConsentProvider() {
         int id = getContext().getResources().getIdentifier(
                 "levelplay_cmp_provider", "string", getContext().getPackageName());
-        String name = id == 0 ? "inmobi" : getContext().getString(id);
+        String name = id == 0 ? "usercentrics" : getContext().getString(id);
         if ("custom".equalsIgnoreCase(name)) {
             return new CustomModalConsentProvider(getContext());
         }
-        return new InMobiConsentProvider(getContext());
+        if ("inmobi".equalsIgnoreCase(name)) {
+            return new InMobiConsentProvider(getContext());
+        }
+        return new UsercentricsConsentProvider(getContext());
     }
 
     // --- API-35 edge-to-edge workaround ----------------------------------
@@ -170,7 +174,12 @@ public class LevelPlayAdsPlugin extends Plugin implements LevelPlayPluginBridge 
 
     @PluginMethod
     public void launchTestSuite(PluginCall call) {
-        LevelPlay.launchTestSuite(getContext());
+        Activity activity = getActivity();
+        if (activity == null) {
+            call.reject("No foreground activity.");
+            return;
+        }
+        LevelPlay.launchTestSuite(activity);
         call.resolve();
     }
 

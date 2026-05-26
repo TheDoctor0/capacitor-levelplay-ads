@@ -32,7 +32,7 @@ enum InMobiConsentBridge {
 
     static func providerFromBundle() -> String {
         let v = Bundle.main.object(forInfoDictionaryKey: "LevelPlayCMPProvider") as? String
-        return (v ?? "inmobi").lowercased()
+        return (v ?? "usercentrics").lowercased()
     }
 
     static var onError: ((String) -> Void)?

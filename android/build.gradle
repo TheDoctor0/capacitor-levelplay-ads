@@ -64,11 +64,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
     implementation 'com.google.android.gms:play-services-basement:18.1.0'
 
-    // InMobi Choice CMP — compileOnly so the code compiles; the host app
-    // provides it at runtime when consentProvider=inmobi (injected by
-    // levelplay-manifest.js). When absent at runtime the ContentProvider
-    // initializer catches NoClassDefFoundError and logs a warning.
+    // CMP SDKs — compileOnly so the code compiles; the host app provides the
+    // selected one at runtime (injected by levelplay-manifest.js). When absent
+    // at runtime the provider catches NoClassDefFoundError and logs a warning.
     compileOnly 'com.inmobi:inmobicmp:2.4.2'
+    compileOnly 'com.usercentrics.sdk:usercentrics-ui:2.26.3'
+    compileOnly 'com.usercentrics.sdk:usercentrics-android:2.26.3'
 
     // Mediation network adapters are NOT declared here. They are opt-in and
     // injected at install time by scripts/levelplay-manifest.js based on the

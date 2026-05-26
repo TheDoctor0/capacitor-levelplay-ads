@@ -76,6 +76,9 @@ public class LevelPlayAdsImpl {
                 initialized = true;
                 initializing = false;
                 Logger.info(TAG, "LevelPlay SDK initialized (v" + LevelPlay.getSdkVersion() + ").");
+                if (isTesting) {
+                    logAdapterDiscovery();
+                }
                 drainPending(true, null);
             }
 
@@ -85,6 +88,39 @@ public class LevelPlayAdsImpl {
                 drainPending(false, error.getErrorMessage());
             }
         });
+    }
+
+    private void logAdapterDiscovery() {
+        String[][] checks = {
+            // { label, adapter class, sdk class }
+            {"AdMob", "com.ironsource.adapters.admob.AdMobAdapter", "com.google.android.gms.ads.MobileAds"},
+            {"AppLovin", "com.ironsource.adapters.applovin.AppLovinAdapter", "com.applovin.sdk.AppLovinSdk"},
+            {"UnityAds", "com.ironsource.adapters.unityads.UnityAdsAdapter", "com.unity3d.ads.UnityAds"},
+            {"Vungle", "com.ironsource.adapters.vungle.VungleAdapter", "com.vungle.ads.VungleAds"},
+            {"Meta", "com.ironsource.adapters.facebook.FacebookAdapter", "com.facebook.ads.AdSettings"},
+            {"Pangle", "com.ironsource.adapters.pangle.PangleAdapter", "com.bytedance.sdk.openadsdk.api.init.PAGSdk"},
+            {"InMobi", "com.ironsource.adapters.inmobi.InMobiAdapter", "com.inmobi.sdk.InMobiSdk"},
+            {"Mintegral", "com.ironsource.adapters.mintegral.MintegralAdapter", "com.mbridge.msdk.MBridgeSDK"},
+            {"Chartboost", "com.ironsource.adapters.chartboost.ChartboostAdapter", "com.chartboost.sdk.Chartboost"},
+            {"Moloco", "com.ironsource.adapters.moloco.MolocoAdapter", "com.moloco.sdk.publisher.MolocoAd"},
+            {"Bigo", "com.ironsource.adapters.bigo.BigoAdapter", "com.bigossp.ads.BigoAdSdk"},
+        };
+        for (String[] entry : checks) {
+            String label = entry[0];
+            boolean adapterOk = classExists(entry[1]);
+            boolean sdkOk = classExists(entry[2]);
+            if (adapterOk && sdkOk) {
+                Logger.info(TAG, label + ": adapter ✓  sdk ✓");
+            } else if (adapterOk) {
+                Logger.warn(TAG, label + ": adapter ✓  sdk ✗ (missing " + entry[2] + ")");
+            } else if (sdkOk) {
+                Logger.warn(TAG, label + ": adapter ✗  sdk ✓ (missing " + entry[1] + ")");
+            }
+        }
+    }
+
+    private static boolean classExists(String name) {
+        try { Class.forName(name); return true; } catch (ClassNotFoundException e) { return false; }
     }
 
     private void drainPending(boolean success, String error) {

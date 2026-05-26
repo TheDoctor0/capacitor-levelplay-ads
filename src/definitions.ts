@@ -300,8 +300,8 @@ export interface InitializeResult {
 export interface ConsentOptions {
   /**
    * URL opened when the user taps the privacy policy link in the modal.
-   * Only used by the `custom` consent provider — ignored under InMobi
-   * (which renders its own privacy policy link inside the CMP UI).
+   * Only used by the `custom` consent provider — ignored under Usercentrics
+   * and InMobi (which render their own privacy policy links inside the CMP UI).
    */
   privacyPolicyUrl?: string;
 
@@ -336,11 +336,14 @@ export interface ConsentOptions {
  * Which consent UI the plugin shows. Configured at install time via
  * `levelplay.consentProvider` in the host app's package.json — not via JS.
  *
- * - `inmobi` (default): IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
+ * - `usercentrics` (default): IAB TCF v2.3 compliant. Google-certified Gold
+ *   tier CMP partner. Requires `levelplay.usercentrics.settingsId` from
+ *   https://usercentrics.com/.
+ * - `inmobi`: IAB TCF v2.2 compliant. Bundles InMobi Choice CMP.
  *   Requires `levelplay.inmobi.pCode` from https://choice.inmobi.com/.
  * - `custom`: built-in alert dialog. Not TCF compliant; do not ship to EU.
  */
-export type ConsentProvider = 'inmobi' | 'custom';
+export type ConsentProvider = 'usercentrics' | 'inmobi' | 'custom';
 
 export interface ConsentData {
   /**
@@ -362,15 +365,15 @@ export interface ConsentData {
   canRequestAds: boolean;
 
   /**
-   * Which provider produced this decision: `inmobi` or `custom`. Useful for
-   * deciding whether to trust the `tcString` field.
+   * Which provider produced this decision: `usercentrics`, `inmobi`, or
+   * `custom`. Useful for deciding whether to trust the `tcString` field.
    */
   provider?: ConsentProvider;
 
   /**
-   * IAB TCF v2.2 consent string. Populated only when the `inmobi` provider
-   * is active and the user has interacted with the CMP. Undefined under
-   * `custom` (which doesn't produce a real TCF payload).
+   * IAB TCF consent string. Populated when the `usercentrics` or `inmobi`
+   * provider is active and the user has interacted with the CMP. Undefined
+   * under `custom` (which doesn't produce a real TCF payload).
    */
   tcString?: string;
 }

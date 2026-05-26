@@ -22,13 +22,15 @@ import IronSource
     private var initialized = false
     private var initializing = false
 
-    /// "inmobi" → use the InMobi Choice CMP (IAB TCF v2.2 compliant).
-    /// "custom" → use the plugin's built-in modal (boolean + TCF stub).
+    /// "usercentrics" → Usercentrics CMP (IAB TCF v2.3, default).
+    /// "inmobi" → InMobi Choice CMP (IAB TCF v2.2).
+    /// "custom" → plugin's built-in modal (boolean + TCF stub).
     private var consentMode: String {
         let v = Bundle.main.object(forInfoDictionaryKey: "LevelPlayCMPProvider") as? String
-        return (v ?? "inmobi").lowercased()
+        return (v ?? "usercentrics").lowercased()
     }
     private var useInMobi: Bool { consentMode == "inmobi" }
+    private var useUsercentrics: Bool { consentMode == "usercentrics" }
 
     /// Stored callback for the in-flight CMP UI dismissal.
     private var inmobiPendingCallback: ((Bool, String?) -> Void)?
@@ -121,7 +123,7 @@ import IronSource
     // MARK: - Consent (custom modal)
 
     public func consentStatus() -> String {
-        if useInMobi {
+        if useUsercentrics || useInMobi {
             if !TcfPrefs.hasDecision() { return "UNKNOWN" }
             return TcfPrefs.isGranted() ? "GRANTED" : "DENIED"
         }
@@ -136,7 +138,8 @@ import IronSource
             "canRequestAds": status != "UNKNOWN",
             "provider": consentMode
         ]
-        if useInMobi, let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
+        if (useUsercentrics || useInMobi),
+           let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
             data["tcString"] = tc
         }
         return data
@@ -145,6 +148,48 @@ import IronSource
     /// Shows the consent modal only if no decision exists yet.
     public func requestConsent(viewController: UIViewController?, options: [String: Any],
                                networks: [String], completion: @escaping (Bool, String?) -> Void) {
+        if useUsercentrics {
+            if TcfPrefs.hasDecision() {
+                applyUserConsent(granted: TcfPrefs.isGranted(), networks: networks)
+                completion(true, nil)
+                return
+            }
+            if let err = UsercentricsConsentBridge.configureIfNeeded() {
+                completion(false, err)
+                return
+            }
+            let timeout = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                if !TcfPrefs.hasDecision() { TcfPrefs.writeStub(granted: true) }
+                self.applyUserConsent(granted: true, networks: networks)
+                completion(true, nil)
+            }
+            usercentricsTimeoutWork = timeout
+            DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: timeout)
+
+            UsercentricsConsentBridge.isReady(onSuccess: { [weak self] shouldCollect in
+                timeout.cancel()
+                guard let self = self else { return }
+                if shouldCollect {
+                    guard let vc = viewController else {
+                        completion(false, "No view controller to display the CMP.")
+                        return
+                    }
+                    UsercentricsConsentBridge.showFirstLayer(on: vc) { granted in
+                        self.applyUserConsent(granted: granted, networks: networks)
+                        completion(true, nil)
+                    }
+                } else {
+                    if !TcfPrefs.hasDecision() { TcfPrefs.writeStub(granted: true) }
+                    self.applyUserConsent(granted: true, networks: networks)
+                    completion(true, nil)
+                }
+            }, onFailure: { errMsg in
+                timeout.cancel()
+                completion(false, "Usercentrics CMP error: \(errMsg)")
+            })
+            return
+        }
         if useInMobi {
             if TcfPrefs.hasDecision() {
                 applyUserConsent(granted: TcfPrefs.isGranted(), networks: networks)
@@ -192,6 +237,25 @@ import IronSource
     /// Always re-prompts so the user can revise an earlier decision.
     public func showPrivacyOptions(viewController: UIViewController?, options: [String: Any],
                                    networks: [String], completion: @escaping (Bool, String?) -> Void) {
+        if useUsercentrics {
+            guard let vc = viewController else {
+                completion(false, "No view controller to display the CMP.")
+                return
+            }
+            if let err = UsercentricsConsentBridge.configureIfNeeded() {
+                completion(false, err)
+                return
+            }
+            UsercentricsConsentBridge.isReady(onSuccess: { [weak self] _ in
+                UsercentricsConsentBridge.showSecondLayer(on: vc) { granted in
+                    self?.applyUserConsent(granted: granted, networks: networks)
+                    completion(true, nil)
+                }
+            }, onFailure: { errMsg in
+                completion(false, "Usercentrics CMP error: \(errMsg)")
+            })
+            return
+        }
         if useInMobi {
             InMobiConsentBridge.forceDisplayUI()
             waitForTcfDecision(networks: networks, completion: completion)
@@ -205,6 +269,7 @@ import IronSource
         }
     }
 
+    private var usercentricsTimeoutWork: DispatchWorkItem?
     private var inmobiTimeoutWork: DispatchWorkItem?
     private var inmobiNoUiTimeout: DispatchWorkItem?
 
@@ -332,6 +397,9 @@ import IronSource
     public func resetConsent() {
         UserDefaults.standard.removeObject(forKey: consentKey)
         TcfPrefs.clear()
+        if useUsercentrics {
+            UsercentricsConsentBridge.reset()
+        }
     }
 
     // MARK: - Privacy bridge
@@ -339,13 +407,13 @@ import IronSource
     /// `granted` global GDPR flag + per-network replace-all consent map.
     public func applyUserConsent(granted: Bool, networks: [String]) {
 #if canImport(IronSource)
-        LevelPlay.setConsent(granted)
         for network in networks where !network.isEmpty {
             gdprConsents[network] = NSNumber(value: granted)
         }
-        if !gdprConsents.isEmpty {
-            LPMPrivacySettings.setGDPRConsents(gdprConsents)
+        if gdprConsents.isEmpty {
+            gdprConsents["all"] = NSNumber(value: granted)
         }
+        LPMPrivacySettings.setGDPRConsents(gdprConsents)
 #endif
     }
 
