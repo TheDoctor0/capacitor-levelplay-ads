@@ -36,7 +36,9 @@ import IronSource
 
 #if canImport(IronSource)
     private var interstitialAd: LPMInterstitialAd?
+    private var currentInterstitialAdUnitId: String?
     private var rewardedAd: LPMRewardedAd?
+    private var currentRewardedAdUnitId: String?
     private var bannerAd: LPMBannerAdView?
     private var bannerPosition: String = "BOTTOM"
     private var bannerPositionConstraints: [NSLayoutConstraint] = []
@@ -70,7 +72,7 @@ import IronSource
 
         let builder = LPMInitRequestBuilder(appKey: appKey)
         if let userId = userId, !userId.isEmpty {
-            builder.set(userId: userId)
+            builder.withUserId(userId)
         }
         let request = builder.build()
 
@@ -78,7 +80,7 @@ import IronSource
         // must be set *before* init — otherwise launchTestSuite() opens
         // nothing.
         if isTesting {
-            IronSource.setMetaDataWithKey("is_test_suite", value: "enable")
+            LevelPlay.setMetaDataWithKey("is_test_suite", value: "enable")
         }
 
         DispatchQueue.main.async {
@@ -150,7 +152,27 @@ import IronSource
                 return
             }
             waitForTcfDecision(networks: networks, completion: completion)
-            InMobiConsentBridge.startIfConfigured()
+            InMobiConsentBridge.onError = { [weak self] msg in
+                guard let self = self else { return }
+                self.cancelInMobiWait()
+                completion(false, "InMobi CMP error: \(msg)")
+            }
+            InMobiConsentBridge.onLoaded = { [weak self] in
+                // Config loaded. If no UI appears within 5s, CMP determined
+                // consent is not required — auto-grant.
+                self?.scheduleNoUiTimeout(networks: networks)
+            }
+            InMobiConsentBridge.onUiVisible = { [weak self] visible in
+                if visible {
+                    // CMP is showing — cancel timeout, wait for user decision.
+                    self?.inmobiNoUiTimeout?.cancel()
+                    self?.inmobiNoUiTimeout = nil
+                }
+            }
+            if let err = InMobiConsentBridge.startIfConfigured() {
+                cancelInMobiWait()
+                completion(false, err)
+            }
             return
         }
         let status = consentStatus()
@@ -183,30 +205,84 @@ import IronSource
         }
     }
 
-    /// Waits for the InMobi SDK to write IABTCF_TCString to UserDefaults,
-    /// then completes. KVO-style observer on UserDefaults — cheaper than
-    /// polling and matches the SharedPreferences listener used on Android.
+    private var inmobiTimeoutWork: DispatchWorkItem?
+    private var inmobiNoUiTimeout: DispatchWorkItem?
+
+    /// Waits for the InMobi SDK to write IABTCF_TCString to UserDefaults.
+    /// Config-load timeout (15s) catches network failures. Once config loads,
+    /// a separate no-UI timeout (5s) catches the non-GDPR silent path.
+    /// If CMP UI is shown, both timeouts are cancelled — waits for user.
     private func waitForTcfDecision(networks: [String],
                                     completion: @escaping (Bool, String?) -> Void) {
-        // Tear down any previous wait.
         if let prev = inmobiObserver {
             NotificationCenter.default.removeObserver(prev)
             inmobiObserver = nil
         }
+        inmobiTimeoutWork?.cancel()
+        inmobiNoUiTimeout?.cancel()
         inmobiPendingCallback = completion
+
+        let timeout = DispatchWorkItem { [weak self] in
+            self?.resolveInMobiWait(granted: true, networks: networks)
+        }
+        inmobiTimeoutWork = timeout
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: timeout)
+
         inmobiObserver = NotificationCenter.default.addObserver(
             forName: UserDefaults.didChangeNotification,
             object: nil, queue: .main
         ) { [weak self] _ in
             guard let self = self, TcfPrefs.hasDecision() else { return }
-            if let obs = self.inmobiObserver {
-                NotificationCenter.default.removeObserver(obs)
-                self.inmobiObserver = nil
-            }
-            self.applyUserConsent(granted: TcfPrefs.isGranted(), networks: networks)
-            self.inmobiPendingCallback?(true, nil)
-            self.inmobiPendingCallback = nil
+            self.resolveInMobiWait(granted: TcfPrefs.isGranted(), networks: networks)
         }
+    }
+
+    private func scheduleNoUiTimeout(networks: [String]) {
+        inmobiNoUiTimeout?.cancel()
+        inmobiTimeoutWork?.cancel()
+        inmobiTimeoutWork = nil
+
+        let work = DispatchWorkItem { [weak self] in
+            self?.resolveInMobiWait(granted: true, networks: networks)
+        }
+        inmobiNoUiTimeout = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+
+    private func cancelInMobiWait() {
+        inmobiTimeoutWork?.cancel()
+        inmobiTimeoutWork = nil
+        inmobiNoUiTimeout?.cancel()
+        inmobiNoUiTimeout = nil
+        if let obs = inmobiObserver {
+            NotificationCenter.default.removeObserver(obs)
+            inmobiObserver = nil
+        }
+        InMobiConsentBridge.onError = nil
+        InMobiConsentBridge.onLoaded = nil
+        InMobiConsentBridge.onUiVisible = nil
+        inmobiPendingCallback = nil
+    }
+
+    private func resolveInMobiWait(granted: Bool, networks: [String]) {
+        inmobiTimeoutWork?.cancel()
+        inmobiTimeoutWork = nil
+        inmobiNoUiTimeout?.cancel()
+        inmobiNoUiTimeout = nil
+        if let obs = inmobiObserver {
+            NotificationCenter.default.removeObserver(obs)
+            inmobiObserver = nil
+        }
+        InMobiConsentBridge.onError = nil
+        InMobiConsentBridge.onLoaded = nil
+        InMobiConsentBridge.onUiVisible = nil
+        guard let cb = inmobiPendingCallback else { return }
+        inmobiPendingCallback = nil
+        if !TcfPrefs.hasDecision() {
+            TcfPrefs.writeStub(granted: granted)
+        }
+        applyUserConsent(granted: granted, networks: networks)
+        cb(true, nil)
     }
 
     private func showConsentModal(viewController: UIViewController?, options: [String: Any],
@@ -320,11 +396,12 @@ import IronSource
     public func loadInterstitial(adUnitId: String, completion: @escaping (Bool, String?) -> Void) {
 #if canImport(IronSource)
         DispatchQueue.main.async {
-            if self.interstitialAd == nil || self.interstitialAd?.adUnitId != adUnitId {
+            if self.interstitialAd == nil || self.currentInterstitialAdUnitId != adUnitId {
                 let ad = LPMInterstitialAd(adUnitId: adUnitId)
                 let delegate = InterstitialDelegate(owner: self)
                 ad.setDelegate(delegate)
                 self.interstitialAd = ad
+                self.currentInterstitialAdUnitId = adUnitId
                 self.interstitialDelegate = delegate
             }
             // A prior load is still in flight — settle it before overwriting.
@@ -363,11 +440,12 @@ import IronSource
     public func loadRewarded(adUnitId: String, completion: @escaping (Bool, String?) -> Void) {
 #if canImport(IronSource)
         DispatchQueue.main.async {
-            if self.rewardedAd == nil || self.rewardedAd?.adUnitId != adUnitId {
+            if self.rewardedAd == nil || self.currentRewardedAdUnitId != adUnitId {
                 let ad = LPMRewardedAd(adUnitId: adUnitId)
                 let delegate = RewardedDelegate(owner: self)
                 ad.setDelegate(delegate)
                 self.rewardedAd = ad
+                self.currentRewardedAdUnitId = adUnitId
                 self.rewardedDelegate = delegate
             }
             // A prior load is still in flight — settle it before overwriting.
@@ -545,7 +623,7 @@ import IronSource
         case "BANNER": return LPMAdSize.banner()
         case "MREC", "MEDIUM_RECTANGLE": return LPMAdSize.mediumRectangle()
         case "LARGE": return LPMAdSize.large()
-        default: return LPMAdSize.createAdaptive()
+        default: return LPMAdSize.createAdaptive() ?? LPMAdSize.banner()
         }
     }
 
@@ -575,16 +653,16 @@ import IronSource
     /// verify on a macOS build host.
     static func adInfoToJS(_ info: LPMAdInfo) -> [String: Any] {
         return [
-            "adUnitId": info.adUnitId ?? "",
-            "adFormat": info.adFormat ?? "",
-            "adNetwork": info.adNetwork ?? "",
-            "instanceName": info.instanceName ?? "",
+            "adUnitId": info.adUnitId,
+            "adFormat": info.adFormat,
+            "adNetwork": info.adNetwork,
+            "instanceName": info.instanceName,
             "placementName": info.placementName ?? "",
-            "country": info.country ?? "",
-            "revenue": info.revenue ?? 0,
-            "precision": info.precision ?? "",
-            "creativeId": info.creativeId ?? "",
-            "auctionId": info.auctionId ?? ""
+            "country": info.country,
+            "revenue": info.revenue,
+            "precision": info.precision,
+            "creativeId": info.creativeId,
+            "auctionId": info.auctionId
         ]
     }
 
@@ -639,7 +717,7 @@ final class InterstitialDelegate: NSObject, LPMInterstitialAdDelegate {
     }
     func didFailToDisplayAd(with adInfo: LPMAdInfo, error: Error) {
         owner?.emit?("onInterstitialAdDisplayFailed",
-                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId ?? "", error: error))
+                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId, error: error))
     }
     func didClickAd(with adInfo: LPMAdInfo) {
         owner?.emit?("onInterstitialAdClicked", LevelPlayAdsImpl.adInfoToJS(adInfo))
@@ -669,7 +747,7 @@ final class RewardedDelegate: NSObject, LPMRewardedAdDelegate {
     }
     func didFailToDisplayAd(with adInfo: LPMAdInfo, error: Error) {
         owner?.emit?("onRewardedAdDisplayFailed",
-                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId ?? "", error: error))
+                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId, error: error))
     }
     func didClickAd(with adInfo: LPMAdInfo) {
         owner?.emit?("onRewardedAdClicked", LevelPlayAdsImpl.adInfoToJS(adInfo))
@@ -708,7 +786,7 @@ final class BannerDelegate: NSObject, LPMBannerAdViewDelegate {
     }
     func didFailToDisplayAd(with adInfo: LPMAdInfo, error: Error) {
         owner?.emit?("onBannerAdDisplayFailed",
-                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId ?? "", error: error))
+                     LevelPlayAdsImpl.adErrorToJS(adUnitId: adInfo.adUnitId, error: error))
     }
     func didLeaveApp(with adInfo: LPMAdInfo) {
         owner?.emit?("onBannerAdLeftApplication", LevelPlayAdsImpl.adInfoToJS(adInfo))

@@ -213,7 +213,7 @@ if (!runIos) {
   let podfile = fs.readFileSync(podfilePath, 'utf8');
 
   const podCoords = networks.map((n) => `  pod '${n.ios}'`);
-  if (useInMobi) podCoords.push(`  pod '${INMOBI_IOS_POD}'`);
+  // InMobiCMP is a dependency of the plugin podspec — no need to inject here.
   const pods = podCoords.join('\n');
   const block = `  # ${BEGIN}\n${pods}\n  # ${END}`;
 
@@ -231,6 +231,14 @@ if (!runIos) {
       console.log(`${TAG} ⚠️  Could not locate the "App" target in Podfile. Add these pods manually:\n${pods}`);
     }
   }
+  // IronSourceSDK ships as a static xcframework. Capacitor's default
+  // `use_frameworks!` (dynamic) rejects transitive static binaries.
+  // Patch to `:linkage => :static` if not already set.
+  if (/use_frameworks!\s*$/.test(podfile) && !/use_frameworks!\s+:linkage\s*=>/.test(podfile)) {
+    podfile = podfile.replace(/use_frameworks!\s*$/m, "use_frameworks! :linkage => :static");
+    console.log(`${TAG} ✅ Patched Podfile: use_frameworks! → use_frameworks! :linkage => :static`);
+  }
+
   fs.writeFileSync(podfilePath, podfile, 'utf8');
 } else {
   console.log(`${TAG} ℹ️  iOS platform not found. Skipping Podfile injection.`);

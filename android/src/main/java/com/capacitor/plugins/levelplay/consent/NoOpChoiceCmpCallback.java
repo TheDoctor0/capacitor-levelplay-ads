@@ -14,15 +14,37 @@ import com.inmobi.cmp.model.PingReturn;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * No-op {@link ChoiceCmpCallback}. We read consent from the standard
- * {@code IABTCF_*} SharedPreferences keys (see {@link TcfPrefs}), so the
- * callback methods are intentionally empty.
+ * {@link ChoiceCmpCallback} that forwards CMP errors to a registered listener.
+ * All other callbacks are no-ops — consent is read from the standard
+ * {@code IABTCF_*} SharedPreferences keys (see {@link TcfPrefs}).
  */
 class NoOpChoiceCmpCallback implements ChoiceCmpCallback {
+
+    interface Listener {
+        void onCmpError(String message);
+        void onCmpLoaded();
+        void onUiVisible(boolean visible);
+    }
+
+    private volatile Listener listener;
+
+    void setListener(Listener l) {
+        this.listener = l;
+    }
+
+    @Override public void onCmpError(@NotNull ChoiceError e) {
+        Listener l = listener;
+        if (l != null) l.onCmpError(e.toString());
+    }
+    @Override public void onCmpLoaded(@NotNull PingReturn p) {
+        Listener l = listener;
+        if (l != null) l.onCmpLoaded();
+    }
+    @Override public void onCMPUIStatusChanged(@NotNull DisplayInfo d) {
+        Listener l = listener;
+        if (l != null) l.onUiVisible(d.getDisplayStatus() == com.inmobi.cmp.core.cmpapi.status.DisplayStatus.VISIBLE);
+    }
     @Override public void onCCPAConsentGiven(@NotNull String s) {}
-    @Override public void onCmpError(@NotNull ChoiceError e) {}
-    @Override public void onCmpLoaded(@NotNull PingReturn p) {}
-    @Override public void onCMPUIStatusChanged(@NotNull DisplayInfo d) {}
     @Override public void onGoogleBasicConsentChange(@NotNull GoogleBasicConsents g) {}
     @Override public void onGoogleVendorConsentGiven(@NotNull ACData a) {}
     @Override public void onIABVendorConsentGiven(@NotNull GDPRData g) {}

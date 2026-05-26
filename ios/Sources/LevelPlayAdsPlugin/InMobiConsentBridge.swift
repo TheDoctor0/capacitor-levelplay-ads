@@ -35,19 +35,28 @@ enum InMobiConsentBridge {
         return (v ?? "inmobi").lowercased()
     }
 
-    /// Call once at app launch. Idempotent.
-    static func startIfConfigured() {
+    static var onError: ((String) -> Void)?
+    static var onLoaded: (() -> Void)?
+    static var onUiVisible: ((Bool) -> Void)?
+
+    /// Call once at app launch. Returns nil on success, or an error string.
+    @discardableResult
+    static func startIfConfigured() -> String? {
 #if canImport(InMobiCMP)
-        guard providerFromBundle() == "inmobi" else { return }
+        guard providerFromBundle() == "inmobi" else {
+            return "InMobi CMP not configured (provider is not 'inmobi')."
+        }
         guard let pCode = pCodeFromBundle(), !pCode.isEmpty else {
-            print("[LevelPlay] InMobi CMP enabled but LevelPlayInMobiPCode missing from Info.plist.")
-            return
+            return "InMobi CMP enabled but LevelPlayInMobiPCode missing from Info.plist."
         }
         ChoiceCmp.shared.startChoice(
             pcode: pCode,
             delegate: NoOpChoiceCmpDelegate.shared,
             shouldDisplayIDFA: true
         )
+        return nil
+#else
+        return "InMobi CMP SDK not bundled. Run `npx cap sync`."
 #endif
     }
 
@@ -66,13 +75,18 @@ import InMobiCMP
 /// Retained as a static singleton (InMobi holds a weak ref to the delegate).
 private class NoOpChoiceCmpDelegate: NSObject, ChoiceCmpDelegate {
     static let shared = NoOpChoiceCmpDelegate()
-    func cmpDidLoad(info: PingResponse) {}
-    func cmpUIStatusChanged(info: DisplayInfo) {}
+    func cmpDidLoad(info: PingResponse) {
+        InMobiConsentBridge.onLoaded?()
+    }
+    func cmpUIStatusChanged(info: DisplayInfo) {
+        InMobiConsentBridge.onUiVisible?(info.displayStatus == .visible)
+    }
     func didReceiveIABVendorConsent(gdprData: GDPRData, updated: Bool) {}
     func didReceiveNonIABVendorConsent(nonIabData: NonIABData, updated: Bool) {}
     func didReceiveAdditionalConsent(acData: ACData, updated: Bool) {}
-    func cmpDidError(error: Error) {}
-    func didReceiveCCPAConsent(string: String) {}
+    func cmpDidError(error: Error) {
+        InMobiConsentBridge.onError?(error.localizedDescription)
+    }
     func didReceiveUSRegulationsConsent(usRegData: USRegulationsData) {}
     func userDidMoveToOtherState() {}
     func didReceiveActionButtonTap(action: ActionButtons) {}

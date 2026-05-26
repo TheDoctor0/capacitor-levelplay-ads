@@ -1,6 +1,6 @@
 {
   "name": "capacitor-levelplay-ads",
-  "version": "0.1.15",
+  "version": "0.1.25",
   "description": "Unity LevelPlay mediation SDK for Capacitor with banner, interstitial and rewarded ads supported.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -15,7 +15,7 @@
     "android/build.gradle",
     "android/variables.gradle",
     "ios/Sources/",
-    "CapacitorLevelPlayAds.podspec",
+    "CapacitorLevelplayAds.podspec",
     "Package.swift",
     "scripts/"
   ],
@@ -46,7 +46,7 @@
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
-    "verify:ios": "xcodebuild -scheme CapacitorLevelPlayAds -destination generic/platform=iOS",
+    "verify:ios": "xcodebuild -scheme CapacitorLevelplayAds -destination generic/platform=iOS",
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
