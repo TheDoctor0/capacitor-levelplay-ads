@@ -9,6 +9,15 @@ enum TcfPrefs {
     static let purposeConsents = "IABTCF_PurposeConsents"
     static let vendorConsents = "IABTCF_VendorConsents"
 
+    /// Every key the helper may write — for a clean ``clear()``.
+    static let allKeys = [
+        tcString, gdprApplies, cmpSdkID, purposeConsents, vendorConsents,
+        "IABTCF_CmpSdkVersion", "IABTCF_PolicyVersion", "IABTCF_PublisherCC",
+        "IABTCF_PurposeOneTreatment", "IABTCF_UseNonStandardTexts",
+        "IABTCF_PurposeLegitimateInterests", "IABTCF_VendorLegitimateInterests",
+        "IABTCF_SpecialFeaturesOptIns", "IABTCF_AddtlConsent",
+    ]
+
     static func hasDecision() -> Bool {
         let d = UserDefaults.standard
         return d.object(forKey: tcString) != nil || d.object(forKey: gdprApplies) != nil
@@ -34,8 +43,22 @@ enum TcfPrefs {
         d.set(granted ? "1" : "0", forKey: vendorConsents)
     }
 
+    /// Writes a TCF v2.3-compatible key map produced by the rich custom modal.
+    /// Numbers are stored as integers (e.g. `IABTCF_gdprApplies`), everything
+    /// else as strings (e.g. the binary `IABTCF_PurposeConsents` field).
+    static func writeKeys(_ keys: [String: Any]) {
+        let d = UserDefaults.standard
+        for (key, value) in keys {
+            if let number = value as? NSNumber {
+                d.set(number.intValue, forKey: key)
+            } else {
+                d.set(String(describing: value), forKey: key)
+            }
+        }
+    }
+
     static func clear() {
         let d = UserDefaults.standard
-        [tcString, gdprApplies, cmpSdkID, purposeConsents, vendorConsents].forEach { d.removeObject(forKey: $0) }
+        allKeys.forEach { d.removeObject(forKey: $0) }
     }
 }

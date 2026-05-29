@@ -33,7 +33,8 @@ Ads can be served across every mediated demand source from a single, modular API
 - **IAB TCF v2.3 consent (default):** Bundles the Usercentrics CMP
   (Google-certified Gold tier partner) for GDPR-compliant consent — collects
   a TCF string and writes the standard `IABTCF_*` keys every mediation adapter
-  reads. InMobi Choice CMP and a built-in non-TCF modal are also available.
+  reads. InMobi Choice CMP and a built-in, TCF v2.3-compatible custom modal are
+  also available.
 - **CCPA & COPPA:** First-class `setCCPAConsent()` and `setChildDirected()`.
 - **App Tracking Transparency:** `requestTrackingAuthorization()` prompts ATT
   on iOS and is a safe no-op on Android.
@@ -87,7 +88,7 @@ The `consentProvider` key picks how the plugin collects GDPR consent:
 |---|---|---|
 | `usercentrics` (default) | Bundles the [Usercentrics](https://usercentrics.com/) CMP (Google-certified Gold tier partner). IAB TCF v2.3 compliant. Auto-shows the consent banner on first launch and writes the standard `IABTCF_*` keys to `SharedPreferences` (Android) / `NSUserDefaults` (iOS). | Apps shipped in the EU/EEA. Required for GDPR audit compliance. |
 | `inmobi` | Bundles InMobi Choice CMP. IAB TCF v2.2 compliant. Same TCF key behavior as Usercentrics. | Alternative CMP if you already have an InMobi Choice account. |
-| `custom` | Built-in alert dialog. Writes a permissive `gdprApplies=0` stub. **Not** TCF compliant. | Apps that ship outside the EU only, or where you already integrate a different CMP. |
+| `custom` | Built-in consent modal you control. Pass a `services` config to `requestConsentInfo()` to render the polished two-layer modal (summary + Categories/Services tabs) and write **TCF v2.3-compatible** `IABTCF_*` keys + a TC string. Without `services`, falls back to a basic alert that writes a permissive `gdprApplies=0` stub. Self-built, so **not an IAB-certified CMP** (CMP ID defaults to `0`). | Apps not requiring a certified CMP — e.g. Unity Ads + a few networks — or where you want full control of the consent UI. |
 
 #### Usercentrics (default)
 
@@ -123,6 +124,68 @@ package id; defaults to the app's `applicationId`/bundle id.
   }
 }
 ```
+
+#### Custom modal (TCF v2.3-compatible)
+
+Select it with `"consentProvider": "custom"`, then pass a `services` config to
+`requestConsentInfo()`. The plugin renders a two-layer modal — a summary screen
+(one row per category) and a **Manage** screen with **Categories** / **Services**
+tabs — directly in the WebView (identical on iOS and Android), then writes
+TCF v2.3-compatible `IABTCF_*` keys natively and forwards per-network GDPR
+consent to LevelPlay.
+
+```ts
+import services from './consent/services.json'; // your copy of services.example.json
+
+await LevelPlayAds.requestConsentInfo({
+  services,                       // universal config: categories + services
+  appName: 'MyApp',
+  accentColor: '#143cc4',
+  logoUrl: 'https://example.com/logo.png',
+  privacyPolicyUrl: 'https://example.com/privacy',
+  legalNoticeUrl: 'https://example.com/legal',
+  cmpId: 0,                       // set your IAB CMP ID once registered
+});
+
+// Re-open the Manage screen later from a settings button:
+await LevelPlayAds.showPrivacyOptions({ services, appName: 'MyApp' });
+```
+
+**Data model — two parts:**
+
+- **`services` JSON** (universal, language-neutral): categories and services with
+  stable IDs, company names/addresses, policy URLs, ISO country codes, retention
+  IDs, TCF vendor mappings, and an optional `network` key per service that maps
+  the user's toggle to a LevelPlay mediation network (`unityads`, `meta`,
+  `pangle`, …) for per-network consent. A ready-to-copy example built from a real
+  CMP is at [`consent/services.example.json`](consent/services.example.json) —
+  10 services across Marketing / Functional / Essential.
+- **Translations** (language-dependent copy): all labels are resolved by ID from
+  a locale bundle. English ships built-in. Add languages or override copy via
+  `translations` (keyed by locale code); country names resolve automatically via
+  the platform's `Intl.DisplayNames`.
+
+```ts
+await LevelPlayAds.requestConsentInfo({
+  services,
+  locale: 'de',
+  translations: {
+    de: {
+      ui: { 'btn.consent': 'Zustimmen', 'btn.manage': 'Optionen verwalten' },
+      categories: { marketing: { name: 'Marketing', description: '…' } },
+      purposes: { advertisement: 'Werbung' },
+      serviceDescriptions: { 'unity-ads': 'Eine umfassende Monetarisierungsplattform.' },
+    },
+  },
+});
+```
+
+> **Not an IAB-certified CMP.** The custom modal produces spec-shaped,
+> adapter-readable TCF output, but the plugin is not registered with IAB Europe;
+> `IABTCF_CmpSdkID` defaults to `0`. The Global Vendor List is never fetched from
+> `consensu.org` on the client (IAB disallows it) — pass your own bundled/hosted
+> GVL via `gvl` if you need an exact `vendorListVersion`. For audited EU/EEA
+> compliance use the `usercentrics` or `inmobi` providers.
 
 The CMP is initialized lazily when your JS code calls
 `LevelPlayAds.requestConsentInfo()`. The call resolves once the user has
@@ -807,25 +870,120 @@ over raw strings for compile-time safety.
 
 #### ConsentData
 
-| Prop                | Type                                                        | Description                                                                                                                                                                                             |
-| ------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`status`**        | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code>             | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent.                                                     |
-| **`granted`**       | <code>boolean</code>                                        | Simplified boolean: true when `status === 'GRANTED'`.                                                                                                                                                   |
-| **`canRequestAds`** | <code>boolean</code>                                        | True when ads may be requested (a decision exists, granted or denied).                                                                                                                                  |
-| **`provider`**      | <code><a href="#consentprovider">ConsentProvider</a></code> | Which provider produced this decision: `usercentrics`, `inmobi`, or `custom`. Useful for deciding whether to trust the `tcString` field.                                                                |
-| **`tcString`**      | <code>string</code>                                         | IAB TCF consent string. Populated when the `usercentrics` or `inmobi` provider is active and the user has interacted with the CMP. Undefined under `custom` (which doesn't produce a real TCF payload). |
+| Prop                      | Type                                                        | Description                                                                                                                                                                                                                                                                                               |
+| ------------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`status`**              | <code>'UNKNOWN' \| 'GRANTED' \| 'DENIED'</code>             | The recorded consent decision. - `UNKNOWN` — no decision yet (fresh install). - `GRANTED` — user granted consent. - `DENIED` — user denied consent.                                                                                                                                                       |
+| **`granted`**             | <code>boolean</code>                                        | Simplified boolean: true when `status === 'GRANTED'`.                                                                                                                                                                                                                                                     |
+| **`canRequestAds`**       | <code>boolean</code>                                        | True when ads may be requested (a decision exists, granted or denied).                                                                                                                                                                                                                                    |
+| **`provider`**            | <code><a href="#consentprovider">ConsentProvider</a></code> | Which provider produced this decision: `usercentrics`, `inmobi`, or `custom`. Useful for deciding whether to trust the `tcString` field.                                                                                                                                                                  |
+| **`tcString`**            | <code>string</code>                                         | IAB TCF consent string. Populated by the `usercentrics` / `inmobi` providers, and by the `custom` provider when the rich modal is used (TCF v2.3-compatible — see {@link <a href="#consentoptions">ConsentOptions.services</a>}). Undefined for the legacy `custom` alert, which produces no TCF payload. |
+| **`consentedServiceIds`** | <code>string[]</code>                                       | IDs of the services the user left enabled. Populated only by the rich `custom` modal.                                                                                                                                                                                                                     |
 
 
 #### ConsentOptions
 
-| Prop                    | Type                  | Description                                                                                                                                                                                                             |
-| ----------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`privacyPolicyUrl`**  | <code>string</code>   | URL opened when the user taps the privacy policy link in the modal. Only used by the `custom` consent provider — ignored under Usercentrics and InMobi (which render their own privacy policy links inside the CMP UI). |
-| **`title`**             | <code>string</code>   | Custom modal title. `custom` provider only.                                                                                                                                                                             |
-| **`message`**           | <code>string</code>   | Custom modal body text. `custom` provider only.                                                                                                                                                                         |
-| **`acceptButtonText`**  | <code>string</code>   | Label for the accept/grant button. `custom` provider only.                                                                                                                                                              |
-| **`declineButtonText`** | <code>string</code>   | Label for the decline/deny button. `custom` provider only.                                                                                                                                                              |
-| **`networks`**          | <code>string[]</code> | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally.                                                                                                            |
+| Prop                   | Type                                                                                                            | Description                                                                                                                                                                                                                                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`privacyPolicyUrl`** | <code>string</code>                                                                                             | URL opened when the user taps the privacy policy link in the modal. Only used by the `custom` consent provider — ignored under Usercentrics and InMobi (which render their own privacy policy links inside the CMP UI).                                                                                        |
+| **`legalNoticeUrl`**   | <code>string</code>                                                                                             | URL opened when the user taps the "Legal Notice" link in the custom modal. `custom` provider only.                                                                                                                                                                                                             |
+| **`networks`**         | <code>string[]</code>                                                                                           | Mediation network keys the consent decision should be applied to. When omitted, consent is applied globally.                                                                                                                                                                                                   |
+| **`services`**         | <code>string \| <a href="#consentservicesconfig">ConsentServicesConfig</a></code>                               | Universal, language-neutral definition of the categories and services to display. May be the parsed object or a JSON string. Required to show the rich modal — see {@link <a href="#consentservicesconfig">ConsentServicesConfig</a>}.                                                                         |
+| **`locale`**           | <code>string</code>                                                                                             | BCP-47 / ISO-639-1 language code for the modal copy. Default `'en'`. Falls back to English for any missing key.                                                                                                                                                                                                |
+| **`translations`**     | <code><a href="#record">Record</a>&lt;string, <a href="#consentlocalebundle">ConsentLocaleBundle</a>&gt;</code> | Extra or overriding translation bundles, keyed by locale code. Merged over the built-in English bundle. Supply this to localize or to override the default copy / per-service descriptions.                                                                                                                    |
+| **`appName`**          | <code>string</code>                                                                                             | App name shown in the modal title and copy. Default: `'This app'`.                                                                                                                                                                                                                                             |
+| **`logoUrl`**          | <code>string</code>                                                                                             | URL of the logo shown at the top of the first layer. When omitted, the first letter of `appName` is shown in an accent-colored circle.                                                                                                                                                                         |
+| **`accentColor`**      | <code>string</code>                                                                                             | Accent color (any CSS color) for buttons, switches and active tabs. Default: `'#143cc4'`.                                                                                                                                                                                                                      |
+| **`cmpId`**            | <code>number</code>                                                                                             | IAB CMP ID written into the TC string and `IABTCF_CmpSdkID`. Default `0` (non-certified). Set your registered ID once you become an IAB-listed CMP.                                                                                                                                                            |
+| **`cmpVersion`**       | <code>number</code>                                                                                             | CMP version written into the TC string and `IABTCF_CmpSdkVersion`. Default `1`.                                                                                                                                                                                                                                |
+| **`gvl`**              | <code>string \| <a href="#globalvendorlist">GlobalVendorList</a></code>                                         | Optional IAB Global Vendor List, as a parsed object or a URL to fetch. Per IAB policy the GVL must not be fetched from `consensu.org` on the client; supply your own server-hosted copy here, or omit to use the version the plugin bundles. Only its `vendorListVersion` affects the encoded TC string today. |
+
+
+#### ConsentServicesConfig
+
+Universal, language-neutral consent configuration passed via
+{@link <a href="#consentoptions">ConsentOptions.services</a>}. Every human-readable string is a lookup ID
+resolved through the active {@link <a href="#consentlocalebundle">ConsentLocaleBundle</a>} — only proper nouns
+(company names, addresses), URLs and TCF numbers live here.
+
+| Prop                       | Type                           | Description                                          |
+| -------------------------- | ------------------------------ | ---------------------------------------------------- |
+| **`gvlVendorListVersion`** | <code>number</code>            | GVL version recorded in the encoded TC string.       |
+| **`tcfPolicyVersion`**     | <code>number</code>            | TCF policy version. `5` = TCF v2.3 (the default).    |
+| **`publisherCC`**          | <code>string</code>            | Publisher country (ISO-3166-1 alpha-2), e.g. `'PL'`. |
+| **`categories`**           | <code>ConsentCategory[]</code> | Display + toggle metadata for each category.         |
+| **`services`**             | <code>ConsentService[]</code>  | The services/vendors shown under the categories.     |
+
+
+#### ConsentCategory
+
+| Prop          | Type                 | Description                                                             |
+| ------------- | -------------------- | ----------------------------------------------------------------------- |
+| **`id`**      | <code>string</code>  | Stable key; also the lookup ID for the localized name/description.      |
+| **`locked`**  | <code>boolean</code> | Locked categories are always on and cannot be toggled (e.g. essential). |
+| **`default`** | <code>boolean</code> | Initial toggle state when unlocked. Default `false`.                    |
+| **`order`**   | <code>number</code>  | Sort order (ascending).                                                 |
+| **`icon`**    | <code>string</code>  | Optional emoji/icon shown on the first-layer summary row.               |
+
+
+#### ConsentService
+
+| Prop                   | Type                                                                 | Description                                                                                                                                                                                                                                                                                                                   |
+| ---------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`id`**               | <code>string</code>                                                  | Stable key; also the lookup ID for an optional localized description.                                                                                                                                                                                                                                                         |
+| **`categoryId`**       | <code>string</code>                                                  | Which {@link <a href="#consentcategory">ConsentCategory.id</a>} this service belongs to.                                                                                                                                                                                                                                      |
+| **`network`**          | <code>string</code>                                                  | LevelPlay mediation network key this service maps to, e.g. `'unityads'`, `'meta'`, `'pangle'`, `'admob'`. When set, the user's toggle for this service is forwarded to LevelPlay as a per-network GDPR consent so the mediated SDK receives the right value. Omit for non-mediation services (sign-in, analytics, CMP, etc.). |
+| **`default`**          | <code>boolean</code>                                                 | Initial toggle state. Ignored when the category is locked. Default `false`.                                                                                                                                                                                                                                                   |
+| **`company`**          | <code>{ name: string; address?: string; }</code>                     | Processing company — proper nouns, language-neutral.                                                                                                                                                                                                                                                                          |
+| **`description`**      | <code>string</code>                                                  | Service description shown in the detail card. A localized `serviceDescriptions[id]` override in a translation bundle takes precedence when present.                                                                                                                                                                           |
+| **`purposeIds`**       | <code>string[]</code>                                                | Localized purpose label IDs.                                                                                                                                                                                                                                                                                                  |
+| **`technologyIds`**    | <code>string[]</code>                                                | Localized technology label IDs.                                                                                                                                                                                                                                                                                               |
+| **`dataCollectedIds`** | <code>string[]</code>                                                | Localized data-category label IDs.                                                                                                                                                                                                                                                                                            |
+| **`legalBasisIds`**    | <code>string[]</code>                                                | Localized legal-basis label IDs.                                                                                                                                                                                                                                                                                              |
+| **`locationCC`**       | <code>string[]</code>                                                | Processing location ISO-3166 country codes.                                                                                                                                                                                                                                                                                   |
+| **`transferCC`**       | <code>string[]</code>                                                | Third-country transfer ISO-3166 country codes.                                                                                                                                                                                                                                                                                |
+| **`retentionId`**      | <code>string</code>                                                  | Localized retention-phrasing ID.                                                                                                                                                                                                                                                                                              |
+| **`recipients`**       | <code>string[]</code>                                                | Data recipient names — proper nouns.                                                                                                                                                                                                                                                                                          |
+| **`urls`**             | <code>{ privacy?: string; cookie?: string; optOut?: string; }</code> | Policy URLs.                                                                                                                                                                                                                                                                                                                  |
+| **`tcf`**              | <code><a href="#consentservicetcf">ConsentServiceTcf</a></code>      | TCF mapping. Omit for vendors not on the IAB Global Vendor List.                                                                                                                                                                                                                                                              |
+
+
+#### ConsentServiceTcf
+
+| Prop                  | Type                  | Description                                                       |
+| --------------------- | --------------------- | ----------------------------------------------------------------- |
+| **`vendorId`**        | <code>number</code>   | IAB GVL vendor ID.                                                |
+| **`purposeConsents`** | <code>number[]</code> | Purpose IDs (1–24) this vendor seeks consent for.                 |
+| **`purposeLegInt`**   | <code>number[]</code> | Purpose IDs (1–24) processed under legitimate interest.           |
+| **`specialFeatures`** | <code>number[]</code> | Special-feature IDs (1–12), e.g. `1` = precise geolocation.       |
+| **`googleAtpId`**     | <code>number</code>   | Google Additional Consent (AC) provider ID, for AdMob/ATP demand. |
+
+
+#### ConsentLocaleBundle
+
+Localized copy for the custom modal. Every section is optional and merged
+over the built-in English bundle; supply only what you want to translate or
+override. Keys match the IDs used in {@link <a href="#consentservicesconfig">ConsentServicesConfig</a>}.
+
+| Prop                      | Type                                                                                            | Description                                                                                                                                                                                                |
+| ------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`ui`**                  | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | UI chrome strings (titles, buttons, section headers). Supports `{var}`.                                                                                                                                    |
+| **`categories`**          | <code><a href="#record">Record</a>&lt;string, { name: string; description?: string }&gt;</code> | Per-category name + description, keyed by category ID.                                                                                                                                                     |
+| **`purposes`**            | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Purpose labels, keyed by purpose ID.                                                                                                                                                                       |
+| **`technologies`**        | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Technology labels, keyed by technology ID.                                                                                                                                                                 |
+| **`dataCategories`**      | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Data-category labels, keyed by data-category ID.                                                                                                                                                           |
+| **`legalBases`**          | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Legal-basis labels, keyed by legal-basis ID.                                                                                                                                                               |
+| **`retention`**           | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Retention-phrasing strings, keyed by retention ID.                                                                                                                                                         |
+| **`countries`**           | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Country names, keyed by ISO-3166 code.                                                                                                                                                                     |
+| **`serviceDescriptions`** | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                 | Optional localized overrides for per-service descriptions, keyed by service ID. The base text lives in {@link <a href="#consentservice">ConsentService.description</a>}; supply this only to translate it. |
+
+
+#### GlobalVendorList
+
+Minimal IAB Global Vendor List shape. Only `vendorListVersion` is read today.
+
+| Prop                    | Type                |
+| ----------------------- | ------------------- |
+| **`vendorListVersion`** | <code>number</code> |
 
 
 #### TrackingAuthorizationResult
@@ -902,6 +1060,13 @@ Which consent UI the plugin shows. Configured at install time via
 - `custom`: built-in alert dialog. Not TCF compliant; do not ship to EU.
 
 <code>'usercentrics' | 'inmobi' | 'custom'</code>
+
+
+#### Record
+
+Construct a type with a set of properties K of type T
+
+<code>{ [P in K]: T; }</code>
 
 
 #### BannerPosition

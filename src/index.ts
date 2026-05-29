@@ -1,9 +1,12 @@
 import { registerPlugin } from '@capacitor/core';
 
+import { runConsentFlow } from './consent/flow';
 import type {
   BannerOptions,
   BannerPosition,
   BannerStyleOptions,
+  ConsentData,
+  ConsentOptions,
   LevelPlayAdsPlugin,
 } from './definitions';
 
@@ -48,6 +51,15 @@ const LevelPlayAds: LevelPlayAdsPlugin = new Proxy(native, {
           ...options,
           position: normalizePosition(options.position) ?? options.position,
         });
+    }
+    // When a `services` config is supplied, render the rich DOM consent modal
+    // in the web layer (identical on iOS/Android) and persist via native;
+    // otherwise these fall through to the native provider unchanged.
+    if (prop === 'requestConsentInfo') {
+      return (options?: ConsentOptions): Promise<ConsentData> => runConsentFlow(target, options, false);
+    }
+    if (prop === 'showPrivacyOptions') {
+      return (options?: ConsentOptions): Promise<ConsentData> => runConsentFlow(target, options, true);
     }
     return Reflect.get(target, prop, receiver);
   },

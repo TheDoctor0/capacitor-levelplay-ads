@@ -18,6 +18,7 @@ import com.capacitor.plugins.levelplay.consent.ConsentProvider;
 import com.capacitor.plugins.levelplay.consent.ConsentStatus;
 import com.capacitor.plugins.levelplay.consent.CustomModalConsentProvider;
 import com.capacitor.plugins.levelplay.consent.InMobiConsentProvider;
+import com.capacitor.plugins.levelplay.consent.TcfPrefs;
 import com.capacitor.plugins.levelplay.consent.UsercentricsConsentProvider;
 import com.capacitor.plugins.levelplay.interstitial.InterstitialExecutor;
 import com.capacitor.plugins.levelplay.privacy.PrivacyExecutor;
@@ -35,7 +36,10 @@ import com.unity3d.mediation.LevelPlay;
 import com.unity3d.mediation.impression.LevelPlayImpressionDataListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 @CapacitorPlugin(name = "LevelPlayAds")
@@ -246,6 +250,44 @@ public class LevelPlayAdsPlugin extends Plugin implements LevelPlayPluginBridge 
     @PluginMethod
     public void resetConsent(PluginCall call) {
         consentProvider.resetConsent();
+        JSObject data = consentProvider.getConsentData();
+        notifyListeners("onConsentStatusChanged", data);
+        call.resolve(data);
+    }
+
+    /**
+     * Persists a decision produced by the rich custom consent modal (rendered
+     * in the JS layer). Writes the IABTCF_* key map to the default
+     * SharedPreferences and forwards the granted flag to LevelPlay before the
+     * JS promise resolves — adapters read those keys at init time.
+     */
+    @PluginMethod
+    public void persistConsent(PluginCall call) {
+        JSObject keys = call.getObject("keys");
+        if (keys == null) {
+            call.reject("persistConsent requires a 'keys' object.");
+            return;
+        }
+        Map<String, Object> map = new HashMap<>();
+        Iterator<String> it = keys.keys();
+        while (it.hasNext()) {
+            String key = it.next();
+            map.put(key, keys.opt(key));
+        }
+        TcfPrefs.writeKeys(getContext(), map);
+
+        boolean granted = Boolean.TRUE.equals(call.getBoolean("granted", false));
+        Map<String, Boolean> networkConsents = new HashMap<>();
+        JSObject nc = call.getObject("networkConsents");
+        if (nc != null) {
+            Iterator<String> ncIt = nc.keys();
+            while (ncIt.hasNext()) {
+                String key = ncIt.next();
+                networkConsents.put(key, nc.optBoolean(key));
+            }
+        }
+        privacyExecutor.setUserConsents(granted, networkConsents);
+
         JSObject data = consentProvider.getConsentData();
         notifyListeners("onConsentStatusChanged", data);
         call.resolve(data);

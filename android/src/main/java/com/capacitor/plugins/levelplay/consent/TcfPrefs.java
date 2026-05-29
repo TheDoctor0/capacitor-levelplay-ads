@@ -3,8 +3,10 @@ package com.capacitor.plugins.levelplay.consent;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.Map;
+
 /**
- * Helpers for reading and writing the IAB TCF v2.2 keys that every CMP — and
+ * Helpers for reading and writing the IAB TCF v2.x keys that every CMP — and
  * every LevelPlay mediation adapter — agrees on. The TCF keys live in the
  * app's default SharedPreferences (not a CMP-specific file), so any reader
  * with a Context can find them.
@@ -16,6 +18,23 @@ public final class TcfPrefs {
     public static final String KEY_CMP_SDK_ID = "IABTCF_CmpSdkID";
     public static final String KEY_PURPOSE_CONSENTS = "IABTCF_PurposeConsents";
     public static final String KEY_VENDOR_CONSENTS = "IABTCF_VendorConsents";
+    public static final String KEY_CMP_SDK_VERSION = "IABTCF_CmpSdkVersion";
+    public static final String KEY_POLICY_VERSION = "IABTCF_PolicyVersion";
+    public static final String KEY_PUBLISHER_CC = "IABTCF_PublisherCC";
+    public static final String KEY_PURPOSE_ONE_TREATMENT = "IABTCF_PurposeOneTreatment";
+    public static final String KEY_USE_NON_STANDARD_TEXTS = "IABTCF_UseNonStandardTexts";
+    public static final String KEY_PURPOSE_LI = "IABTCF_PurposeLegitimateInterests";
+    public static final String KEY_VENDOR_LI = "IABTCF_VendorLegitimateInterests";
+    public static final String KEY_SPECIAL_FEATURES = "IABTCF_SpecialFeaturesOptIns";
+    public static final String KEY_ADDTL_CONSENT = "IABTCF_AddtlConsent";
+
+    /** Every key this helper may write, for a clean {@link #clear(Context)}. */
+    private static final String[] ALL_KEYS = {
+            KEY_TC_STRING, KEY_GDPR_APPLIES, KEY_CMP_SDK_ID, KEY_PURPOSE_CONSENTS,
+            KEY_VENDOR_CONSENTS, KEY_CMP_SDK_VERSION, KEY_POLICY_VERSION, KEY_PUBLISHER_CC,
+            KEY_PURPOSE_ONE_TREATMENT, KEY_USE_NON_STANDARD_TEXTS, KEY_PURPOSE_LI,
+            KEY_VENDOR_LI, KEY_SPECIAL_FEATURES, KEY_ADDTL_CONSENT,
+    };
 
     private TcfPrefs() {}
 
@@ -46,8 +65,8 @@ public final class TcfPrefs {
 
     /**
      * Writes a permissive non-TCF-compliant stub: GDPR-does-not-apply + a
-     * minimal TC string. Used by the custom modal so adapters at least see
-     * consistent keys, even though the string isn't a real TCF v2.2 payload.
+     * minimal TC string. Used by the legacy custom alert so adapters at least
+     * see consistent keys, even though the string isn't a real TCF payload.
      */
     public static void writeStub(Context ctx, boolean granted) {
         SharedPreferences.Editor e = prefs(ctx).edit();
@@ -61,13 +80,29 @@ public final class TcfPrefs {
         e.apply();
     }
 
+    /**
+     * Writes a TCF v2.3-compatible key map produced by the rich custom modal.
+     * Integer values are stored as ints (e.g. {@code IABTCF_gdprApplies}); all
+     * others as strings (e.g. the binary {@code IABTCF_PurposeConsents} field).
+     */
+    public static void writeKeys(Context ctx, Map<String, Object> keys) {
+        SharedPreferences.Editor e = prefs(ctx).edit();
+        for (Map.Entry<String, Object> entry : keys.entrySet()) {
+            Object v = entry.getValue();
+            if (v instanceof Integer) {
+                e.putInt(entry.getKey(), (Integer) v);
+            } else if (v instanceof Number) {
+                e.putInt(entry.getKey(), ((Number) v).intValue());
+            } else if (v != null) {
+                e.putString(entry.getKey(), v.toString());
+            }
+        }
+        e.apply();
+    }
+
     public static void clear(Context ctx) {
-        prefs(ctx).edit()
-                .remove(KEY_TC_STRING)
-                .remove(KEY_GDPR_APPLIES)
-                .remove(KEY_CMP_SDK_ID)
-                .remove(KEY_PURPOSE_CONSENTS)
-                .remove(KEY_VENDOR_CONSENTS)
-                .apply();
+        SharedPreferences.Editor e = prefs(ctx).edit();
+        for (String key : ALL_KEYS) e.remove(key);
+        e.apply();
     }
 }

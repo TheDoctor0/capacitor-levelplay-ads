@@ -32,6 +32,11 @@ public class CustomModalConsentProvider implements ConsentProvider {
 
     @Override
     public ConsentStatus getStatus() {
+        // The rich modal persists its decision via the IABTCF_* keys, which are
+        // the source of truth; the legacy alert's boolean is the fallback.
+        if (TcfPrefs.hasDecision(context)) {
+            return TcfPrefs.isGranted(context) ? ConsentStatus.GRANTED : ConsentStatus.DENIED;
+        }
         String s = prefs().getString(KEY_STATUS, null);
         if (ConsentStatus.GRANTED.name().equals(s)) return ConsentStatus.GRANTED;
         if (ConsentStatus.DENIED.name().equals(s)) return ConsentStatus.DENIED;
@@ -125,6 +130,9 @@ public class CustomModalConsentProvider implements ConsentProvider {
         data.put("status", status.name());
         data.put("granted", status == ConsentStatus.GRANTED);
         data.put("canRequestAds", status != ConsentStatus.UNKNOWN);
+        data.put("provider", "custom");
+        String tc = TcfPrefs.prefs(context).getString(TcfPrefs.KEY_TC_STRING, null);
+        if (!TextUtils.isEmpty(tc)) data.put("tcString", tc);
         return data;
     }
 }

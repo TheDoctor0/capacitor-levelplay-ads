@@ -42,6 +42,28 @@ public class PrivacyExecutor {
         }
     }
 
+    /**
+     * Apply a global GDPR flag plus an explicit per-network consent map produced
+     * by the rich custom modal. The canonical map is re-sent in full (Risk #1).
+     *
+     * @param granted         global GDPR consent forwarded to LevelPlay core
+     * @param networkConsents per-LevelPlay-network grants, keyed by network key
+     */
+    public void setUserConsents(boolean granted, Map<String, Boolean> networkConsents) {
+        LevelPlay.setConsent(granted);
+
+        if (networkConsents != null) {
+            for (Map.Entry<String, Boolean> entry : networkConsents.entrySet()) {
+                if (entry.getKey() != null && !entry.getKey().isEmpty() && entry.getValue() != null) {
+                    gdprConsents.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        if (!gdprConsents.isEmpty()) {
+            LevelPlayPrivacySettings.setGDPRConsents(new HashMap<>(gdprConsents));
+        }
+    }
+
     public void setCCPA(boolean doNotSell) {
         LevelPlayPrivacySettings.setCCPA(doNotSell);
     }

@@ -127,6 +127,11 @@ import IronSource
             if !TcfPrefs.hasDecision() { return "UNKNOWN" }
             return TcfPrefs.isGranted() ? "GRANTED" : "DENIED"
         }
+        // custom: the rich modal writes the IABTCF_* keys (source of truth);
+        // the legacy alert writes the boolean consentKey.
+        if TcfPrefs.hasDecision() {
+            return TcfPrefs.isGranted() ? "GRANTED" : "DENIED"
+        }
         return UserDefaults.standard.string(forKey: consentKey) ?? "UNKNOWN"
     }
 
@@ -138,11 +143,32 @@ import IronSource
             "canRequestAds": status != "UNKNOWN",
             "provider": consentMode
         ]
-        if (useUsercentrics || useInMobi),
-           let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
+        if let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
             data["tcString"] = tc
         }
         return data
+    }
+
+    /// Persists a decision produced by the rich custom modal (rendered in JS):
+    /// write the IABTCF_* key map to UserDefaults and forward the global +
+    /// per-network GDPR consent to LevelPlay before the JS promise resolves.
+    public func persistConsent(keys: [String: Any], granted: Bool, networkConsents: [String: Bool]) {
+        TcfPrefs.writeKeys(keys)
+        applyNetworkConsents(granted: granted, networkConsents: networkConsents)
+    }
+
+    /// Per-network replace-all GDPR map from the rich modal's toggles. Falls back
+    /// to a single global `all` grant when no service declared a network.
+    public func applyNetworkConsents(granted: Bool, networkConsents: [String: Bool]) {
+#if canImport(IronSource)
+        for (network, value) in networkConsents where !network.isEmpty {
+            gdprConsents[network] = NSNumber(value: value)
+        }
+        if gdprConsents.isEmpty {
+            gdprConsents["all"] = NSNumber(value: granted)
+        }
+        LPMPrivacySettings.setGDPRConsents(gdprConsents)
+#endif
     }
 
     /// Shows the consent modal only if no decision exists yet.

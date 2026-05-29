@@ -306,30 +306,231 @@ export interface ConsentOptions {
   privacyPolicyUrl?: string;
 
   /**
-   * Custom modal title. `custom` provider only.
+   * URL opened when the user taps the "Legal Notice" link in the custom modal.
+   * `custom` provider only.
    */
-  title?: string;
-
-  /**
-   * Custom modal body text. `custom` provider only.
-   */
-  message?: string;
-
-  /**
-   * Label for the accept/grant button. `custom` provider only.
-   */
-  acceptButtonText?: string;
-
-  /**
-   * Label for the decline/deny button. `custom` provider only.
-   */
-  declineButtonText?: string;
+  legalNoticeUrl?: string;
 
   /**
    * Mediation network keys the consent decision should be applied to.
    * When omitted, consent is applied globally.
    */
   networks?: string[];
+
+  // ---------------------------------------------------------------------------
+  // Rich custom consent modal (`custom` provider only).
+  //
+  // When `services` is supplied, `requestConsentInfo` / `showPrivacyOptions`
+  // render the polished two-layer DOM modal (summary + Categories/Services
+  // tabs) instead of the legacy native alert, and write IAB TCF v2.3-compatible
+  // keys. Ignored by the `usercentrics` / `inmobi` providers.
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Universal, language-neutral definition of the categories and services to
+   * display. May be the parsed object or a JSON string. Required to show the
+   * rich modal — see {@link ConsentServicesConfig}.
+   */
+  services?: ConsentServicesConfig | string;
+
+  /**
+   * BCP-47 / ISO-639-1 language code for the modal copy. Default `'en'`.
+   * Falls back to English for any missing key.
+   */
+  locale?: string;
+
+  /**
+   * Extra or overriding translation bundles, keyed by locale code. Merged over
+   * the built-in English bundle. Supply this to localize or to override the
+   * default copy / per-service descriptions.
+   */
+  translations?: Record<string, ConsentLocaleBundle>;
+
+  /**
+   * App name shown in the modal title and copy. Default: `'This app'`.
+   */
+  appName?: string;
+
+  /**
+   * URL of the logo shown at the top of the first layer. When omitted, the
+   * first letter of `appName` is shown in an accent-colored circle.
+   */
+  logoUrl?: string;
+
+  /**
+   * Accent color (any CSS color) for buttons, switches and active tabs.
+   * Default: `'#143cc4'`.
+   */
+  accentColor?: string;
+
+  /**
+   * IAB CMP ID written into the TC string and `IABTCF_CmpSdkID`. Default `0`
+   * (non-certified). Set your registered ID once you become an IAB-listed CMP.
+   */
+  cmpId?: number;
+
+  /**
+   * CMP version written into the TC string and `IABTCF_CmpSdkVersion`.
+   * Default `1`.
+   */
+  cmpVersion?: number;
+
+  /**
+   * Optional IAB Global Vendor List, as a parsed object or a URL to fetch.
+   * Per IAB policy the GVL must not be fetched from `consensu.org` on the
+   * client; supply your own server-hosted copy here, or omit to use the
+   * version the plugin bundles. Only its `vendorListVersion` affects the
+   * encoded TC string today.
+   */
+  gvl?: GlobalVendorList | string;
+}
+
+/**
+ * Universal, language-neutral consent configuration passed via
+ * {@link ConsentOptions.services}. Every human-readable string is a lookup ID
+ * resolved through the active {@link ConsentLocaleBundle} — only proper nouns
+ * (company names, addresses), URLs and TCF numbers live here.
+ */
+export interface ConsentServicesConfig {
+  /** GVL version recorded in the encoded TC string. */
+  gvlVendorListVersion?: number;
+  /** TCF policy version. `5` = TCF v2.3 (the default). */
+  tcfPolicyVersion?: number;
+  /** Publisher country (ISO-3166-1 alpha-2), e.g. `'PL'`. */
+  publisherCC?: string;
+  /** Display + toggle metadata for each category. */
+  categories: ConsentCategory[];
+  /** The services/vendors shown under the categories. */
+  services: ConsentService[];
+}
+
+export interface ConsentCategory {
+  /** Stable key; also the lookup ID for the localized name/description. */
+  id: string;
+  /** Locked categories are always on and cannot be toggled (e.g. essential). */
+  locked?: boolean;
+  /** Initial toggle state when unlocked. Default `false`. */
+  default?: boolean;
+  /** Sort order (ascending). */
+  order?: number;
+  /** Optional emoji/icon shown on the first-layer summary row. */
+  icon?: string;
+}
+
+export interface ConsentService {
+  /** Stable key; also the lookup ID for an optional localized description. */
+  id: string;
+  /** Which {@link ConsentCategory.id} this service belongs to. */
+  categoryId: string;
+  /**
+   * LevelPlay mediation network key this service maps to, e.g. `'unityads'`,
+   * `'meta'`, `'pangle'`, `'admob'`. When set, the user's toggle for this
+   * service is forwarded to LevelPlay as a per-network GDPR consent so the
+   * mediated SDK receives the right value. Omit for non-mediation services
+   * (sign-in, analytics, CMP, etc.).
+   */
+  network?: string;
+  /** Initial toggle state. Ignored when the category is locked. Default `false`. */
+  default?: boolean;
+  /** Processing company — proper nouns, language-neutral. */
+  company: { name: string; address?: string };
+  /**
+   * Service description shown in the detail card. A localized
+   * `serviceDescriptions[id]` override in a translation bundle takes precedence
+   * when present.
+   */
+  description?: string;
+  /** Localized purpose label IDs. */
+  purposeIds?: string[];
+  /** Localized technology label IDs. */
+  technologyIds?: string[];
+  /** Localized data-category label IDs. */
+  dataCollectedIds?: string[];
+  /** Localized legal-basis label IDs. */
+  legalBasisIds?: string[];
+  /** Processing location ISO-3166 country codes. */
+  locationCC?: string[];
+  /** Third-country transfer ISO-3166 country codes. */
+  transferCC?: string[];
+  /** Localized retention-phrasing ID. */
+  retentionId?: string;
+  /** Data recipient names — proper nouns. */
+  recipients?: string[];
+  /** Policy URLs. */
+  urls?: { privacy?: string; cookie?: string; optOut?: string };
+  /** TCF mapping. Omit for vendors not on the IAB Global Vendor List. */
+  tcf?: ConsentServiceTcf;
+}
+
+export interface ConsentServiceTcf {
+  /** IAB GVL vendor ID. */
+  vendorId?: number;
+  /** Purpose IDs (1–24) this vendor seeks consent for. */
+  purposeConsents?: number[];
+  /** Purpose IDs (1–24) processed under legitimate interest. */
+  purposeLegInt?: number[];
+  /** Special-feature IDs (1–12), e.g. `1` = precise geolocation. */
+  specialFeatures?: number[];
+  /** Google Additional Consent (AC) provider ID, for AdMob/ATP demand. */
+  googleAtpId?: number;
+}
+
+/**
+ * Localized copy for the custom modal. Every section is optional and merged
+ * over the built-in English bundle; supply only what you want to translate or
+ * override. Keys match the IDs used in {@link ConsentServicesConfig}.
+ */
+export interface ConsentLocaleBundle {
+  /** UI chrome strings (titles, buttons, section headers). Supports `{var}`. */
+  ui?: Record<string, string>;
+  /** Per-category name + description, keyed by category ID. */
+  categories?: Record<string, { name: string; description?: string }>;
+  /** Purpose labels, keyed by purpose ID. */
+  purposes?: Record<string, string>;
+  /** Technology labels, keyed by technology ID. */
+  technologies?: Record<string, string>;
+  /** Data-category labels, keyed by data-category ID. */
+  dataCategories?: Record<string, string>;
+  /** Legal-basis labels, keyed by legal-basis ID. */
+  legalBases?: Record<string, string>;
+  /** Retention-phrasing strings, keyed by retention ID. */
+  retention?: Record<string, string>;
+  /** Country names, keyed by ISO-3166 code. */
+  countries?: Record<string, string>;
+  /**
+   * Optional localized overrides for per-service descriptions, keyed by service
+   * ID. The base text lives in {@link ConsentService.description}; supply this
+   * only to translate it.
+   */
+  serviceDescriptions?: Record<string, string>;
+}
+
+/**
+ * Minimal IAB Global Vendor List shape. Only `vendorListVersion` is read today.
+ */
+export interface GlobalVendorList {
+  vendorListVersion?: number;
+  [key: string]: unknown;
+}
+
+/**
+ * @internal Bridge payload — the decision the JS modal computed, handed to the
+ * native layer to persist as `IABTCF_*` keys and forward to LevelPlay. Not part
+ * of the public flow; call `requestConsentInfo` / `showPrivacyOptions` instead.
+ */
+export interface PersistConsentOptions {
+  /** The `IABTCF_*` key → value map to write to the platform key store. */
+  keys: Record<string, string | number>;
+  /** Global GDPR consent flag forwarded to LevelPlay. */
+  granted: boolean;
+  /**
+   * Per-network GDPR consent, keyed by LevelPlay network key — derived from each
+   * service's {@link ConsentService.network} and its toggle state. Forwarded to
+   * `LevelPlayPrivacySettings.setGDPRConsents`.
+   */
+  networkConsents?: Record<string, boolean>;
+  /** IDs of the services the user left enabled. */
+  consentedServiceIds?: string[];
 }
 
 /**
@@ -371,11 +572,18 @@ export interface ConsentData {
   provider?: ConsentProvider;
 
   /**
-   * IAB TCF consent string. Populated when the `usercentrics` or `inmobi`
-   * provider is active and the user has interacted with the CMP. Undefined
-   * under `custom` (which doesn't produce a real TCF payload).
+   * IAB TCF consent string. Populated by the `usercentrics` / `inmobi`
+   * providers, and by the `custom` provider when the rich modal is used
+   * (TCF v2.3-compatible — see {@link ConsentOptions.services}). Undefined for
+   * the legacy `custom` alert, which produces no TCF payload.
    */
   tcString?: string;
+
+  /**
+   * IDs of the services the user left enabled. Populated only by the rich
+   * `custom` modal.
+   */
+  consentedServiceIds?: string[];
 }
 
 export interface AdvertisingIdResult {

@@ -6,6 +6,7 @@ import type {
   InitializeResult,
   ConsentOptions,
   ConsentData,
+  PersistConsentOptions,
   TrackingAuthorizationResult,
   AdvertisingIdResult,
   BannerOptions,
@@ -13,6 +14,8 @@ import type {
   AdLoadOptions,
   AdReadyResult,
 } from './definitions';
+
+const WEB_CONSENT_KEY = 'levelplay_consent_web';
 
 /**
  * Web fallback. LevelPlay has no web SDK, so ad methods are no-ops and consent
@@ -53,11 +56,47 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
   }
 
   async getConsentData(): Promise<ConsentData> {
-    return this.grantedConsent;
+    return this.storedConsent() ?? this.grantedConsent;
   }
 
   async resetConsent(): Promise<ConsentData> {
+    try {
+      localStorage.removeItem(WEB_CONSENT_KEY);
+    } catch {
+      // localStorage unavailable (e.g. private mode) — nothing to clear.
+    }
     return this.grantedConsent;
+  }
+
+  /**
+   * Persists a decision computed by the rich consent modal. On web there is no
+   * IAB key store or LevelPlay SDK, so the `IABTCF_*` keys and granted flag are
+   * stashed in localStorage purely so the overlay can be exercised in a browser.
+   */
+  async persistConsent(options: PersistConsentOptions): Promise<ConsentData> {
+    const data: ConsentData = {
+      status: options.granted ? 'GRANTED' : 'DENIED',
+      granted: options.granted,
+      canRequestAds: true,
+      provider: 'custom',
+      tcString: typeof options.keys.IABTCF_TCString === 'string' ? options.keys.IABTCF_TCString : undefined,
+      consentedServiceIds: options.consentedServiceIds,
+    };
+    try {
+      localStorage.setItem(WEB_CONSENT_KEY, JSON.stringify(data));
+    } catch {
+      // Ignore — persistence is best-effort on web.
+    }
+    return data;
+  }
+
+  private storedConsent(): ConsentData | null {
+    try {
+      const raw = localStorage.getItem(WEB_CONSENT_KEY);
+      return raw ? (JSON.parse(raw) as ConsentData) : null;
+    } catch {
+      return null;
+    }
   }
 
   async setCCPAConsent(_options: { doNotSell: boolean }): Promise<void> {

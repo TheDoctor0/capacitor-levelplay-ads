@@ -15,6 +15,7 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "showPrivacyOptions", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "getConsentData", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "resetConsent", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "persistConsent", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setCCPAConsent", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setChildDirected", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "requestTrackingAuthorization", returnType: CAPPluginReturnPromise),
@@ -155,6 +156,24 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func getConsentData(_ call: CAPPluginCall) {
         call.resolve(implementation.consentData())
+    }
+
+    /// Persists a decision produced by the rich custom consent modal (rendered
+    /// in the JS layer). Writes the IABTCF_* keys natively and forwards the
+    /// decision to LevelPlay, then returns the resulting consent data.
+    @objc func persistConsent(_ call: CAPPluginCall) {
+        let keys = call.getObject("keys") ?? [:]
+        let granted = call.getBool("granted", false)
+        var networkConsents: [String: Bool] = [:]
+        if let nc = call.getObject("networkConsents") {
+            for (key, value) in nc {
+                if let flag = value as? Bool { networkConsents[key] = flag }
+            }
+        }
+        implementation.persistConsent(keys: keys, granted: granted, networkConsents: networkConsents)
+        let data = implementation.consentData()
+        notifyListeners("onConsentStatusChanged", data: data)
+        call.resolve(data)
     }
 
     @objc func resetConsent(_ call: CAPPluginCall) {

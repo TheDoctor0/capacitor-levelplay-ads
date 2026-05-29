@@ -1,0 +1,293 @@
+{
+  "gvlVendorListVersion": 348,
+  "tcfPolicyVersion": 5,
+  "publisherCC": "PL",
+  "categories": [
+    { "id": "marketing", "locked": false, "default": false, "order": 1, "icon": "📢" },
+    { "id": "functional", "locked": false, "default": true, "order": 2, "icon": "📊" },
+    { "id": "essential", "locked": true, "default": true, "order": 3, "icon": "⚙️" }
+  ],
+  "services": [
+    {
+      "id": "unity-ads",
+      "categoryId": "marketing",
+      "network": "unityads",
+      "default": false,
+      "company": {
+        "name": "Unity Technologies, Inc.",
+        "address": "30 Third Street, San Francisco, CA 94103, United States of America"
+      },
+      "description": "This is a comprehensive monetization platform.",
+      "purposeIds": ["advertisement", "improvement_of_service"],
+      "technologyIds": ["cookies", "tracking_code", "web_beacons"],
+      "dataCollectedIds": [
+        "advertising_identifier",
+        "gaid",
+        "country",
+        "device_information",
+        "ip_address",
+        "user_behaviour",
+        "language_information",
+        "purchase_information"
+      ],
+      "legalBasisIds": ["art6_1_a"],
+      "locationCC": ["US"],
+      "transferCC": ["US"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Unity Technologies, Inc."],
+      "urls": {
+        "privacy": "https://unity3d.com/de/legal/privacy-policy",
+        "cookie": "https://unity3d.com/de/legal/cookie-policy#cookies"
+      },
+      "tcf": { "vendorId": 79, "purposeConsents": [1, 2, 3, 4, 7, 9, 10], "specialFeatures": [1] }
+    },
+    {
+      "id": "ironsource",
+      "categoryId": "marketing",
+      "default": false,
+      "company": {
+        "name": "ironSource Ltd.",
+        "address": "56 – 60 St John Street Grand House, London, United Kingdom"
+      },
+      "description": "This company provides a business platform designed to turn any application into a business. It powers applications, helping mobile content creators to develop their businesses.",
+      "purposeIds": [
+        "advertisement",
+        "marketing",
+        "create_personalised_ads_profile",
+        "reportings",
+        "segmentation",
+        "optimization"
+      ],
+      "technologyIds": ["mobile_sdks"],
+      "dataCollectedIds": ["device_id", "ip_address", "unique_id", "user_id"],
+      "legalBasisIds": ["art6_1_a"],
+      "locationCC": ["EU"],
+      "retentionId": "up_to_2_years",
+      "recipients": ["ironSource Ltd."],
+      "urls": { "privacy": "https://www.is.com/privacy-policy/" },
+      "tcf": { "vendorId": 733, "purposeConsents": [1, 2, 3, 4, 7, 9, 10], "specialFeatures": [1] }
+    },
+    {
+      "id": "pangle-sdk",
+      "categoryId": "marketing",
+      "network": "pangle",
+      "default": false,
+      "company": {
+        "name": "Bytedance Pte. Ltd.",
+        "address": "1 Raffles Quay, #26-10, 048583, Singapore"
+      },
+      "description": "This is a mobile advertising platform, including support systems and services operated by Bytedance. It provides service for advertisers to serve advertisements on third party mobile applications and/or websites.",
+      "purposeIds": [
+        "providing_service",
+        "marketing",
+        "statistics",
+        "analytics",
+        "improvement_of_service",
+        "compliance_legal_obligations"
+      ],
+      "technologyIds": ["cookies"],
+      "dataCollectedIds": [
+        "last_name",
+        "first_name",
+        "email_address",
+        "contact_information",
+        "address",
+        "bank_details",
+        "account_information",
+        "data_identifiers",
+        "device_information",
+        "ip_address",
+        "usage_data",
+        "referrer_url",
+        "location_information"
+      ],
+      "legalBasisIds": ["art6_1_f"],
+      "locationCC": ["SG", "US"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Bytedance Pte. Ltd."],
+      "urls": { "privacy": "https://www.pangleglobal.com/privacy" },
+      "tcf": { "vendorId": 1059, "purposeConsents": [1, 2, 3, 4, 7, 9, 10], "specialFeatures": [1] }
+    },
+    {
+      "id": "facebook-audience-network",
+      "categoryId": "marketing",
+      "network": "meta",
+      "default": false,
+      "company": {
+        "name": "Meta Platforms Ireland Ltd.",
+        "address": "4 Grand Canal Square, Dublin 2, Ireland"
+      },
+      "description": "This is an app monetization service.",
+      "purposeIds": ["functionality", "advertisement", "optimization", "analytics", "website_security", "personalisation"],
+      "technologyIds": ["mobile_sdks", "pixel"],
+      "dataCollectedIds": [
+        "usage_data",
+        "date_and_time_of_visit",
+        "facebook_user_id",
+        "websites_visited",
+        "geographic_location",
+        "preferences",
+        "website_interaction",
+        "transaction_information",
+        "device_operating_system",
+        "browser_type",
+        "click_path",
+        "cookie_id",
+        "information_from_third_party_sources",
+        "hardware_software_type"
+      ],
+      "legalBasisIds": ["art6_1_a"],
+      "locationCC": ["EU"],
+      "transferCC": ["US", "EU", "SG"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Meta Platforms Ireland Ltd.", "Meta Platforms Inc."],
+      "urls": {
+        "privacy": "https://www.facebook.com/privacy/policy/",
+        "cookie": "https://www.facebook.com/policies/cookies/",
+        "optOut": "https://www.facebook.com/ads/preferences/?entry_product=ad_settings_screen"
+      }
+    },
+    {
+      "id": "apple-sign-in",
+      "categoryId": "functional",
+      "default": true,
+      "company": {
+        "name": "Apple Distribution International Limited",
+        "address": "Hollyhill Industrial Estate, Hollyhill, Cork, Ireland"
+      },
+      "description": "This service is used to allow the log in with the user's Apple Account. To log in or register, the user will be redirected to Apple, where they can log in with their account data. This will link their Apple profile and the service.",
+      "purposeIds": ["sign_up_features"],
+      "dataCollectedIds": ["username", "email_address", "identifiers"],
+      "legalBasisIds": ["art6_1_a"],
+      "locationCC": ["EU"],
+      "transferCC": ["US"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Apple Inc.", "Apple Distribution International Limited"],
+      "urls": { "privacy": "https://www.apple.com/legal/privacy/" }
+    },
+    {
+      "id": "google-sign-in",
+      "categoryId": "functional",
+      "default": true,
+      "company": {
+        "name": "Google Ireland Limited",
+        "address": "Gordon House, Barrow Street, Dublin 4, Ireland"
+      },
+      "description": "This service is used to allow the log-in with the users Google Account. To log in or register, the user will be redirected to the Google site, where they can log in with their account data. This will link their Google profile or Google email address and the service.",
+      "purposeIds": ["sign_up_features", "authentication"],
+      "technologyIds": ["cookies", "local_storage"],
+      "dataCollectedIds": ["username", "email_address", "identifiers", "profile_information", "profile_picture"],
+      "legalBasisIds": ["art6_1_a", "art6_1_f"],
+      "locationCC": ["EU"],
+      "transferCC": ["US", "CL", "SG", "TW"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Google Ireland Limited", "Google LLC", "Alphabet Inc"],
+      "urls": {
+        "privacy": "https://business.safety.google/privacy/?hl=en",
+        "cookie": "https://policies.google.com/technologies/cookies?hl=en"
+      }
+    },
+    {
+      "id": "google-firebase-analytics",
+      "categoryId": "functional",
+      "default": true,
+      "company": {
+        "name": "Google Ireland Limited",
+        "address": "Google Building Gordon House, 4 Barrow St, Dublin, D04 E5W5, Ireland"
+      },
+      "description": "This provides detailed documentation and cross-platform app development SDKs, to help you build and ship apps for iOS, Android, the Web, Flutter, Unity, and C++.",
+      "purposeIds": ["product_development"],
+      "technologyIds": ["cookies"],
+      "dataCollectedIds": ["configuration_of_app_settings", "ip_address", "user_behaviour", "user_agent", "app_crashes"],
+      "legalBasisIds": ["art6_1_f"],
+      "locationCC": ["EU"],
+      "transferCC": ["US", "CL", "TW", "SG"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Alphabet Inc", "Google LLC", "Google Ireland Limited"],
+      "urls": {
+        "privacy": "https://business.safety.google/privacy/?hl=en",
+        "cookie": "https://policies.google.com/technologies/cookies?hl=en",
+        "optOut": "https://safety.google/privacy/privacy-controls/"
+      }
+    },
+    {
+      "id": "usercentrics-cmp",
+      "categoryId": "functional",
+      "default": true,
+      "company": {
+        "name": "Usercentrics GmbH",
+        "address": "Sendlinger Str. 7, 80331 Munich, Germany"
+      },
+      "description": "This is a consent management service. Usercentrics GmbH is used on websites and apps as a processor for the purpose of consent management.",
+      "purposeIds": ["compliance_legal_obligations", "consent_storage"],
+      "technologyIds": ["local_storage", "pixel"],
+      "dataCollectedIds": [
+        "opt_in_opt_out_data",
+        "referrer_url",
+        "user_agent",
+        "user_settings",
+        "consent_id",
+        "time_of_consent",
+        "consent_type",
+        "template_version",
+        "banner_language",
+        "ip_address",
+        "geographic_location"
+      ],
+      "legalBasisIds": ["art6_1_c"],
+      "locationCC": ["EU"],
+      "retentionId": "consent_one_year",
+      "recipients": ["Usercentrics GmbH"],
+      "urls": { "privacy": "https://usercentrics.com/privacy-policy/" }
+    },
+    {
+      "id": "revenuecat",
+      "categoryId": "essential",
+      "default": true,
+      "company": {
+        "name": "RevenueCat, Inc.",
+        "address": "1032 E Brandon BLVD #3003 Brandon, FL 33511, United States of America"
+      },
+      "description": "This service allows companies to manage, process, and verify the in-app purchase functionality. It helps to manage subscription transactions, restores purchases, and synchronize purchase statuses across various devices.",
+      "purposeIds": ["payment", "providing_service", "transaction_tracking"],
+      "technologyIds": ["cookies"],
+      "dataCollectedIds": [
+        "anonymised_user_data",
+        "purchase_information",
+        "date_of_purchase",
+        "purchase_activity",
+        "credit_debit_card_number",
+        "log_in_info",
+        "ip_address",
+        "browser_information",
+        "time_zone",
+        "device_id"
+      ],
+      "legalBasisIds": ["art6_1_b"],
+      "locationCC": ["US"],
+      "transferCC": ["US"],
+      "retentionId": "until_not_needed",
+      "recipients": ["RevenueCat, Inc."],
+      "urls": { "privacy": "https://www.revenuecat.com/privacy/" }
+    },
+    {
+      "id": "sentry",
+      "categoryId": "essential",
+      "default": true,
+      "company": {
+        "name": "Functional Software, Inc. dba Sentry",
+        "address": "45 Fremont Street 8th Floor San Francisco, CA 94105, United States of America"
+      },
+      "description": "This is an error tracking and performance monitoring platform for Web apps, mobile apps and games. It is used to monitor and fix crashes in real time.",
+      "purposeIds": ["tracking", "detecting_code_errors", "develop_improve_products"],
+      "technologyIds": ["mobile_sdks"],
+      "dataCollectedIds": ["usage_data", "device_information", "ip_address", "error_data"],
+      "legalBasisIds": ["art6_1_f"],
+      "locationCC": ["US"],
+      "transferCC": ["US"],
+      "retentionId": "until_not_needed",
+      "recipients": ["Functional Software, Inc. dba Sentry"],
+      "urls": { "privacy": "https://sentry.io/privacy/" }
+    }
+  ]
+}
