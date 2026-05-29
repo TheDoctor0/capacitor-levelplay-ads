@@ -144,7 +144,6 @@ await LevelPlayAds.requestConsentInfo({
   logoUrl: 'https://example.com/logo.png',
   privacyPolicyUrl: 'https://example.com/privacy',
   legalNoticeUrl: 'https://example.com/legal',
-  cmpId: 0,                       // set your IAB CMP ID once registered
 });
 
 // Re-open the Manage screen later from a settings button:
@@ -180,12 +179,10 @@ await LevelPlayAds.requestConsentInfo({
 });
 ```
 
-> **Not an IAB-certified CMP.** The custom modal produces spec-shaped,
-> adapter-readable TCF output, but the plugin is not registered with IAB Europe;
-> `IABTCF_CmpSdkID` defaults to `0`. The Global Vendor List is never fetched from
-> `consensu.org` on the client (IAB disallows it) — pass your own bundled/hosted
-> GVL via `gvl` if you need an exact `vendorListVersion`. For audited EU/EEA
-> compliance use the `usercentrics` or `inmobi` providers.
+> **Not an IAB-certified CMP.** Output is spec-shaped and adapter-readable, but
+> the plugin isn't registered with IAB Europe (`IABTCF_CmpSdkID` is `0`) and never
+> fetches the GVL from `consensu.org`. For audited EU/EEA compliance use the
+> `usercentrics` or `inmobi` providers.
 
 The CMP is initialized lazily when your JS code calls
 `LevelPlayAds.requestConsentInfo()`. The call resolves once the user has
@@ -205,9 +202,6 @@ On every `npx cap sync` the hook injects, for each selected network:
 - Android adapter `implementation` lines into `android/app/build.gradle`
 - iOS adapter pods into `ios/App/Podfile`
 - `NSUserTrackingUsageDescription` + per-network `SKAdNetwork` IDs into `Info.plist`
-
-*Transparency note: the injection script is strictly OPT-IN and only runs if
-you explicitly declare the hook above.*
 
 ### Manual alternative
 
@@ -261,20 +255,6 @@ Adapter versions are pinned in `scripts/levelplay-manifest.js` — check that
 file for the current set if you're maintaining the edits by hand.
 
 ---
-
-## Install
-
-To use npm:
-
-```bash
-npm install capacitor-levelplay-ads
-```
-
-Sync native files:
-
-```bash
-npx cap sync
-```
 
 ## 🚀 Quick Setup
 
@@ -409,9 +389,8 @@ Configure your S2S callback URL in the
 
 ---
 
-## ⚠️ Important Notices
+## ⚠️ iOS integration paths
 
-### 1. iOS integration paths
 CocoaPods is the primary, supported iOS integration path — it pulls the
 IronSource SDK via the podspec. Swift Package Manager is secondary; see
 `Package.swift` for details. Without the SDK the plugin still builds: all
