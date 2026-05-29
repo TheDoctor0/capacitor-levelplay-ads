@@ -84,10 +84,8 @@ export async function runConsentFlow(
     return force ? plugin.showPrivacyOptions(options) : plugin.requestConsentInfo(options);
   }
 
-  if (!force) {
-    const existing = await plugin.getConsentData();
-    if (existing?.canRequestAds) return existing;
-  }
+  const existing = await plugin.getConsentData().catch(() => undefined);
+  if (!force && existing?.canRequestAds) return existing;
 
   const i18n = new I18n(options?.locale ?? 'en', options?.translations);
   const decision = await presentConsentModal(config, i18n, {
@@ -97,6 +95,8 @@ export async function runConsentFlow(
     privacyPolicyUrl: options?.privacyPolicyUrl,
     legalNoticeUrl: options?.legalNoticeUrl,
     startInManage: force,
+    // Seed from the saved decision so re-opening reflects prior choices.
+    priorConsentedIds: existing?.canRequestAds ? existing.consentedServiceIds : undefined,
   });
 
   const vendorListVersion = await resolveGvlVersion(options?.gvl, config);

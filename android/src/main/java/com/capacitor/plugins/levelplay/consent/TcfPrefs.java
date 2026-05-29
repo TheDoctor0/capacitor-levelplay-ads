@@ -27,13 +27,15 @@ public final class TcfPrefs {
     public static final String KEY_VENDOR_LI = "IABTCF_VendorLegitimateInterests";
     public static final String KEY_SPECIAL_FEATURES = "IABTCF_SpecialFeaturesOptIns";
     public static final String KEY_ADDTL_CONSENT = "IABTCF_AddtlConsent";
+    /** Plugin-private: which service IDs the user left enabled (CSV), for restore. */
+    public static final String KEY_CONSENTED_SERVICES = "levelplay_consented_services";
 
     /** Every key this helper may write, for a clean {@link #clear(Context)}. */
     private static final String[] ALL_KEYS = {
             KEY_TC_STRING, KEY_GDPR_APPLIES, KEY_CMP_SDK_ID, KEY_PURPOSE_CONSENTS,
             KEY_VENDOR_CONSENTS, KEY_CMP_SDK_VERSION, KEY_POLICY_VERSION, KEY_PUBLISHER_CC,
             KEY_PURPOSE_ONE_TREATMENT, KEY_USE_NON_STANDARD_TEXTS, KEY_PURPOSE_LI,
-            KEY_VENDOR_LI, KEY_SPECIAL_FEATURES, KEY_ADDTL_CONSENT,
+            KEY_VENDOR_LI, KEY_SPECIAL_FEATURES, KEY_ADDTL_CONSENT, KEY_CONSENTED_SERVICES,
     };
 
     private TcfPrefs() {}

@@ -12,6 +12,11 @@ export interface ModalOptions {
   legalNoticeUrl?: string;
   /** Open straight on the Manage screen (used by `showPrivacyOptions`). */
   startInManage: boolean;
+  /**
+   * IDs of services enabled by a prior decision. When set, toggles seed from
+   * this instead of the config defaults, so re-opening reflects the saved choice.
+   */
+  priorConsentedIds?: string[];
 }
 
 type Attrs = Record<string, string | number | boolean | ((e: Event) => void)>;
@@ -47,6 +52,7 @@ class ConsentModal {
   private view: 'first' | 'manage';
   private tab: 'categories' | 'services' = 'categories';
   private prevOverflow = '';
+  private scrim?: HTMLElement;
 
   constructor(
     private readonly config: ConsentServicesConfig,
@@ -69,10 +75,14 @@ class ConsentModal {
     this.shadow = this.host.attachShadow({ mode: 'open' });
   }
 
-  /** Initial toggle: locked categories force-on; otherwise service or category default. */
+  /**
+   * Initial toggle: locked categories force-on; otherwise a prior saved decision
+   * (if any) wins, falling back to the service/category default on first run.
+   */
   private initialState(svc: ConsentService): boolean {
     const cat = this.config.categories.find((c) => c.id === svc.categoryId);
     if (cat?.locked) return true;
+    if (this.opts.priorConsentedIds) return this.opts.priorConsentedIds.includes(svc.id);
     return svc.default ?? cat?.default ?? false;
   }
 
@@ -91,7 +101,10 @@ class ConsentModal {
     this.prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     document.body.append(this.host);
-    this.render();
+    // Build the scrim once and keep it mounted — only the card inside is
+    // swapped on re-render, so the fade-in animation never replays (no flash).
+    this.scrim = h('div', { class: 'scrim' }, [this.buildCard()]);
+    this.shadow.append(this.scrim);
   }
 
   private close(): void {
@@ -117,11 +130,20 @@ class ConsentModal {
 
   // --- rendering -----------------------------------------------------------
 
+  private buildCard(): HTMLElement {
+    return this.view === 'first' ? this.renderFirst() : this.renderManage();
+  }
+
+  /** Swap only the card inside the persistent scrim, preserving scroll position. */
   private render(): void {
-    const existing = this.shadow.querySelector('.scrim');
-    if (existing) existing.remove();
-    const card = this.view === 'first' ? this.renderFirst() : this.renderManage();
-    this.shadow.append(h('div', { class: 'scrim' }, [card]));
+    if (!this.scrim) return;
+    const old = this.scrim.querySelector('.card');
+    const prevScroll = (old?.querySelector('.scroll') as HTMLElement | null)?.scrollTop ?? 0;
+    const card = this.buildCard();
+    if (old) this.scrim.replaceChild(card, old);
+    else this.scrim.append(card);
+    const scroll = card.querySelector('.scroll') as HTMLElement | null;
+    if (scroll) scroll.scrollTop = prevScroll;
   }
 
   private openManage(tab: 'categories' | 'services'): void {
@@ -155,7 +177,7 @@ class ConsentModal {
       h('div', { class: 'scroll' }, [
         logo,
         h('div', { class: 'h1' }, [t.ui('firstLayer.title', { appName: this.opts.appName })]),
-        h('div', { class: 'pad' }, [this.linksRow(), ...rows, body, legInt]),
+        h('div', { class: 'pad' }, [...rows, body, legInt, this.linksRow()]),
       ]),
       h('div', { class: 'btns' }, [
         h('button', { class: 'btn solid', onclick: () => this.acceptAll() }, [t.ui('btn.consent')]),
@@ -184,13 +206,12 @@ class ConsentModal {
       h('div', { class: 'pad', style: 'padding-bottom:0' }, [
         h('div', { class: 'title' }, [t.ui('manage.title')]),
         h('div', { class: 'subtitle' }, [t.ui('manage.subtitle')]),
-        this.linksRow(),
       ]),
       h('div', { class: 'tabs' }, [
         h('button', { class: `tab ${this.tab === 'categories' ? 'on' : ''}`, onclick: () => this.setTab('categories') }, [t.ui('tab.categories')]),
         h('button', { class: `tab ${this.tab === 'services' ? 'on' : ''}`, onclick: () => this.setTab('services') }, [t.ui('tab.services')]),
       ]),
-      h('div', { class: 'scroll' }, [h('div', { class: 'pad' }, content)]),
+      h('div', { class: 'scroll' }, [h('div', { class: 'pad' }, [...content, this.linksRow()])]),
       h('div', { class: 'btns' }, [
         h('button', { class: 'btn solid', onclick: () => this.acceptAll() }, [t.ui('btn.acceptAll')]),
         h('button', { class: 'btn solid', onclick: () => this.close() }, [t.ui('btn.confirm')]),
@@ -204,36 +225,29 @@ class ConsentModal {
   }
 
   private toggleEl(on: boolean, locked: boolean, onToggle: () => void): HTMLElement {
-    const attrs: Attrs = { class: `toggle ${on ? '' : 'off'}` };
-    if (locked) attrs.disabled = true;
-    else attrs.onclick = (e: Event) => { e.stopPropagation(); onToggle(); };
-    return h('button', attrs);
+    // Always capture the click (even when locked) so it never bubbles to the
+    // header's expand handler — locked toggles are a no-op, not an expand.
+    return h('button', {
+      class: `toggle ${on ? '' : 'off'} ${locked ? 'locked' : ''}`,
+      onclick: (e: Event) => {
+        e.stopPropagation();
+        if (!locked) onToggle();
+      },
+    });
   }
 
+  /** Categories are always-open sections (no border, no master toggle): a header
+   *  plus the per-service rows beneath it. */
   private renderCategories(): Node[] {
     const t = this.i18n;
     return this.sortedCategories.map((cat) => {
       const meta = t.category(cat.id);
-      const locked = this.isLocked(cat.id);
-      const on = this.categoryOn(cat.id);
-      const open = this.expanded[`cat:${cat.id}`];
-
-      const head = h('div', { class: 'rowhead' }, [
-        h('div', { class: 'name' }, [meta.name]),
-        h('div', { class: 'ctrl' }, [
-          this.toggleEl(on, locked, () => this.setCategory(cat.id, !on)),
-          h('button', { class: 'chev', onclick: () => this.toggleExpand(`cat:${cat.id}`) }, [open ? '▲' : '▼']),
-        ]),
+      const svcRows = (this.servicesByCategory.get(cat.id) ?? []).map((svc) => this.serviceRow(svc, true));
+      return h('div', { class: 'section' }, [
+        h('div', { class: 'section-h' }, [meta.name]),
+        h('div', { class: 'section-d' }, [meta.description ?? '']),
+        ...svcRows,
       ]);
-
-      const children: Node[] = [head, h('div', { class: 'desc' }, [meta.description ?? ''])];
-      if (open) {
-        const svcRows = (this.servicesByCategory.get(cat.id) ?? []).map((svc) =>
-          this.serviceRow(svc, true),
-        );
-        children.push(h('div', { class: 'detail' }, svcRows));
-      }
-      return h('div', { class: 'row' }, children);
     });
   }
 
@@ -252,17 +266,19 @@ class ConsentModal {
     const titleBlock: Node[] = [h('div', { class: 'name' }, [brandName(svc.id)])];
     if (!nested) titleBlock.push(h('div', { class: 'cat' }, [t.category(svc.categoryId).name]));
 
-    const head = h('div', { class: 'rowhead' }, [
+    const head = h('div', { class: 'rowhead', onclick: () => this.toggleExpand(key) }, [
       h('div', {}, titleBlock),
       h('div', { class: 'ctrl' }, [
         this.toggleEl(on, locked, () => this.setService(svc.id, !on)),
-        h('button', { class: 'chev', onclick: () => this.toggleExpand(key) }, [open ? '▲' : '▼']),
+        h('span', { class: 'chev' }, [open ? '▲' : '▼']),
       ]),
     ]);
 
     const children: Node[] = [head];
     if (open) children.push(this.serviceDetail(svc));
-    return h('div', { class: 'row', style: nested ? 'margin:11px 0 0' : '' }, children);
+    // Nested (under a category section) = plain divided row; standalone (Services
+    // tab) = bordered card.
+    return h('div', { class: nested ? 'svcrow' : 'row' }, children);
   }
 
   private serviceDetail(svc: ConsentService): HTMLElement {
@@ -324,13 +340,6 @@ class ConsentModal {
 
   private setService(id: string, on: boolean): void {
     this.serviceOn[id] = on;
-    this.render();
-  }
-
-  private setCategory(categoryId: string, on: boolean): void {
-    for (const svc of this.servicesByCategory.get(categoryId) ?? []) {
-      if (!this.isLocked(categoryId)) this.serviceOn[svc.id] = on;
-    }
     this.render();
   }
 

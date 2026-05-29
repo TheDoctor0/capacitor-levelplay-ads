@@ -170,7 +170,9 @@ public class LevelPlayAdsPlugin: CAPPlugin, CAPBridgedPlugin {
                 if let flag = value as? Bool { networkConsents[key] = flag }
             }
         }
-        implementation.persistConsent(keys: keys, granted: granted, networkConsents: networkConsents)
+        let consentedServiceIds = call.getArray("consentedServiceIds", String.self) ?? []
+        implementation.persistConsent(keys: keys, granted: granted,
+                                      networkConsents: networkConsents, consentedServiceIds: consentedServiceIds)
         let data = implementation.consentData()
         notifyListeners("onConsentStatusChanged", data: data)
         call.resolve(data)

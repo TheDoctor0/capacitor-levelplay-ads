@@ -39,9 +39,9 @@ export const en: ConsentLocaleBundle = {
     // Links
     'link.privacyPolicy': 'Privacy Policy',
     'link.legalNotice': 'Legal Notice',
-    'link.privacyPolicyOf': 'Click here to read the privacy policy of the data processor',
-    'link.cookiePolicyOf': 'Click here to read the cookie policy of the data processor',
-    'link.optOutOf': 'Click here to opt out from this processor across all domains',
+    'link.privacyPolicyOf': 'Privacy policy',
+    'link.cookiePolicyOf': 'Cookie policy',
+    'link.optOutOf': 'Opt out',
 
     // Detail section headers + hints
     'section.description': 'Description of Service',

@@ -135,7 +135,7 @@ TCF v2.3-compatible `IABTCF_*` keys natively and forwards per-network GDPR
 consent to LevelPlay.
 
 ```ts
-import services from './consent/services.json'; // your copy of services.example.json
+import services from './services.json'; // your copy of examples/services.example.json
 
 await LevelPlayAds.requestConsentInfo({
   services,                       // universal config: categories + services
@@ -157,7 +157,7 @@ await LevelPlayAds.showPrivacyOptions({ services, appName: 'MyApp' });
   IDs, TCF vendor mappings, and an optional `network` key per service that maps
   the user's toggle to a LevelPlay mediation network (`unityads`, `meta`,
   `pangle`, …) for per-network consent. A ready-to-copy example built from a real
-  CMP is at [`consent/services.example.json`](consent/services.example.json) —
+  CMP is at [`examples/services.example.json`](examples/services.example.json) —
   10 services across Marketing / Functional / Essential.
 - **Translations** (language-dependent copy): all labels are resolved by ID from
   a locale bundle. English ships built-in. Add languages or override copy via

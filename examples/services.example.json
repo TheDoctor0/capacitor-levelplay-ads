@@ -3,7 +3,7 @@
   "tcfPolicyVersion": 5,
   "publisherCC": "PL",
   "categories": [
-    { "id": "marketing", "locked": false, "default": false, "order": 1, "icon": "📢" },
+    { "id": "marketing", "locked": false, "default": true, "order": 1, "icon": "📢" },
     { "id": "functional", "locked": false, "default": true, "order": 2, "icon": "📊" },
     { "id": "essential", "locked": true, "default": true, "order": 3, "icon": "⚙️" }
   ],
@@ -12,7 +12,7 @@
       "id": "unity-ads",
       "categoryId": "marketing",
       "network": "unityads",
-      "default": false,
+      "default": true,
       "company": {
         "name": "Unity Technologies, Inc.",
         "address": "30 Third Street, San Francisco, CA 94103, United States of America"
@@ -44,7 +44,7 @@
     {
       "id": "ironsource",
       "categoryId": "marketing",
-      "default": false,
+      "default": true,
       "company": {
         "name": "ironSource Ltd.",
         "address": "56 – 60 St John Street Grand House, London, United Kingdom"
@@ -71,7 +71,7 @@
       "id": "pangle-sdk",
       "categoryId": "marketing",
       "network": "pangle",
-      "default": false,
+      "default": true,
       "company": {
         "name": "Bytedance Pte. Ltd.",
         "address": "1 Raffles Quay, #26-10, 048583, Singapore"
@@ -112,7 +112,7 @@
       "id": "facebook-audience-network",
       "categoryId": "marketing",
       "network": "meta",
-      "default": false,
+      "default": true,
       "company": {
         "name": "Meta Platforms Ireland Ltd.",
         "address": "4 Grand Canal Square, Dublin 2, Ireland"

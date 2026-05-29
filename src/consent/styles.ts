@@ -64,16 +64,23 @@ export function styles(accent: string): string {
 .tab.on { color: ${accent}; box-shadow: inset 0 -3px 0 ${accent}; }
 
 .row { border: 1.5px solid #d1cfc5; border-radius: 10px; padding: 13px 14px; margin-bottom: 11px; }
-.rowhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.rowhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; cursor: pointer; }
 .name { font-weight: 800; font-size: 15px; }
 .cat { color: #3d3d3a; font-size: 12px; margin-top: 2px; }
 .desc { color: #3d3d3a; font-size: 12.5px; margin-top: 8px; line-height: 1.4; }
+
+/* Categories tab: always-open sections (no card border) with plain service rows */
+.section { margin: 2px 0 20px; }
+.section-h { font-weight: 800; font-size: 17px; margin: 6px 0 2px; }
+.section-d { color: #3d3d3a; font-size: 12.5px; margin-bottom: 4px; line-height: 1.4; }
+.svcrow { padding: 12px 2px; border-bottom: 1px solid #eceae2; }
+.svcrow:last-child { border-bottom: none; }
 .ctrl { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
 .toggle { width: 46px; height: 26px; border-radius: 13px; background: ${accent}; position: relative;
   border: none; cursor: pointer; flex-shrink: 0; transition: background .15s; padding: 0; }
 .toggle.off { background: #c9c7bf; }
-.toggle[disabled] { opacity: .6; cursor: default; }
+.toggle.locked { opacity: .6; cursor: default; }
 .toggle::after { content: ''; position: absolute; width: 20px; height: 20px; border-radius: 50%;
   background: #fff; top: 3px; right: 3px; box-shadow: 0 2px 4px rgba(0,0,0,.35); transition: all .15s; }
 .toggle.off::after { right: auto; left: 3px; }

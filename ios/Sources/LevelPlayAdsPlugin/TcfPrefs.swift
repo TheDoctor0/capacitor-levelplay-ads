@@ -15,8 +15,11 @@ enum TcfPrefs {
         "IABTCF_CmpSdkVersion", "IABTCF_PolicyVersion", "IABTCF_PublisherCC",
         "IABTCF_PurposeOneTreatment", "IABTCF_UseNonStandardTexts",
         "IABTCF_PurposeLegitimateInterests", "IABTCF_VendorLegitimateInterests",
-        "IABTCF_SpecialFeaturesOptIns", "IABTCF_AddtlConsent",
+        "IABTCF_SpecialFeaturesOptIns", "IABTCF_AddtlConsent", consentedServices,
     ]
+
+    /// Plugin-private: service IDs the user left enabled, for restore on reopen.
+    static let consentedServices = "levelplay_consented_services"
 
     static func hasDecision() -> Bool {
         let d = UserDefaults.standard

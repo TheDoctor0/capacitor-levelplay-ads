@@ -146,14 +146,19 @@ import IronSource
         if let tc = UserDefaults.standard.string(forKey: TcfPrefs.tcString) {
             data["tcString"] = tc
         }
+        if let ids = UserDefaults.standard.array(forKey: TcfPrefs.consentedServices) as? [String] {
+            data["consentedServiceIds"] = ids
+        }
         return data
     }
 
     /// Persists a decision produced by the rich custom modal (rendered in JS):
     /// write the IABTCF_* key map to UserDefaults and forward the global +
     /// per-network GDPR consent to LevelPlay before the JS promise resolves.
-    public func persistConsent(keys: [String: Any], granted: Bool, networkConsents: [String: Bool]) {
+    public func persistConsent(keys: [String: Any], granted: Bool,
+                               networkConsents: [String: Bool], consentedServiceIds: [String]) {
         TcfPrefs.writeKeys(keys)
+        UserDefaults.standard.set(consentedServiceIds, forKey: TcfPrefs.consentedServices)
         applyNetworkConsents(granted: granted, networkConsents: networkConsents)
     }
 

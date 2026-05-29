@@ -276,6 +276,23 @@ public class LevelPlayAdsPlugin extends Plugin implements LevelPlayPluginBridge 
         }
         TcfPrefs.writeKeys(getContext(), map);
 
+        // Persist which services were left on, so showPrivacyOptions() can restore them.
+        StringBuilder csv = new StringBuilder();
+        try {
+            JSArray ids = call.getArray("consentedServiceIds");
+            if (ids != null) {
+                for (Object o : ids.toList()) {
+                    if (o != null) {
+                        if (csv.length() > 0) csv.append(',');
+                        csv.append(o.toString());
+                    }
+                }
+            }
+        } catch (org.json.JSONException ignored) {
+            // Malformed array — store nothing; falls back to defaults on reopen.
+        }
+        TcfPrefs.prefs(getContext()).edit().putString(TcfPrefs.KEY_CONSENTED_SERVICES, csv.toString()).apply();
+
         boolean granted = Boolean.TRUE.equals(call.getBoolean("granted", false));
         Map<String, Boolean> networkConsents = new HashMap<>();
         JSObject nc = call.getObject("networkConsents");
