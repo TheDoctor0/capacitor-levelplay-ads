@@ -197,8 +197,9 @@ export interface LevelPlayAdsPlugin {
    * - `onRewardedAdRewarded` — `AdRewardEvent`
    *
    * ### Banner events
-   * - `onBannerAdLoaded` — `AdInfo`
-   * - `onBannerAdLoadFailed` — `AdErrorInfo`
+   * - `onBannerAdLoaded` — `AdInfo` (`isRefresh: true` for auto-refreshes)
+   * - `onBannerAdLoadFailed` — `AdErrorInfo` (`isRefresh: true` for a failed
+   *   auto-refresh; the previous creative stays on screen)
    * - `onBannerAdDisplayed` — `AdInfo`
    * - `onBannerAdDisplayFailed` — `AdErrorInfo`
    * - `onBannerAdClicked` — `AdInfo`
@@ -711,6 +712,11 @@ export interface AdInfo {
   precision?: string;
   /** Country code of the served impression. */
   countryCode?: string;
+  /**
+   * Banner events only: `true` when the event comes from the banner's
+   * auto-refresh, `false` for the load started by `createBanner`.
+   */
+  isRefresh?: boolean;
 }
 
 /**
@@ -721,6 +727,11 @@ export interface AdErrorInfo {
   errorMessage: string;
   adUnitId?: string;
   adId?: string;
+  /**
+   * Banner events only: `true` when an auto-refresh failed (the previous
+   * creative stays on screen), `false` for the load started by `createBanner`.
+   */
+  isRefresh?: boolean;
 }
 
 /**

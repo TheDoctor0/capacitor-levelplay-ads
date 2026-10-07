@@ -32,6 +32,9 @@ public class BannerExecutor {
     private final LevelPlayPluginBridge bridge;
 
     private LevelPlayBannerAdView bannerView;
+    // The view of the load in flight, and the JS call waiting for it.
+    private LevelPlayBannerAdView pendingBannerView;
+    private PluginCall pendingBannerCall;
     private FrameLayout capacitorAdLayout;
 
     private String currentAdUnitId = "";
@@ -136,6 +139,8 @@ public class BannerExecutor {
                     .setAdSize(adSize)
                     .build();
             final LevelPlayBannerAdView pendingView = new LevelPlayBannerAdView(activity, adUnitId, config);
+            this.pendingBannerView = pendingView;
+            this.pendingBannerCall = call;
 
             // Add off-screen-sized + invisible until the load succeeds.
             capacitorAdLayout.addView(pendingView, new FrameLayout.LayoutParams(1, 1));
@@ -148,7 +153,23 @@ public class BannerExecutor {
                 @Override
                 public void onAdLoaded(@NonNull LevelPlayAdInfo adInfo) {
                     activity.runOnUiThread(() -> {
+                        // Auto-refresh reports on the view that is already showing:
+                        // the new creative is in place, nothing to swap.
+                        if (pendingView == bannerView) {
+                            JSObject refreshed = AdJsonUtil.adInfoToJS(adInfo);
+                            refreshed.put("isRefresh", true);
+                            bridge.fireEvent("onBannerAdLoaded", refreshed);
+                            return;
+                        }
+
+                        // Destroyed or superseded before it finished loading.
+                        if (pendingView != pendingBannerView) {
+                            return;
+                        }
+
                         isLoading = false;
+                        pendingBannerView = null;
+                        pendingBannerCall = null;
 
                         if (bannerView != null) {
                             if (bannerView.getParent() != null) {
@@ -165,6 +186,7 @@ public class BannerExecutor {
                             updateBannerLayout();
                             updateWebViewMargins();
                             bannerView.setVisibility(View.VISIBLE);
+                            capacitorAdLayout.setVisibility(View.VISIBLE);
                             capacitorAdLayout.bringToFront();
                         } else {
                             isBannerVisible = false;
@@ -174,6 +196,7 @@ public class BannerExecutor {
                         JSObject ret = AdJsonUtil.adInfoToJS(adInfo);
                         ret.put("width", adSize.getWidth());
                         ret.put("height", adSize.getHeight());
+                        ret.put("isRefresh", false);
                         bridge.fireEvent("onBannerAdLoaded", ret);
                         call.resolve(ret);
                     });
@@ -182,12 +205,29 @@ public class BannerExecutor {
                 @Override
                 public void onAdLoadFailed(@NonNull LevelPlayAdError error) {
                     activity.runOnUiThread(() -> {
+                        // A failed auto-refresh keeps the current creative on screen.
+                        if (pendingView == bannerView) {
+                            JSObject refreshError = AdJsonUtil.adErrorToJS(error);
+                            refreshError.put("isRefresh", true);
+                            bridge.fireEvent("onBannerAdLoadFailed", refreshError);
+                            return;
+                        }
+
+                        if (pendingView != pendingBannerView) {
+                            return;
+                        }
+
                         isLoading = false;
+                        pendingBannerView = null;
+                        pendingBannerCall = null;
                         if (pendingView.getParent() != null) {
                             ((ViewGroup) pendingView.getParent()).removeView(pendingView);
                         }
                         pendingView.destroy();
-                        bridge.fireEvent("onBannerAdLoadFailed", AdJsonUtil.adErrorToJS(error));
+
+                        JSObject loadError = AdJsonUtil.adErrorToJS(error);
+                        loadError.put("isRefresh", false);
+                        bridge.fireEvent("onBannerAdLoadFailed", loadError);
                         call.reject("Banner failed to load: " + error.getErrorMessage());
                     });
                 }
@@ -414,6 +454,7 @@ public class BannerExecutor {
         activity.runOnUiThread(() -> {
             isBannerVisible = false;
             updateWebViewMargins();
+            cancelPendingLoad();
 
             if (bannerView != null) {
                 if (bannerView.getParent() != null) {
@@ -432,6 +473,24 @@ public class BannerExecutor {
             lastSizeStr = "";
             if (call != null) call.resolve();
         });
+    }
+
+    private void cancelPendingLoad() {
+        if (pendingBannerView == null) {
+            return;
+        }
+
+        if (pendingBannerView.getParent() != null) {
+            ((ViewGroup) pendingBannerView.getParent()).removeView(pendingBannerView);
+        }
+        pendingBannerView.destroy();
+        pendingBannerView = null;
+        isLoading = false;
+
+        if (pendingBannerCall != null) {
+            pendingBannerCall.reject("Banner destroyed before it finished loading.");
+            pendingBannerCall = null;
+        }
     }
 
     private JSObject message(String msg) {

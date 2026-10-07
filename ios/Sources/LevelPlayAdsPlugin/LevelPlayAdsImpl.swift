@@ -740,6 +740,9 @@ import IronSource
         cb?(success, error)
     }
 
+    /// False once the requested load settled: later callbacks are auto-refreshes.
+    var isBannerLoadPending: Bool { pendingBannerLoad != nil }
+
     func resolveBannerLoad(success: Bool, error: String?) {
         let cb = pendingBannerLoad
         pendingBannerLoad = nil
@@ -870,11 +873,15 @@ final class BannerDelegate: NSObject, LPMBannerAdViewDelegate {
     init(owner: LevelPlayAdsImpl) { self.owner = owner }
 
     func didLoadAd(with adInfo: LPMAdInfo) {
-        owner?.emit?("onBannerAdLoaded", LevelPlayAdsImpl.adInfoToJS(adInfo))
+        var payload = LevelPlayAdsImpl.adInfoToJS(adInfo)
+        payload["isRefresh"] = !(owner?.isBannerLoadPending ?? false)
+        owner?.emit?("onBannerAdLoaded", payload)
         owner?.resolveBannerLoad(success: true, error: nil)
     }
     func didFailToLoadAd(withAdUnitId adUnitId: String, error: Error) {
-        owner?.emit?("onBannerAdLoadFailed", LevelPlayAdsImpl.adErrorToJS(adUnitId: adUnitId, error: error))
+        var payload = LevelPlayAdsImpl.adErrorToJS(adUnitId: adUnitId, error: error)
+        payload["isRefresh"] = !(owner?.isBannerLoadPending ?? false)
+        owner?.emit?("onBannerAdLoadFailed", payload)
         owner?.resolveBannerLoad(success: false, error: error.localizedDescription)
     }
     func didClickAd(with adInfo: LPMAdInfo) {

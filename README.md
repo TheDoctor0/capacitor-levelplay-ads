@@ -797,8 +797,9 @@ Listens for native ad events.
 - `onRewardedAdRewarded` — `AdRewardEvent`
 
 ### Banner events
-- `onBannerAdLoaded` — `AdInfo`
-- `onBannerAdLoadFailed` — `AdErrorInfo`
+- `onBannerAdLoaded` — `AdInfo` (`isRefresh: true` for auto-refreshes)
+- `onBannerAdLoadFailed` — `AdErrorInfo` (`isRefresh: true` for a failed
+  auto-refresh; the previous creative stays on screen)
 - `onBannerAdDisplayed` — `AdInfo`
 - `onBannerAdDisplayFailed` — `AdErrorInfo`
 - `onBannerAdClicked` — `AdInfo`
