@@ -4,8 +4,8 @@ import { isServiceGranted } from './decision';
 import type { ConsentChoice } from './types';
 
 /**
- * Self-contained IAB TCF v2 encoder. Produces the websafe-base64 **core** TC
- * string segment and the matching in-app `IABTCF_*` key map that mediation
+ * Self-contained IAB TCF v2 encoder. Produces the websafe-base64 TC string
+ * (core segment + the Disclosed Vendors segment TCF v2.3 makes mandatory) and the matching in-app `IABTCF_*` key map that mediation
  * adapters read from the platform key store.
  *
  * This is "TCF-compatible" output: the bit layout follows the spec so adapters
@@ -22,6 +22,8 @@ const DEFAULT_POLICY_VERSION = 5;
 const TC_VERSION = 2;
 const NUM_PURPOSES = 24;
 const NUM_SPECIAL_FEATURES = 12;
+const DISCLOSED_VENDORS_SEGMENT_TYPE = 1;
+const DECISECONDS_PER_MILLISECOND = 1 / 100;
 
 export interface TcfEncodeOptions {
   cmpId: number;
@@ -32,7 +34,7 @@ export interface TcfEncodeOptions {
   language: string;
   /** Two-letter publisher country code, e.g. `'PL'`. */
   publisherCC: string;
-  /** Millis since epoch for the created/lastUpdated stamps. */
+  /** Millis since epoch; the created/lastUpdated stamps use its UTC day (spec: day-level timestamp). */
   now: number;
   /** `1` when GDPR applies (the `opt_in` jurisdiction), `0` otherwise. */
   gdprApplies: 0 | 1;
@@ -92,6 +94,8 @@ interface DerivedSets {
   specialFeatures: Set<number>;
   vendorConsents: Set<number>;
   vendorLI: Set<number>;
+  /** Every GVL vendor shown to the user, granted or not (Disclosed Vendors segment). */
+  disclosedVendors: Set<number>;
   maxVendorId: number;
   /** Google ATP IDs the user consented to. */
   googleAtpIds: number[];
@@ -121,11 +125,30 @@ function deriveSets(config: ConsentServicesConfig, choice: ConsentChoice): Deriv
     specialFeatures: new Set(choice.specialFeatures),
     vendorConsents: vendorIdsOf(choice.vendorConsents),
     vendorLI: vendorIdsOf(choice.vendorLegInt),
+    disclosedVendors: new Set(tcfServices.map((service) => service.tcf?.vendorId as number)),
     // Spec: highest vendor ID declared, granted or not.
     maxVendorId: Math.max(0, ...tcfServices.map((service) => service.tcf?.vendorId as number)),
     googleAtpIds: atpServices.filter((service) => isServiceGranted(choice, service)).map(atpIdOf),
     disclosedGoogleAtpIds: atpServices.filter((service) => !isServiceGranted(choice, service)).map(atpIdOf),
   };
+}
+
+/** Midnight UTC of the day containing `millis`, in deciseconds (TCF day-level Created/LastUpdated). */
+function startOfUtcDayInDeciseconds(millis: number): number {
+  const day = new Date(millis);
+
+  return Math.round(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate()) * DECISECONDS_PER_MILLISECOND);
+}
+
+/** Disclosed Vendors segment: SegmentType 1, then a bitfield of every vendor shown to the user. */
+function encodeDisclosedVendors(sets: DerivedSets): string {
+  const w = new BitWriter();
+  w.int(DISCLOSED_VENDORS_SEGMENT_TYPE, 3);
+  w.int(sets.maxVendorId, 16);
+  w.bool(false); // isRangeEncoding
+  w.bitfield(sets.disclosedVendors, sets.maxVendorId);
+
+  return w.encode();
 }
 
 /** A `length`-char `'0'`/`'1'` string for the in-app key format. */
@@ -140,7 +163,7 @@ function binaryString(set: Set<number>, length: number): string {
  */
 export function buildTcf(config: ConsentServicesConfig, choice: ConsentChoice, opts: TcfEncodeOptions): TcfResult {
   const sets = deriveSets(config, choice);
-  const created = Math.floor(opts.now / 100); // deciseconds since epoch
+  const created = startOfUtcDayInDeciseconds(opts.now);
 
   const w = new BitWriter();
   w.int(TC_VERSION, 6);
@@ -172,7 +195,7 @@ export function buildTcf(config: ConsentServicesConfig, choice: ConsentChoice, o
 
   w.int(0, 12); // numPubRestrictions
 
-  const tcString = w.encode();
+  const tcString = `${w.encode()}.${encodeDisclosedVendors(sets)}`;
 
   const keys: Record<string, string | number> = {
     IABTCF_CmpSdkID: opts.cmpId,
