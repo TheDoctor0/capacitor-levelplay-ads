@@ -81,6 +81,7 @@ export class LevelPlayAdsWeb extends WebPlugin implements LevelPlayAdsPlugin {
       provider: 'custom',
       tcString: typeof options.keys.IABTCF_TCString === 'string' ? options.keys.IABTCF_TCString : undefined,
       consentedServiceIds: options.consentedServiceIds,
+      decisionJson: options.decisionJson,
     };
     try {
       localStorage.setItem(WEB_CONSENT_KEY, JSON.stringify(data));

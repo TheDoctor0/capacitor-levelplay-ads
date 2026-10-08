@@ -139,6 +139,8 @@ public class CustomModalConsentProvider implements ConsentProvider {
             for (String id : csv.split(",")) ids.put(id);
             data.put("consentedServiceIds", ids);
         }
+        String decisionJson = TcfPrefs.prefs(context).getString(TcfPrefs.KEY_DECISION, null);
+        if (!TextUtils.isEmpty(decisionJson)) data.put("decisionJson", decisionJson);
         return data;
     }
 }

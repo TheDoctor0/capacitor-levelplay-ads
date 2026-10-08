@@ -1,208 +1,215 @@
 import type { ConsentLocaleBundle } from '../../definitions';
 
-/**
- * Built-in English copy for the custom consent modal. Every other locale and
- * every per-publisher override is merged over this bundle, so it doubles as the
- * fallback for any missing key.
- *
- * UI strings support `{var}` interpolation (e.g. `{appName}`, `{count}`).
- * The catalogues (purposes, technologies, dataCategories, legalBases,
- * retention, countries) and the per-service descriptions are transcribed from
- * the reference CMP and cover the services in `consent/services.example.json`.
- */
+/** Generated from the official IAB TCF translations (GVL v179) plus the plugin's UI copy. */
 export const en: ConsentLocaleBundle = {
-  ui: {
-    // First layer
-    'firstLayer.title': '{appName} asks for your consent to use your personal data to:',
-    'firstLayer.body':
-      'Your personal data will be processed and information from your device (cookies, ' +
-      'unique identifiers and other device data) may be stored by, accessed by and shared ' +
-      'with {count} partners or used specifically by this app. We and our partners may use ' +
-      'precise geolocation data.',
-    'firstLayer.partners': 'List of partners.',
-    'firstLayer.legInt':
-      'Some vendors may process your personal data on the basis of legitimate interest, ' +
-      'which you can object to by managing your options below.',
-
-    // Manage layer
-    'manage.title': 'Manage your data',
-    'manage.subtitle': 'You can choose how your personal data is used.',
-    'tab.categories': 'Categories',
-    'tab.services': 'Services',
-
-    // Buttons
-    'btn.consent': 'Consent',
-    'btn.manage': 'Manage options',
-    'btn.acceptAll': 'Accept all',
-    'btn.confirm': 'Confirm choices',
-
-    // Links
-    'link.privacyPolicy': 'Privacy Policy',
-    'link.legalNotice': 'Legal Notice',
-    'link.privacyPolicyOf': 'Privacy policy',
-    'link.cookiePolicyOf': 'Cookie policy',
-    'link.optOutOf': 'Opt out',
-
-    // Detail section headers + hints
-    'section.description': 'Description of Service',
-    'section.company': 'Processing Company',
-    'section.purposes': 'Data Purposes',
-    'section.purposes.hint': 'This list represents the purposes of the data collection and processing.',
-    'section.technologies': 'Technologies Used',
-    'section.technologies.hint': 'This list represents all technologies this service uses to collect data.',
-    'section.dataCollected': 'Data Collected',
-    'section.dataCollected.hint':
-      'This list represents all (personal) data that is collected by or through the use of this service.',
-    'section.legalBasis': 'Legal Basis',
-    'section.legalBasis.hint': 'In the following the required legal basis for the processing of data is listed.',
-    'section.location': 'Location of Processing',
-    'section.retention': 'Retention Period',
-    'section.transfer': 'Transfer to Third Countries',
-    'section.transfer.hint':
-      'This service may forward the collected data to a different country. Please note that this ' +
-      'service might transfer the data to a country without the required data protection standards. ' +
-      'Below you can find a list of countries to which the data is being transferred. For more ' +
-      "information regarding safeguards please refer to the provider's privacy policy or contact " +
-      'the provider directly.',
-    'section.recipients': 'Data Recipients',
+  "ui": {
+    "firstLayer.learnMore": "Learn more",
+    "firstLayer.partners": "List of partners.",
+    "btn.consent": "Consent",
+    "btn.manage": "Manage options",
+    "btn.acceptAll": "Accept all",
+    "btn.confirm": "Confirm choices",
+    "btn.back": "Back",
+    "manage.header": "Data preferences",
+    "manage.title": "Manage your data",
+    "manage.subtitle": "You can choose how your personal data is used. Vendors want your permission to do the following:",
+    "manage.viewDetails": "View details",
+    "manage.storageTitle": "Storage, duration, and usage details",
+    "manage.vendorPreferences": "Vendor preferences",
+    "vendors.title": "Confirm our vendors",
+    "vendors.subtitle": "Vendors can use your data to provide services. Declining a vendor can stop them from using the data you shared.",
+    "vendors.dataCollected": "Data collected and processed:",
+    "vendors.company": "Company:",
+    "vendors.purposes": "Purposes:",
+    "vendors.privacyPolicy": "Privacy policy",
+    "vendors.consent": "Consent",
+    "details.examples": "Examples",
+    "details.vendors": "Vendors",
+    "firstLayer.title": "{appName} asks for your consent to use your personal data to:",
+    "firstLayer.body": "Your personal data will be processed and information from your device (cookies, unique identifiers, and other device data) may be stored by, accessed by and shared with {count} partners, or used specifically by this app.",
+    "manage.consentWithCount.one": "Consent ({count} vendor)",
+    "manage.consentWithCount.other": "Consent ({count} vendors)",
+    "manage.legIntWithCount.one": "Legitimate interest ({count} vendor)",
+    "manage.legIntWithCount.other": "Legitimate interest ({count} vendors)",
+    "manage.tcfVendors": "TCF vendors",
+    "vendors.tcfVendors": "TCF vendors",
+    "vendors.header": "Vendor preferences",
+    "firstLayer.geolocation": "We and our partners may use precise geolocation data.",
+    "firstLayer.legInt": "Some vendors may process your personal data on the basis of legitimate interest, which you can object to by managing your options below. You can change or withdraw your consent at any time in the app’s privacy settings.",
+    "manage.specialFeatures": "Special features",
+    "manage.howItWorks": "How this consent management platform (CMP) works:",
+    "manage.cmpChoices": "CMP privacy choices",
+    "manage.storageBody": "The choices you make regarding the purposes and vendors affect how personalised advertising is presented to you. In this app, your choices are saved in device storage prefixed by “IABTCF_” for {days} days, then we ask again.",
+    "vendors.otherVendors": "Other vendors",
+    "vendors.retention": "Retention: {days} days.",
+    "vendors.legInt": "Legitimate interest",
+    "vendors.alwaysActive": "Always active",
+    "vendors.legIntPurposes": "Purposes (legitimate interest):",
+    "vendors.specialFeatures": "Special features:",
+    "vendors.location": "Location of processing:",
+    "vendors.category.marketing": "Marketing",
+    "vendors.category.functional": "Functional",
+    "vendors.category.essential": "Essential"
   },
-
-  categories: {
-    marketing: {
-      name: 'Marketing',
-      description: 'These technologies are used by advertisers to serve ads that are relevant to your interests.',
+  "purposes": {
+    "1": {
+      "name": "Store and/or access information on a device",
+      "description": "Cookies, device or similar online identifiers (e.g. login-based identifiers, randomly assigned identifiers, network based identifiers) together with other information (e.g. browser type and information, language, screen size, supported technologies etc.) can be stored or read on your device to recognise it each time it connects to an app or to a website, for one or several of the purposes presented here.",
+      "illustrations": [
+        "Most purposes explained in this notice rely on the storage or accessing of information from your device when you use an app or visit a website. For example, a vendor or publisher might need to store a cookie on your device during your first visit on a website, to be able to recognise your device during your next visits (by accessing this cookie each time)."
+      ]
     },
-    functional: {
-      name: 'Functional',
-      description: 'These technologies enable us to analyse usage behavior in order to measure and improve performance.',
+    "2": {
+      "name": "Use limited data to select advertising",
+      "description": "Advertising presented to you on this service can be based on limited data, such as the website or app you are using, your non-precise location, your device type or which content you are (or have been) interacting with (for example, to limit the number of times an ad is presented to you).",
+      "illustrations": [
+        "A car manufacturer wants to promote its electric vehicles to environmentally conscious users living in the city after office hours. The advertising is presented on a page with related content (such as an article on climate change actions) after 6:30 p.m. to users whose non-precise location suggests that they are in an urban zone.",
+        "A large producer of watercolour paints wants to carry out an online advertising campaign for its latest watercolour range, diversifying its audience to reach as many amateur and professional artists as possible and avoiding showing the ad next to mismatched content (for instance, articles about how to paint your house). The number of times that the ad has been presented to you is detected and limited, to avoid presenting it too often."
+      ]
     },
-    essential: {
-      name: 'Essential',
-      description: 'These technologies are required to activate the core functionality of our service.',
+    "3": {
+      "name": "Create profiles for personalised advertising",
+      "description": "Information about your activity on this service (such as forms you submit, content you look at) can be stored and combined with other information about you (for example, information from your previous activity on this service and other websites or apps) or similar users. This is then used to build or improve a profile about you (that might include possible interests and personal aspects). Your profile can be used (also later) to present advertising that appears more relevant based on your possible interests by this and other entities.",
+      "illustrations": [
+        "If you read several articles about the best bike accessories to buy, this information could be used to create a profile about your interest in bike accessories. Such a profile may be used or improved later on, on the same or a different website or app to present you with advertising for a particular bike accessory brand. If you also look at a configurator for a vehicle on a luxury car manufacturer website, this information could be combined with your interest in bikes to refine your profile and make an assumption that you are interested in luxury cycling gear.",
+        "An apparel company wishes to promote its new line of high-end baby clothes. It gets in touch with an agency that has a network of clients with high income customers (such as high-end supermarkets) and asks the agency to create profiles of young parents or couples who can be assumed to be wealthy and to have a new child, so that these can later be used to present advertising within partner apps based on those profiles."
+      ]
     },
+    "4": {
+      "name": "Use profiles to select personalised advertising",
+      "description": "Advertising presented to you on this service can be based on your advertising profiles, which can reflect your activity on this service or other websites or apps (like the forms you submit, content you look at), possible interests and personal aspects.",
+      "illustrations": [
+        "An online retailer wants to advertise a limited sale on running shoes. It wants to target advertising to users who previously looked at running shoes on its mobile app. Tracking technologies might be used to recognise that you have previously used the mobile app to consult running shoes, in order to present you with the corresponding advertisement on the app.",
+        "A profile created for personalised advertising in relation to a person having searched for bike accessories on a website can be used to present the relevant advertisement for bike accessories on a mobile app of another organisation."
+      ]
+    },
+    "5": {
+      "name": "Create profiles to personalise content",
+      "description": "Information about your activity on this service (for instance, forms you submit, non-advertising content you look at) can be stored and combined with other information about you (such as your previous activity on this service or other websites or apps) or similar users. This is then used to build or improve a profile about you (which might for example include possible interests and personal aspects). Your profile can be used (also later) to present content that appears more relevant based on your possible interests, such as by adapting the order in which content is shown to you, so that it is even easier for you to find content that matches your interests.",
+      "illustrations": [
+        "You read several articles on how to build a treehouse on a social media platform. This information might be added to a profile to mark your interest in content related to outdoors as well as do-it-yourself guides (with the objective of allowing the personalisation of content, so that for example you are presented with more blog posts and articles on treehouses and wood cabins in the future).",
+        "You have viewed three videos on space exploration across different TV apps. An unrelated news platform with which you have had no contact builds a profile based on that viewing behaviour, marking space exploration as a topic of possible interest for other videos."
+      ]
+    },
+    "6": {
+      "name": "Use profiles to select personalised content",
+      "description": "Content presented to you on this service can be based on your content personalisation profiles, which can reflect your activity on this or other services (for instance, the forms you submit, content you look at), possible interests and personal aspects. This can for example be used to adapt the order in which content is shown to you, so that it is even easier for you to find (non-advertising) content that matches your interests.",
+      "illustrations": [
+        "You read articles on vegetarian food on a social media platform and then use the cooking app of an unrelated company. The profile built about you on the social media platform will be used to present you vegetarian recipes on the welcome screen of the cooking app.",
+        "You have viewed three videos about rowing across different websites. An unrelated video sharing platform will recommend five other videos on rowing that may be of interest to you when you use your TV app, based on a profile built about you when you visited those different websites to watch online videos."
+      ]
+    },
+    "7": {
+      "name": "Measure advertising performance",
+      "description": "Information regarding which advertising is presented to you and how you interact with it can be used to determine how well an advert has worked for you or other users and whether the goals of the advertising were reached. For instance, whether you saw an ad, whether you clicked on it, whether it led you to buy a product or visit a website, etc. This is very helpful to understand the relevance of advertising campaigns.",
+      "illustrations": [
+        "You have clicked on an advertisement about a “black Friday” discount by an online shop on the website of a publisher and purchased a product. Your click will be linked to this purchase. Your interaction and that of other users will be measured to know how many clicks on the ad led to a purchase.",
+        "You are one of very few to have clicked on an advertisement about an “international appreciation day” discount by an online gift shop within the app of a publisher. The publisher wants to have reports to understand how often a specific ad placement within the app, and notably the “international appreciation day” ad, has been viewed or clicked by you and other users, in order to help the publisher and its partners (such as agencies) optimise ad placements."
+      ]
+    },
+    "8": {
+      "name": "Measure content performance",
+      "description": "Information regarding which content is presented to you and how you interact with it can be used to determine whether the (non-advertising) content e.g. reached its intended audience and matched your interests. For instance, whether you read an article, watch a video, listen to a podcast or look at a product description, how long you spent on this service and the web pages you visit etc. This is very helpful to understand the relevance of (non-advertising) content that is shown to you.",
+      "illustrations": [
+        "You have read a blog post about hiking on a mobile app of a publisher and followed a link to a recommended and related post. Your interactions will be recorded as showing that the initial hiking post was useful to you and that it was successful in interesting you in the related post. This will be measured to know whether to produce more posts on hiking in the future and where to place them on the home screen of the mobile app.",
+        "You were presented a video on fashion trends, but you and several other users stopped watching after 30 seconds. This information is then used to evaluate the right length of future videos on fashion trends."
+      ]
+    },
+    "9": {
+      "name": "Understand audiences through statistics or combinations of data from different sources",
+      "description": "Reports can be generated based on the combination of data sets (like user profiles, statistics, market research, analytics data) regarding your interactions and those of other users with advertising or (non-advertising) content to identify common characteristics (for instance, to determine which target audiences are more receptive to an ad campaign or to certain contents).",
+      "illustrations": [
+        "The owner of an online bookstore wants commercial reporting showing the proportion of visitors who consulted and left its site without buying, or consulted and bought the last celebrity autobiography of the month, as well as the average age and the male/female distribution of each category. Data relating to your navigation on its site and to your personal characteristics is then used and combined with other such data to produce these statistics.",
+        "An advertiser wants to better understand the type of audience interacting with its adverts. It calls upon a research institute to compare the characteristics of users who interacted with the ad with typical attributes of users of similar platforms, across different devices. This comparison reveals to the advertiser that its ad audience is mainly accessing the adverts through mobile devices and is likely in the 45-60 age range."
+      ]
+    },
+    "10": {
+      "name": "Develop and improve services",
+      "description": "Information about your activity on this service, such as your interaction with ads or content, can be very helpful to improve products and services and to build new products and services based on user interactions, the type of audience, etc. This specific purpose does not include the development or improvement of user profiles and identifiers.",
+      "illustrations": [
+        "A technology platform working with a social media provider notices a growth in mobile app users, and sees based on their profiles that many of them are connecting through mobile connections. It uses a new technology to deliver ads that are formatted for mobile devices and that are low-bandwidth, to improve their performance.",
+        "An advertiser is looking for a way to display ads on a new type of consumer device. It collects information regarding the way users interact with this new kind of device to determine whether it can build a new mechanism for displaying advertising on this type of device."
+      ]
+    },
+    "11": {
+      "name": "Use limited data to select content",
+      "description": "Content presented to you on this service can be based on limited data, such as the website or app you are using, your non-precise location, your device type, or which content you are (or have been) interacting with (for example, to limit the number of times a video or an article is presented to you).",
+      "illustrations": [
+        "A travel magazine has published an article on its website about the new online courses proposed by a language school, to improve travelling experiences abroad. The school’s blog posts are inserted directly at the bottom of the page, and selected on the basis of your non-precise location (for instance, blog posts explaining the course curriculum for different languages than the language of the country you are situated in).",
+        "A sports news mobile app has started a new section of articles covering the most recent football games. Each article includes videos hosted by a separate streaming platform showcasing the highlights of each match. If you fast-forward a video, this information may be used to select a shorter video to play next."
+      ]
+    }
   },
-
-  purposes: {
-    advertisement: 'Advertisement',
-    improvement_of_service: 'Improvement of service',
-    marketing: 'Marketing',
-    create_personalised_ads_profile: 'Create personalised ads profile',
-    reportings: 'Reportings',
-    segmentation: 'Segmentation',
-    optimization: 'Optimization',
-    providing_service: 'Providing Service',
-    statistics: 'Statistics',
-    analytics: 'Analytics',
-    compliance_legal_obligations: 'Compliance with legal obligations',
-    functionality: 'Functionality',
-    website_security: 'Website security',
-    personalisation: 'Personalisation',
-    sign_up_features: 'Sign up features',
-    authentication: 'Authentication',
-    product_development: 'Product development',
-    consent_storage: 'Consent storage',
-    payment: 'Payment',
-    transaction_tracking: 'Transaction tracking',
-    tracking: 'Tracking',
-    detecting_code_errors: 'Detecting code errors',
-    develop_improve_products: 'Develop and improve products',
+  "specialFeatures": {
+    "1": {
+      "name": "Use precise geolocation data",
+      "description": "With your acceptance, your precise location (within a radius of less than 500 metres) may be used in support of the purposes explained in this notice.",
+      "illustrations": []
+    },
+    "2": {
+      "name": "Identify devices based on information actively requested",
+      "description": "With your acceptance, certain characteristics specific to your device might be requested and used to distinguish it from other devices (such as the installed fonts or plugins, the resolution of your screen) in support of the purposes explained in this notice.",
+      "illustrations": []
+    }
   },
-
-  technologies: {
-    cookies: 'Cookies',
-    tracking_code: 'Tracking code',
-    web_beacons: 'Web beacons',
-    mobile_sdks: 'Mobile SDKs',
-    pixel: 'Pixel',
-    local_storage: 'Local storage',
+  "dataCategories": {
+    "1": "IP addresses",
+    "2": "Device characteristics",
+    "3": "Device identifiers",
+    "4": "Probabilistic identifiers",
+    "5": "Authentication-derived identifiers",
+    "6": "Browsing and interaction data",
+    "7": "User-provided data",
+    "8": "Non-precise location data",
+    "9": "Precise location data",
+    "10": "Users’ profiles",
+    "11": "Privacy choices"
   },
-
-  dataCategories: {
-    advertising_identifier: 'Advertising identifier',
-    gaid: 'Android/Google Advertising ID',
-    country: 'Country',
-    device_information: 'Device information',
-    ip_address: 'IP address',
-    user_behaviour: 'User behaviour',
-    language_information: 'Language information',
-    purchase_information: 'Purchase information',
-    device_id: 'Device ID',
-    unique_id: 'Unique ID',
-    user_id: 'User ID',
-    last_name: 'Last name',
-    first_name: 'First name',
-    email_address: 'E-mail address',
-    contact_information: 'Contact information',
-    address: 'Address',
-    bank_details: 'Bank details',
-    account_information: 'Account information',
-    data_identifiers: 'Data identifiers',
-    usage_data: 'Usage data',
-    referrer_url: 'Referrer URL',
-    location_information: 'Location information',
-    date_and_time_of_visit: 'Date and time of visit',
-    facebook_user_id: 'Facebook user ID',
-    websites_visited: 'Websites visited',
-    geographic_location: 'Geographic location',
-    preferences: 'Preferences',
-    website_interaction: 'Website interaction',
-    transaction_information: 'Transaction information',
-    device_operating_system: 'Device operating system',
-    browser_type: 'Browser type',
-    click_path: 'Click path',
-    cookie_id: 'Cookie ID',
-    information_from_third_party_sources: 'Information from third party sources',
-    hardware_software_type: 'Hardware/software type',
-    username: 'Username',
-    identifiers: 'Identifiers',
-    profile_information: 'Profile information',
-    profile_picture: 'Profile picture',
-    configuration_of_app_settings: 'Configuration of app settings',
-    user_agent: 'User agent',
-    app_crashes: 'App crashes',
-    opt_in_opt_out_data: 'Opt-in and opt-out data',
-    user_settings: 'User settings',
-    consent_id: 'Consent ID',
-    time_of_consent: 'Time of consent',
-    consent_type: 'Consent type',
-    template_version: 'Template version',
-    banner_language: 'Banner language',
-    anonymised_user_data: 'Anonymised user data',
-    date_of_purchase: 'Date of purchase',
-    purchase_activity: 'Purchase activity',
-    credit_debit_card_number: 'Credit and debit card number',
-    log_in_info: 'Log-in info',
-    browser_information: 'Browser information',
-    time_zone: 'Time zone',
-    error_data: 'Error data',
-  },
-
-  legalBases: {
-    art6_1_a: 'Art. 6 para. 1 s. 1 lit. a GDPR',
-    art6_1_b: 'Art. 6 para. 1 s. 1 lit. b GDPR',
-    art6_1_c: 'Art. 6 para. 1 s. 1 lit. c GDPR',
-    art6_1_d: 'Art. 6 para. 1 s. 1 lit. d GDPR',
-    art6_1_e: 'Art. 6 para. 1 s. 1 lit. e GDPR',
-    art6_1_f: 'Art. 6 para. 1 s. 1 lit. f GDPR',
-  },
-
-  retention: {
-    until_not_needed: 'The data will be deleted as soon as they are no longer needed for the processing purposes.',
-    up_to_2_years: 'The data will be kept for up to 2 years.',
-    consent_one_year:
-      'The consent data (given consent and revocation of consent) are stored for one year. ' +
-      'The data will then be deleted immediately.',
-  },
-
-  // Country names resolve via the platform's Intl.DisplayNames at runtime; only
-  // overrides and non-ISO pseudo-codes (e.g. the EU) live here.
-  countries: {
-    EU: 'European Union',
-    US: 'United States of America',
-  },
-
-  // Per-service descriptions live in the services config (ConsentService.description),
-  // not here. This map stays available only as an optional localization override,
-  // keyed by service id, and is empty by default.
-  serviceDescriptions: {},
+  "stacks": {
+    "1": "Precise geolocation data, and identification through device scanning",
+    "2": "Advertising based on limited data and advertising measurement",
+    "3": "Personalised advertising",
+    "4": "Advertising based on limited data, advertising measurement, and understanding of the audiences",
+    "5": "Advertising based on limited data, personalised advertising profile, and advertising measurement",
+    "6": "Selection of personalised advertising and advertising measurement",
+    "7": "Selection of personalised advertising, advertising measurement, and audience research",
+    "8": "Personalised advertising and advertising measurement",
+    "9": "Personalised advertising, advertising measurement, and audience research",
+    "10": "Personalised advertising",
+    "11": "Personalised content",
+    "12": "Selection of personalised content and content measurement",
+    "13": "Selection of personalised content, content measurement and audience research",
+    "14": "Personalised content and content measurement",
+    "15": "Personalised content, content measurement and audience research",
+    "16": "Personalised content, content measurement, audience research, and services development",
+    "17": "Advertising and content measurement, and audience research",
+    "18": "Advertising and content measurement",
+    "19": "Advertising measurement and audience research",
+    "20": "Advertising and content measurement, audience research, and services development",
+    "21": "Content measurement, audience research and services development.",
+    "22": "Content measurement and services development",
+    "23": "Selection of personalised advertising and content, advertising and content measurement",
+    "24": "Selection of personalised advertising and content, advertising and content measurement, and audience research",
+    "25": "Personalised advertising and content, advertising and content measurement",
+    "26": "Personalised advertising and content, advertising and content measurement, and audience research",
+    "27": "Personalised advertising and content profile",
+    "28": "Selection of personalised advertising and content",
+    "29": "Advertising based on limited data, advertising and content measurement, and audience research",
+    "30": "Selection of personalised advertising, personalised content, advertising and content measurement, and audience research",
+    "31": "Selection of personalised advertising, personalised content, advertising and content measurement, audience research, and services development",
+    "32": "Advertising based on limited data, personalised content, advertising and content measurement, and audience research",
+    "33": "Advertising based on limited data, personalised content, advertising and content measurement, audience research, and services development",
+    "34": "Advertising based on limited data, personalised content, content measurement, and audience research",
+    "35": "Advertising based on limited data, personalised content, content measurement, audience research and services development",
+    "36": "Advertising based on limited data, personalised content, and advertising measurement",
+    "37": "Advertising based on limited data, personalised content, advertising measurement, and services development",
+    "38": "Personalised advertising, advertising measurement, and services development",
+    "39": "Personalised advertising, advertising measurement, audience research and services development",
+    "40": "Personalised advertising, advertising and content measurement, audience research and services development",
+    "41": "Personalised advertising, selection of personalised content, advertising and content measurement, audience research and services development",
+    "42": "Personalised advertising and content, advertising and content measurement, audience research and services development",
+    "43": "Content based on limited data and content measurement",
+    "44": "Personalised content",
+    "45": "Advertising based on limited data, advertising measurement, audience research and services development"
+  }
 };

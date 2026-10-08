@@ -291,7 +291,11 @@ public class LevelPlayAdsPlugin extends Plugin implements LevelPlayPluginBridge 
         } catch (org.json.JSONException ignored) {
             // Malformed array — store nothing; falls back to defaults on reopen.
         }
-        TcfPrefs.prefs(getContext()).edit().putString(TcfPrefs.KEY_CONSENTED_SERVICES, csv.toString()).apply();
+        TcfPrefs.prefs(getContext())
+                .edit()
+                .putString(TcfPrefs.KEY_CONSENTED_SERVICES, csv.toString())
+                .putString(TcfPrefs.KEY_DECISION, call.getString("decisionJson"))
+                .apply();
 
         boolean granted = Boolean.TRUE.equals(call.getBoolean("granted", false));
         Map<String, Boolean> networkConsents = new HashMap<>();

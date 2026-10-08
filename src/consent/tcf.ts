@@ -1,6 +1,7 @@
-import type { ConsentServicesConfig } from '../definitions';
+import type { ConsentService, ConsentServicesConfig } from '../definitions';
 
-import type { ConsentDecision } from './types';
+import { isServiceGranted } from './decision';
+import type { ConsentChoice } from './types';
 
 /**
  * Self-contained IAB TCF v2 encoder. Produces the websafe-base64 **core** TC
@@ -33,6 +34,8 @@ export interface TcfEncodeOptions {
   publisherCC: string;
   /** Millis since epoch for the created/lastUpdated stamps. */
   now: number;
+  /** `1` when GDPR applies (the `opt_in` jurisdiction), `0` otherwise. */
+  gdprApplies: 0 | 1;
 }
 
 export interface TcfResult {
@@ -90,38 +93,39 @@ interface DerivedSets {
   vendorConsents: Set<number>;
   vendorLI: Set<number>;
   maxVendorId: number;
+  /** Google ATP IDs the user consented to. */
   googleAtpIds: number[];
+  /** Google ATP IDs shown to the user but not consented to. */
+  disclosedGoogleAtpIds: number[];
 }
 
-/** Collapse the enabled services' TCF declarations into the bitfield sets. */
-function deriveSets(config: ConsentServicesConfig, decision: ConsentDecision): DerivedSets {
-  const sets: DerivedSets = {
-    purposeConsents: new Set(),
-    purposeLI: new Set(),
-    specialFeatures: new Set(),
-    vendorConsents: new Set(),
-    vendorLI: new Set(),
-    maxVendorId: 0,
-    googleAtpIds: [],
+/**
+ * Turn the user's choice into the TCF bitfields. Purpose, legitimate-interest
+ * and special-feature bits mirror the toggles; vendor bits mirror each GVL
+ * vendor's own toggles.
+ */
+function deriveSets(config: ConsentServicesConfig, choice: ConsentChoice): DerivedSets {
+  const tcfServices = config.services.filter((service) => service.tcf?.vendorId);
+  const atpServices = config.services.filter((service) => service.tcf?.googleAtpId);
+  const atpIdOf = (service: ConsentService): number => service.tcf?.googleAtpId as number;
+  const vendorIdsOf = (serviceIds: string[]): Set<number> =>
+    new Set(
+      tcfServices
+        .filter((service) => serviceIds.includes(service.id))
+        .map((service) => service.tcf?.vendorId as number),
+    );
+
+  return {
+    purposeConsents: new Set(choice.purposeConsents),
+    purposeLI: new Set(choice.purposeLegInt),
+    specialFeatures: new Set(choice.specialFeatures),
+    vendorConsents: vendorIdsOf(choice.vendorConsents),
+    vendorLI: vendorIdsOf(choice.vendorLegInt),
+    // Spec: highest vendor ID declared, granted or not.
+    maxVendorId: Math.max(0, ...tcfServices.map((service) => service.tcf?.vendorId as number)),
+    googleAtpIds: atpServices.filter((service) => isServiceGranted(choice, service)).map(atpIdOf),
+    disclosedGoogleAtpIds: atpServices.filter((service) => !isServiceGranted(choice, service)).map(atpIdOf),
   };
-
-  for (const service of config.services) {
-    const tcf = service.tcf;
-    if (!tcf?.vendorId) continue;
-    // maxVendorId spans every declared vendor, granted or not (spec: highest ID).
-    sets.maxVendorId = Math.max(sets.maxVendorId, tcf.vendorId);
-    if (!decision.services[service.id]) continue;
-
-    sets.vendorConsents.add(tcf.vendorId);
-    (tcf.purposeConsents ?? []).forEach((p) => sets.purposeConsents.add(p));
-    (tcf.specialFeatures ?? []).forEach((f) => sets.specialFeatures.add(f));
-    if (tcf.purposeLegInt?.length) {
-      tcf.purposeLegInt.forEach((p) => sets.purposeLI.add(p));
-      sets.vendorLI.add(tcf.vendorId);
-    }
-    if (tcf.googleAtpId) sets.googleAtpIds.push(tcf.googleAtpId);
-  }
-  return sets;
 }
 
 /** A `length`-char `'0'`/`'1'` string for the in-app key format. */
@@ -134,12 +138,8 @@ function binaryString(set: Set<number>, length: number): string {
 /**
  * Encode the decision into a TC string + the `IABTCF_*` key map.
  */
-export function buildTcf(
-  config: ConsentServicesConfig,
-  decision: ConsentDecision,
-  opts: TcfEncodeOptions,
-): TcfResult {
-  const sets = deriveSets(config, decision);
+export function buildTcf(config: ConsentServicesConfig, choice: ConsentChoice, opts: TcfEncodeOptions): TcfResult {
+  const sets = deriveSets(config, choice);
   const created = Math.floor(opts.now / 100); // deciseconds since epoch
 
   const w = new BitWriter();
@@ -178,7 +178,7 @@ export function buildTcf(
     IABTCF_CmpSdkID: opts.cmpId,
     IABTCF_CmpSdkVersion: opts.cmpVersion,
     IABTCF_PolicyVersion: opts.policyVersion,
-    IABTCF_gdprApplies: 1,
+    IABTCF_gdprApplies: opts.gdprApplies,
     IABTCF_PublisherCC: (opts.publisherCC || 'AA').toUpperCase(),
     IABTCF_PurposeOneTreatment: 0,
     IABTCF_UseNonStandardTexts: 0,
@@ -188,8 +188,9 @@ export function buildTcf(
     IABTCF_PurposeConsents: binaryString(sets.purposeConsents, NUM_PURPOSES),
     IABTCF_PurposeLegitimateInterests: binaryString(sets.purposeLI, NUM_PURPOSES),
     IABTCF_SpecialFeaturesOptIns: binaryString(sets.specialFeatures, NUM_SPECIAL_FEATURES),
-    // Google Additional Consent (AC) string, version 2, for AdMob / ATP demand.
-    IABTCF_AddtlConsent: sets.googleAtpIds.length ? `2~${sets.googleAtpIds.join('.')}` : '2~',
+    // Google Additional Consent (AC) string, version 2: consented ATPs, then
+    // `dv.` with the ATPs that were disclosed but not consented.
+    IABTCF_AddtlConsent: `2~${sets.googleAtpIds.join('.')}~dv.${sets.disclosedGoogleAtpIds.join('.')}`,
   };
 
   return { tcString, keys };

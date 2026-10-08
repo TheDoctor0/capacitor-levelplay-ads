@@ -149,6 +149,9 @@ import IronSource
         if let ids = UserDefaults.standard.array(forKey: TcfPrefs.consentedServices) as? [String] {
             data["consentedServiceIds"] = ids
         }
+        if let decisionJson = UserDefaults.standard.string(forKey: TcfPrefs.decision) {
+            data["decisionJson"] = decisionJson
+        }
         return data
     }
 
@@ -156,9 +159,11 @@ import IronSource
     /// write the IABTCF_* key map to UserDefaults and forward the global +
     /// per-network GDPR consent to LevelPlay before the JS promise resolves.
     public func persistConsent(keys: [String: Any], granted: Bool,
-                               networkConsents: [String: Bool], consentedServiceIds: [String]) {
+                               networkConsents: [String: Bool], consentedServiceIds: [String],
+                               decisionJson: String?) {
         TcfPrefs.writeKeys(keys)
         UserDefaults.standard.set(consentedServiceIds, forKey: TcfPrefs.consentedServices)
+        UserDefaults.standard.set(decisionJson, forKey: TcfPrefs.decision)
         applyNetworkConsents(granted: granted, networkConsents: networkConsents)
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "capacitor-levelplay-ads",
-  "version": "0.1.43",
+  "version": "0.2.0",
   "description": "Unity LevelPlay mediation SDK for Capacitor with banner, interstitial and rewarded ads supported.",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -58,6 +58,7 @@
     "build": "npm run clean && npm run docgen && tsc && rollup -c rollup.config.mjs",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
+    "prepare": "npm run clean && tsc && rollup -c rollup.config.mjs",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {

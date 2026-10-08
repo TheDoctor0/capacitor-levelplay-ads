@@ -15,11 +15,14 @@ enum TcfPrefs {
         "IABTCF_CmpSdkVersion", "IABTCF_PolicyVersion", "IABTCF_PublisherCC",
         "IABTCF_PurposeOneTreatment", "IABTCF_UseNonStandardTexts",
         "IABTCF_PurposeLegitimateInterests", "IABTCF_VendorLegitimateInterests",
-        "IABTCF_SpecialFeaturesOptIns", "IABTCF_AddtlConsent", consentedServices,
+        "IABTCF_SpecialFeaturesOptIns", "IABTCF_AddtlConsent", consentedServices, decision,
     ]
 
     /// Plugin-private: service IDs the user left enabled, for restore on reopen.
     static let consentedServices = "levelplay_consented_services"
+
+    /// Plugin-private: the rich modal's full decision as JSON, for restore on reopen.
+    static let decision = "levelplay_consent_decision"
 
     static func hasDecision() -> Bool {
         let d = UserDefaults.standard

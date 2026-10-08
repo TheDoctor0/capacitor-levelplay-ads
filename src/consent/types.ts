@@ -1,12 +1,10 @@
+import type { ConsentDecision } from '../definitions';
+
 /**
- * The outcome the DOM modal hands back to the orchestrator — which categories
- * and services the user left enabled, plus the derived overall grant flag.
+ * The toggle state the modal hands back — everything a {@link ConsentDecision}
+ * holds except its metadata (revision, time, jurisdiction).
  */
-export interface ConsentDecision {
-  /** Personalized-ads grant forwarded to LevelPlay (true when Marketing is on). */
-  granted: boolean;
-  /** Per-category toggle state, keyed by category ID. */
-  categories: Record<string, boolean>;
-  /** Per-service toggle state, keyed by service ID. */
-  services: Record<string, boolean>;
-}
+export type ConsentChoice = Pick<
+  ConsentDecision,
+  'purposeConsents' | 'purposeLegInt' | 'vendorConsents' | 'vendorLegInt' | 'specialFeatures'
+>;
