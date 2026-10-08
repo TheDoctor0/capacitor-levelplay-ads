@@ -25,7 +25,7 @@ export const hr: ConsentLocaleBundle = {
     "vendors.consent": "Privola",
     "details.examples": "Primjeri",
     "details.vendors": "Dobavljači",
-    "firstLayer.title": "{appName} traži vašu privolu za korištenje vaših osobnih podataka za:",
+    "firstLayer.title": "{appName} želi koristiti vaše osobne podatke",
     "firstLayer.body": "Vaši osobni podaci bit će obrađeni, a informacije s vašeg uređaja (kolačići, jedinstveni identifikatori i drugi podaci o uređaju) mogu se pohranjivati, njima se može pristupati i dijeliti ih s {count} partnera ili ih može koristiti isključivo ova aplikacija.",
     "manage.consentWithCount.one": "Privola ({count} dobavljač)",
     "manage.consentWithCount.few": "Privola ({count} dobavljača)",
@@ -56,6 +56,7 @@ export const hr: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Pohrana i/ili pristup podacima na uređaju",
+      "shortName": "Pohrana i/ili pristup podacima na uređaju",
       "description": "Kolačići, uređaji ili slični mrežni identifikatori (npr. identifikatori na temelju prijave, nasumično dodijeljeni identifikatori, identifikatori na mreži) zajedno s drugim informacijama (npr. vrsta preglednika i informacije o pregledniku, jezik, veličina zaslona, podržane tehnologije itd.) mogu se pohraniti ili pročitati na vašem uređaju kako bi ga prepoznao svaki put kada se poveže s aplikacijom ili s web-mjestom, za jednu ili više ovdje predstavljenih svrha.",
       "illustrations": [
         "Većinske svrhe objašnjene u ovoj obavijesti odnose se na pohranu ili pristup informacijama s vašeg uređaja kada koristite aplikaciju ili posjetite web-mjesto. Primjerice, dobavljač ili izdavač možda će trebati pohraniti kolačić na vaš uređaj tijekom vašeg prvog posjeta web-mjestu kako bi se mogao prepoznati vaš uređaj tijekom sljedećih posjeta (svaki put pristupanjem tom kolačiću)."
@@ -63,6 +64,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Korištenje ograničenih podataka za odabir oglašavanja",
+      "shortName": "Prikazivanje oglasa na temelju ograničenih podataka",
       "description": "Oglašavanje prikazano na ovoj usluzi može se temeljiti na ograničenim podacima, kao što su web-mjesto ili aplikacija koju koristite, vaša neprecizna lokacija, vrsta uređaja ili sadržaj s kojim ste (ili ste bili) u interakciji (primjerice, kako bi se ograničio broj prikaza oglasa).",
       "illustrations": [
         "Proizvođač automobila želi promovirati svoja električna vozila ekološki osviještenim korisnicima koji žive u gradu nakon radnog vremena. Oglašavanje je prikazano na stranici s povezanim sadržajem (kao što je članak o akcijama za sprječavanje klimatskih promjena) nakon 18:30 sati korisnicima čija neprecizna lokacija upućuje na to da se nalaze u urbanoj zoni.",
@@ -71,6 +73,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Kreiranje profila za personalizirano oglašavanje",
+      "shortName": "Izrada profila za personalizirane oglase",
       "description": "Podaci o vašoj aktivnosti na ovoj usluzi (kao što su obrasci koje pošaljete, sadržaj koji gledate) mogu se pohraniti i kombinirati s drugim podacima o vama (primjerice, podacima iz vaše prethodne aktivnosti na ovoj usluzi i drugim web-mjestima ili aplikacijama) ili sličnim korisnicima. Oni se zatim koriste za izgradnju ili poboljšanje profila o vama (što može uključivati moguće interese i osobne aspekte). Ovaj subjekt i drugi subjekti mogu vaš profil koristiti (također kasnije) za prikazivanje oglašavanja koje se čini relevantnijim na temelju vaših mogućih interesa.",
       "illustrations": [
         "Ako pročitate nekoliko članaka o najboljoj dodatnoj opremi za bicikle koju možete kupiti, te informacije mogu se koristiti za izradu profila o vašem interesu za dodatnu opremu za bicikle. Takav profil može se kasnije koristiti ili poboljšati na istom ili drugom web-mjestu ili aplikaciji kako bi vam se prikazalo oglašavanje za određeni brend dodatne opreme za bicikle. Ako pogledate i konfigurator vozila na web-mjestu proizvođača luksuznih automobila, te informacije mogu se kombinirati s vašim interesom za bicikle kako bi se poboljšao vaš profil i pretpostavilo da ste zainteresirani za luksuznu biciklističku opremu.",
@@ -79,6 +82,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Korištenje profila za odabir personaliziranog oglašavanja",
+      "shortName": "Prikazivanje personaliziranih oglasa",
       "description": "Oglašavanje koje vam je prikazano na ovoj usluzi može se temeljiti na vašim profilima oglašavanja koji mogu odražavati vašu aktivnost na ovoj usluzi ili drugim web-mjestima ili aplikacijama (poput obrazaca koje pošaljete, sadržaja koji pogledate), moguće interese i osobne aspekte.",
       "illustrations": [
         "Trgovac na mreži želi oglašavati ograničenu prodaju tenisica za trčanje. Želi ciljati oglašavanje korisnicima koji su prethodno gledali tenisice za trčanje na njegovoj mobilnoj aplikaciji. Tehnologije praćenja mogu se koristiti kako bi se prepoznalo da ste prethodno koristili mobilnu aplikaciju za gledanje tenisica za trčanje kako bismo vam predstavili odgovarajući oglas u aplikaciji.",
@@ -87,6 +91,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Kreiranje profila za personaliziranje sadržaja",
+      "shortName": "Izrada profila za personalizirani sadržaj",
       "description": "Podaci o vašoj aktivnosti na ovoj usluzi (kao što su obrasci koje pošaljete, nereklamni sadržaj koji gledate) mogu se pohraniti i kombinirati s drugim podacima o vama (primjerice, vaša prethodna aktivnost na ovoj usluzi ili drugim web-mjestima ili aplikacijama) ili sličnim korisnicima. Oni se zatim koriste za izgradnju ili poboljšanje profila o vama (što može, primjerice, uključivati moguće interese i osobne aspekte). Vaš profil može se koristiti (također kasnije) za prikazivanje sadržaja koji se čini relevantnijim na temelju vaših mogućih interesa, kao što je prilagođavanje redoslijeda u kojem vam se sadržaj prikazuje, tako da je još lakše pronaći sadržaj koji odgovara vašim interesima.",
       "illustrations": [
         "Pročitali ste nekoliko članaka o tome kako izgraditi kućicu na drvetu na platformi društvenih medija. Te informacije mogu se dodati profilu kako bi se označio vaš interes za sadržaj koji se odnosi na boravak na otvorenom, kao i vodiče „uradi sam” (s ciljem omogućavanja personalizacije sadržaja, tako da vam se, na primjer, u budućnosti prikazuje više objava na blogovima i članaka o kućicama na drvetu i drvenim kolibama).",
@@ -95,6 +100,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Korištenje profila za odabir personaliziranog sadržaja",
+      "shortName": "Prikazivanje personaliziranog sadržaja",
       "description": "Sadržaj koji vam je predstavljen na ovoj usluzi može se temeljiti na vašim profilima za personalizaciju sadržaja, koji mogu odražavati vašu aktivnost na ovoj ili drugim uslugama (primjerice, obrasci koje pošaljete, sadržaj koji gledate), moguće interese i osobne aspekte. Primjerice, ovo se može koristiti za prilagođavanje redoslijeda prema kojem vam se sadržaj prikazuje, tako da vam je još lakše pronaći (ne-reklamni) sadržaj koji odgovara vašim interesima.",
       "illustrations": [
         "Čitate članke o vegetarijanskoj prehrani na platformi društvenih medija, a zatim koristite aplikaciju za kuhanje nepovezane tvrtke. Profil izrađen o vama na platformi društvenih medija koristit će se za prikazivanje vegetarijanskih recepata na zaslonu dobrodošlice aplikacije za kuhanje.",
@@ -103,6 +109,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Mjerenje performansi oglašavanja",
+      "shortName": "Mjerenje uspješnosti oglasa",
       "description": "Informacije o tome koje vam se oglašavanje prikazuje i kako komunicirate s njime mogu se koristiti za određivanje toga koliko je vama ili drugim korisnicima oglas bio koristan i jesu li postignuti ciljevi oglašavanja. Na primjer, jeste li vidjeli oglas, jeste li kliknuli na njega, jeste li na temelju njega kupili proizvod ili posjetili web-mjesto itd. To je vrlo korisno za razumijevanje relevantnosti reklamnih kampanja.",
       "illustrations": [
         "Kliknuli ste na oglas o popustu za „crni petak” mrežne trgovine na web-mjestu izdavača i kupili proizvod. Vaš će klik biti povezan s ovom kupnjom. Izmjerit će se vaša interakcija i interakcija s drugim korisnicima kako bi se znalo koliko je klikova na oglas dovelo do kupnje.",
@@ -111,6 +118,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Mjerenje performansi sadržaja",
+      "shortName": "Mjerenje uspješnosti sadržaja",
       "description": "Informacije o tome koji vam je sadržaj prikazan i vašem angažmanu s njime mogu se koristiti za utvrđivanje je li (nereklamni) sadržaj, primjerice, dostigao ciljanu publiku i bio usklađen s vašim interesima. Na primjer, jeste li pročitali članak, pogledali videozapis, poslušali podcast ili pogledali opis proizvoda, koliko ste vremena proveli na ovoj usluzi i web-mjestima koje posjećujete itd. To je vrlo korisno za razumijevanje relevantnosti (nereklamnog) sadržaja koji vam je prikazan.",
       "illustrations": [
         "Pročitali ste objavu na blogu o planinarenju putem mobilne aplikacije izdavača i slijedili poveznicu na preporučenu i povezanu objavu. Vaše će se interakcije zabilježiti tako da prikazuju da vam je početna objava o planinarenju bila korisna i da vas je uspješno zainteresirala za povezanu objavu. To će se mjeriti kako bi se znalo hoće li se kreirati više objava o planinarenju u budućnosti i gdje ih treba postaviti na početni zaslon mobilne aplikacije.",
@@ -119,6 +127,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Razumijevanje publike kroz statistiku ili kombinacije podataka iz različitih izvora",
+      "shortName": "Razumijevanje naše publike putem statistike",
       "description": "Izvješća se mogu generirati na temelju kombinacije skupova podataka (poput korisničkih profila, statistike, istraživanja tržišta, analitičkih podataka) u vezi s vašim interakcijama i interakcijama drugih korisnika s oglašavanjem ili (nereklamnim) sadržajem kako bi se utvrdile uobičajene karakteristike (primjerice, kako bi se utvrdilo koja ciljana publika više prihvaća oglasnu kampanju ili određeni sadržaj).",
       "illustrations": [
         "Vlasnik mrežne knjižare želi komercijalno izvještavanje koje prikazuje udio posjetitelja koji su pregledali i napustili njegovu stranicu bez kupnje, ili su pregledali i kupili najnoviju autobiografiju slavne osobe tog mjeseca, kao i prosječnu dob i distribuciju žena/muškaraca u svakoj kategoriji. Podaci koji se odnose na vašu navigaciju na njegovom web-mjestu i na vaše osobne karakteristike zatim se koriste i kombiniraju s drugim takvim podacima za izradu ove statistike.",
@@ -127,6 +136,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Razvoj i poboljšanje usluga",
+      "shortName": "Poboljšanje naših usluga",
       "description": "Informacije o vašoj aktivnosti na ovoj usluzi, kao što su vaša interakcija s oglasima ili sadržajem, mogu biti vrlo korisne za poboljšanje proizvoda i usluga te za izgradnju novih proizvoda i usluga na temelju interakcija korisnika, vrste publike itd. Ova specifična svrha ne uključuje razvoj ili poboljšanje korisničkih profila i identifikatora.",
       "illustrations": [
         "Tehnološka platforma koja surađuje s pružateljem usluga društvenih medija primjećuje rast korisnika mobilnih aplikacija i uočava na temelju njihovih profila da se mnogi od njih povezuju putem mobilnih veza. Koristi novu tehnologiju za prikaz oglasa koji su formatirani za mobilne uređaje i koji imaju nisku propusnost kako bi se poboljšale njihove performanse.",
@@ -135,6 +145,7 @@ export const hr: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Korištenje ograničenih podataka za odabir sadržaja",
+      "shortName": "Prikazivanje sadržaja na temelju ograničenih podataka",
       "description": "Sadržaj prikazan na ovoj usluzi može se temeljiti na ograničenim podacima, kao što su web-mjesto ili aplikacija koju koristite, vaša neprecizna lokacija, vrsta uređaja ili sadržaj s kojim ste (ili ste bili) u interakciji (primjerice, kako bi se ograničio broj prikaza videozapisa ili članka).",
       "illustrations": [
         "Putnički časopis objavio je članak na svojem web-mjestu o novim mrežnim tečajevima koje je predložila jezična škola kako bi se poboljšala iskustva putovanja u inozemstvu. Objave na blogu škole umeću se izravno na dnu stranice, a odabiru se na temelju vaše neprecizne lokacije (primjerice, objave na blogu koje objašnjavaju program tečaja jezika koji se razlikuju od jezika zemlje u kojoj se nalazite).",
@@ -213,5 +224,9 @@ export const hr: ConsentLocaleBundle = {
     "43": "Sadržaj na temelju ograničenih podataka i mjerenje sadržaja",
     "44": "Personalizirani sadržaj",
     "45": "Oglašavanje na temelju ograničenih podataka, mjerenje oglašavanja, istraživanje publike i razvoj usluga"
+  },
+  "stackSummaries": {
+    "26": "Personalizirani oglasi i sadržaj te mjerenje njihove uspješnosti",
+    "42": "Personalizirani oglasi i sadržaj, mjerenje njihove uspješnosti i poboljšanje naših usluga"
   }
 };

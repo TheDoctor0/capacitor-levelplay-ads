@@ -479,6 +479,8 @@ export interface ConsentServiceTcf {
 /** Name, description and examples of one IAB purpose or special feature. */
 export interface ConsentPurposeText {
   name: string;
+  /** Plain-language label for the first layer; the official `name` stays on the detail screens. */
+  shortName?: string;
   description: string;
   illustrations?: string[];
 }
@@ -498,6 +500,8 @@ export interface ConsentLocaleBundle {
   dataCategories?: Record<string, string>;
   /** IAB stack names, keyed by stack ID — the first-layer purpose summary. */
   stacks?: Record<string, string>;
+  /** Plain-language first-layer summaries, keyed by stack ID; preferred over the official stack name. */
+  stackSummaries?: Record<string, string>;
   /** Country names, keyed by ISO-3166 code (overrides `Intl.DisplayNames`). */
   countries?: Record<string, string>;
 }

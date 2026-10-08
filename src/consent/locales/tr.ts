@@ -25,7 +25,7 @@ export const tr: ConsentLocaleBundle = {
     "vendors.consent": "Onay",
     "details.examples": "Örnekler",
     "details.vendors": "Tedarikçiler",
-    "firstLayer.title": "{appName}, kişisel verilerinizi aşağıdaki amaçlarla kullanmak için onayınızı istiyor:",
+    "firstLayer.title": "{appName} kişisel verilerinizi kullanmak istiyor",
     "firstLayer.body": "Kişisel verileriniz işlenecek ve cihazınızdaki bilgiler (çerezler, benzersiz tanımlayıcılar ve diğer cihaz verileri) {count} iş ortağı tarafından saklanabilir, erişilebilir ve onlarla paylaşılabilir ya da yalnızca bu uygulama tarafından kullanılabilir.",
     "manage.consentWithCount.one": "Onay ({count} tedarikçi)",
     "manage.consentWithCount.other": "Onay ({count} tedarikçi)",
@@ -54,6 +54,7 @@ export const tr: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Bilgileri bir cihazda depolamak ve/veya onlara cihazdan erişmek",
+      "shortName": "Bilgileri bir cihazda depolamak ve/veya onlara cihazdan erişmek",
       "description": "Burada belirtilen amaçlardan biri veya birkaçı için, cihazınız bir uygulamaya veya bir web sitesine bağlandığı her seferinde onu tanınmak için cihazınıza başka bilgilerle birlikte (ör. tarayıcı türü ve bilgileri, dil, ekran boyutu, desteklenen teknolojiler vb.) çerezler, cihaz veya benzer çevrim içi tanımlayıcılar (ör. oturum açma tabanlı tanımlayıcılar, rastgele atanan tanımlayıcılar, ağ tabanlı tanımlayıcılar) depolanabilir veya okunabilir.",
       "illustrations": [
         "Bu bildirimde açıklanan çoğu amaç, bir uygulama kullandığınızda veya bir web sitesini ziyaret ettiğinizde cihazınızda bilgi depolanmasına veya bunlara erişilmesine dayanır. Örneğin, bir web sitesindeki ilk ziyaretiniz sırasında bir satıcının veya yayıncının bir sonraki ziyaretlerinizde cihazınızı tanıyabilmek için cihazınıza bir çerez depolaması gerekebilir (her seferinde bu çereze erişerek)."
@@ -61,6 +62,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Reklam seçmek için sınırlı veri kullanmak",
+      "shortName": "Sınırlı verilere dayalı reklam göstermek",
       "description": "Bu hizmette size sunulan reklamlar, kullanmakta olduğunuz web sitesi veya uygulama, kesin olmayan konumunuz, cihaz türünüz veya etkileşimde bulunuyor olduğunuz (veya bulunmuş olduğunuz) içerik (örneğin size bir reklamın sunulma sayısını sınırlamak için) gibi sınırlı verilere dayanabilir.",
       "illustrations": [
         "Bir otomobil üreticisi, kendi elektrikli araçlarını, çalışma saatlerinden sonra şehirde yaşayan çevre bilincine sahip kullanıcılara tanıtmak ister. Reklam, 18:30'dan sonra, ilgili içerik (iklim değişikliği eylemleri hakkında bir makale gibi) bulunan bir sayfada, kesin olmayan konumu kentsel bir bölge bulunduklarını gösteren kullanıcılara sunulur.",
@@ -69,6 +71,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Kişiselleştirilmiş reklam için profiller oluşturmak",
+      "shortName": "Kişiselleştirilmiş reklam için profil oluşturmak",
       "description": "Bu hizmetteki etkinliğiniz hakkındaki bilgiler (gönderdiğiniz formlar, baktığınız içerik gibi) depolanabilir ve siz veya benzer kullanıcılar hakkındaki diğer bilgilerle (örneğin, bu hizmetteki ve başka web sitelerindeki veya uygulamalardaki önceki etkinliğinizden elde edilen bilgiler) birleştirilebilir. Bunlar daha sonra sizin hakkınızda bir profil oluşturmak veya onu iyileştirmek için kullanılır (olası ilgi alanlarını ve kişisel özellikleri içerebilir). Profiliniz (yine daha sonra) bu ve başka kuruluşlar tarafından olası ilgi alanlarınıza göre daha ilgili görünen reklamlar sunmak için kullanılabilir.",
       "illustrations": [
         "Satın alınacak en iyi bisiklet aksesuarları hakkında birkaç makale okursanız bu bilgiler bisiklet aksesuarlarına duyduğunuz ilgi hakkında bir profil oluşturmak için kullanılabilir. Böyle bir profil daha sonra, size belirli bir bisiklet aksesuarı markası için reklam sunmak üzere aynı veya başka bir web sitesinde veya uygulamada kullanılabilir veya geliştirilebilir. Ayrıca bir lüks otomobil üreticisinin web sitesinde bir araç için bir yapılandırıcıya da bakarsanız bu bilgiler profilinizi iyileştirmek ve lüks bisiklet donanımı ile ilgilendiğinizi varsaymak için bisikletlere olan ilginizle birleştirilebilir.",
@@ -77,6 +80,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Kişiselleştirilmiş reklam seçmek için profilleri kullanmak",
+      "shortName": "Kişiselleştirilmiş reklam göstermek",
       "description": "Bu hizmette size sunulan reklamlar, bu hizmetteki veya başka web sitelerindeki veya uygulamalardaki (gönderdiğiniz formlar, baktığınız içerik gibi) faaliyetlerinizi, olası ilgi alanlarınızı ve kişisel yönlerinizi yansıtabilecek olan reklam profillerinize dayanabilir.",
       "illustrations": [
         "Çevrim içi bir perakendeci, koşu ayakkabılarında sınırlı bir satışın reklamını yapmak ister. Reklamı, daha önce kendi mobil uygulamasında koşu ayakkabılarına bakan kullanıcılara reklam hedeflemek ister. Size uygulamada ilgili reklamlar sunmak amacıyla, daha önce koşu ayakkabılarına bakmak için mobil uygulamayı kullanmış olduğunuzu fark etmek üzere izleme teknolojileri kullanılabilir.",
@@ -85,6 +89,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "5": {
       "name": "İçeriği kişiselleştirmek için profiller oluşturmak",
+      "shortName": "Kişiselleştirilmiş içerik için profil oluşturmak",
       "description": "Bu hizmetteki etkinliğiniz hakkındaki bilgiler (örneğin gönderdiğiniz formlar, baktığınız reklam dışı içerik gibi) depolanabilir ve siz veya benzer kullanıcılar hakkındaki diğer bilgilerle (bu hizmetteki ve başka web sitelerindeki veya uygulamalardaki önceki etkinliğiniz gibi) birleştirilebilir. Bunlar daha sonra sizin hakkınızda bir profil oluşturmak veya onu iyileştirmek için kullanılır (bunlar örneğin olası ilgi alanlarını ve kişisel özellikleri içerebilir). Profiliniz (yine daha sonra) olası ilgi alanlarınıza göre daha ilgili görünen içerik sunmak için kullanılabilir, örneğin, ilgi alanlarınıza uyan içeriği daha da kolay bulmanız için içeriğin size gösterilme sırasını uyarlayarak.",
       "illustrations": [
         "Bir sosyal medya platformunda bir ağaç evinin nasıl kurulacağı hakkında birkaç makale okudunuz. Bu bilgiler, dış mekân ile ilgili içeriğe ve kendin yap rehberlerine ilgi duyduğunuz hakkında bir işaret koymak için bir profile eklenebilir (örneğin size gelecekte ağaç evleri ve ahşap kabinler hakkında daha fazla blog yayını ve makalesi sunulması için içeriğin kişiselleştirilmesine olanak vermek amacıyla).",
@@ -93,6 +98,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Kişiselleştirilmiş içerik seçmek için profilleri kullanmak",
+      "shortName": "Kişiselleştirilmiş içerik göstermek",
       "description": "Bu hizmette size sunulan içerik, bu veya diğer hizmetlerdeki etkinliğinizi (ör. gönderdiğiniz formlar, baktığınız içerik), olası ilgi alanlarınızı ve kişisel yönlerinizi yansıtabilecek içerik kişiselleştirme profillerinize dayalı olabilir. Bu, ilgi alanlarınıza uygun (reklam dışı) içerikleri bulmanızı daha da kolaylaştıracak şekilde, örneğin, içeriklerin size gösterilme sırasını düzenlemek için kullanılabilir.",
       "illustrations": [
         "Bir sosyal medya platformunda vejetaryen yemeklerle ilgili makaleler okudunuz ve sonra ilgisiz bir şirketin yemek pişirme uygulamasını kullandınız. Sosyal medya platformunda sizin hakkınızda oluşturulan profil, yemek pişirme uygulamasının karşılama ekranında size vejetaryen yemek tarifleri göstermek için kullanılacaktır.",
@@ -101,6 +107,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Reklam performansını ölçmek",
+      "shortName": "Reklam performansını ölçmek",
       "description": "Size hangi reklamın sunulduğu ve bu reklamla nasıl etkileşim kurduğunuz hakkındaki bilgiler, bir reklamın siz veya başka kullanıcılar için ne kadar işe yaradığını ve reklamın hedeflerine ulaşılıp ulaşılmadığını belirlemek için kullanılabilir. Örneğin, bir reklamı görüp görmediğiniz, ona tıklayıp tıklamadığınız, bunun sizi bir ürün satın almanıza veya bir web sitesini ziyaret etmenize neden olup olmadığı gibi. Bu, reklam kampanyalarının uygunluğunu anlamak için çok yararlıdır.",
       "illustrations": [
         "Bir yayıncının web sitesindeki bir çevrim içi mağaza tarafından “kara Cuma” indirimi hakkında bir reklama tıkladınız ve bir ürün satın aldınız. Tıklamanız, bu satın alma ile ilişkilendirilecektir. Sizin ve diğer kullanıcıların etkileşimi, reklama yapılan kaç tıklamanın bir satın almaya yol açtığını öğrenmek için ölçülecektir.",
@@ -109,6 +116,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "8": {
       "name": "İçerik performansını ölçmek",
+      "shortName": "İçerik performansını ölçmek",
       "description": "Hangi içeriğin size sunulduğu ve onunla nasıl etkileşime girdiğiniz hakkındaki bilgiler, (reklam dışı) içeriğin örneğin hedef kitlesine ulaşıp ulaşmadığını ve ilgi alanlarınıza uyup uymadığını belirlemek için kullanılabilir. Örneğin bir makale okuyup okumadığınız, video izleyip izlemediğiniz, podcast dinleyip dinlemediğiniz veya bir ürün açıklamasına bakıp bakmadığınız, bu hizmette ne kadar zaman harcadığınız ve ziyaret ettiğiniz web sayfaları vb. Bu, size gösterilen (reklam dışı) içeriğin uygunluğunu anlamak için çok yararlıdır.",
       "illustrations": [
         "Bir yayıncının mobil uygulamasında doğa yürüyüşü hakkında bir blog yayını okudunuz ve önerilen ve ilgili bir yanının bağlantısını takip ettiniz. Etkileşimleriniz, ilk doğa yürüyüşü yayının sizin için yararlı olduğunu ve ilgili yayında ilginizi çekmekte başarılı olduğunu gösterdiği şeklinde kaydedilecektir. Bu, ileride doğa yürüyüşü hakkında daha çok yayın üretip üretilmeyeceğini ve bunların mobil uygulamanın ana ekranında nereye yerleştirileceğini bilmek için ölçülecektir.",
@@ -117,6 +125,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "9": {
       "name": "İstatistikler veya farklı kaynaklardan gelen verilerin bileşimleri yoluyla hedef kitleleri anlamak",
+      "shortName": "Kitlemizi istatistiklerle anlamak",
       "description": "Ortak özellikleri (örneğin bir reklam kampanyasına veya belirli içeriklere hangi hedef kitlelerin daha açık olduğunu belirlemek için) belirlemek için, sizin ve diğer kullanıcıların reklamlar veya (reklam dışı) içerik ile etkileşimlerine ilişkin veri kümelerinin (kullanıcı profilleri, istatistikler, pazar araştırması, analiz verileri gibi) birleşimi temelinde raporlar oluşturulabilir.",
       "illustrations": [
         "Çevrim içi bir kitabevinin sahibi, sitesine bakıp satın alma yapmadan ayrılan veya bakıp o ayın en yeni ünlü kişi otobiyografisini satın alan ziyaretçilerin oranını ve her kategorinin yaş ortalamasını ve erkek/kadın dağılımını gösteren ticari rapor istemektedir. Onun sitesinde gezinmenizle ve kişisel özelliklerinizle ilgili veriler böylece bu istatistikleri oluşturmak için kullanılır ve bu gibi başka verilerle birleştirilir.",
@@ -125,6 +134,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Hizmetleri geliştirmek ve iyileştirmek",
+      "shortName": "Hizmetlerimizi iyileştirmek",
       "description": "Reklamlar veya içerik ile etkileşiminiz gibi bu hizmetteki etkinliğiniz hakkındaki bilgiler, kullanıcı etkileşimlerine, hedef kitlenin türüne vb. dayalı olarak ürünleri ve hizmetleri iyileştirmek ve yeni ürünler ve hizmetler oluşturmak için çok yararlı olabilir. Bu özel amaç, kullanıcı profilleri ve tanımlayıcılar geliştirilmesini veya iyileştirilmesini içermez.",
       "illustrations": [
         "Bir sosyal medya sağlayıcısı ile çalışan bir teknoloji platformu mobil uygulama kullanıcılarında bir artış fark eder ve bunların profilleri temelinde bunların birçoğunun mobil bağlantılar aracılığıyla bağlandığını görür. Kendi performansını artırmak için, mobil cihazlar için biçimlendirilmiş olan ve düşük bant genişliğine sahip olan reklamlar sunmak için yeni bir teknoloji kullanır.",
@@ -133,6 +143,7 @@ export const tr: ConsentLocaleBundle = {
     },
     "11": {
       "name": "İçerik seçmek için sınırlı veri kullanmak",
+      "shortName": "Sınırlı verilere dayalı içerik göstermek",
       "description": "Bu hizmette size sunulan içerik, kullandığınız web sitesi veya uygulama, kesin olmayan konumunuz, cihaz türünüz veya etkileşimde bulunuyor olduğunuz (veya bulunduğunuz) içerik (örneğin size bir videonun veya makalenin sunulma sayısını sınırlamak için) gibi sınırlı verilere dayanabilir.",
       "illustrations": [
         "Bir seyahat dergisi, yurt dışındaki seyahat deneyimlerini iyileştirmek için bir dil okulu tarafından önerilen yeni çevrim içi kurslar hakkında kendi web sitesinde bir makale yayınlamıştır. Okulun blog yayınları doğrudan sayfanın altına eklenmiş ve kesin olmayan konumunuza göre seçilmiştir (örneğin, bulunduğunuz ülkenin dilinden farklı diller için kurs müfredatını açıklayan blog yayınları).",
@@ -211,5 +222,9 @@ export const tr: ConsentLocaleBundle = {
     "44": "Kişiselleştirilmiş içerik",
     "45": "Sınırlı veriye, reklam ölçümüne, hedef kitle araştırmasına ve hizmetlerin geliştirilmesine dayalı reklamlar",
     "1": "Kesin coğrafi konum verileri ve cihaz tarama vasıtası ile kimlik belirleme"
+  },
+  "stackSummaries": {
+    "26": "Kişiselleştirilmiş reklam ve içerik ile bunların performansının ölçülmesi",
+    "42": "Kişiselleştirilmiş reklam ve içerik, bunların performansının ölçülmesi ve hizmetlerimizin iyileştirilmesi"
   }
 };

@@ -25,7 +25,7 @@ export const ro: ConsentLocaleBundle = {
     "vendors.consent": "Consimțământ",
     "details.examples": "Exemple",
     "details.vendors": "Furnizori",
-    "firstLayer.title": "{appName} vă solicită consimțământul pentru a vă folosi datele personale pentru:",
+    "firstLayer.title": "{appName} dorește să vă folosească datele personale",
     "firstLayer.body": "Datele dumneavoastră personale vor fi prelucrate, iar informațiile de pe dispozitiv (cookie-uri, identificatori unici și alte date ale dispozitivului) pot fi stocate, accesate și partajate cu {count} parteneri sau folosite exclusiv de această aplicație.",
     "manage.consentWithCount.one": "Consimțământ ({count} furnizor)",
     "manage.consentWithCount.few": "Consimțământ ({count} furnizori)",
@@ -56,6 +56,7 @@ export const ro: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Stocarea și/sau accesarea informațiilor de pe un dispozitiv",
+      "shortName": "Stocarea și/sau accesarea informațiilor de pe un dispozitiv",
       "description": "Modulele cookie, dispozitivele sau identificatorii online similari (de exemplu, identificatorii de autentificare, identificatorii alocați aleatoriu, identificatorii de rețea) împreună cu alte informații (de exemplu, tipul browserului și informațiile despre acesta, limba, dimensiunea ecranului, tehnologiile acceptate etc.) pot fi stocate sau citite pe dispozitivul dvs. pentru a le recunoaște de fiecare dată când se conectează la o aplicație sau la un site web, pentru unul sau mai multe scopuri prezentate aici.",
       "illustrations": [
         "Majoritatea scopurilor explicate în această notificare se bazează pe stocarea sau accesarea informațiilor de pe dispozitivul dvs. atunci când utilizați o aplicație sau vizitați un site web. De exemplu, un furnizor sau editor poate stoca un modul cookie pe dispozitivul dvs. în timpul primei dvs. accesări a unui site-web, pentru a putea recunoaște dispozitivul dvs. în timpul următoarelor accesări (prin accesarea acestui modul cookie de fiecare dată)."
@@ -63,6 +64,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Utilizarea de date limitate pentru a selecta publicitatea",
+      "shortName": "Afișarea reclamelor pe baza unor date limitate",
       "description": "Publicitatea care vă este prezentată în cadrul acestui serviciu se poate baza pe date limitate, cum ar fi site-ul web sau aplicația pe care o utilizați, locația dvs. neprecisă, tipul de dispozitiv sau conținutul cu care interacționați (sau ați interacționat) (de exemplu, pentru a limita numărul de afișări ale unei reclame).",
       "illustrations": [
         "Un producător auto dorește să își promoveze vehiculele electrice în rândul utilizatorilor preocupați de mediu care locuiesc în oraș după orele de program. Publicitatea este prezentată, după ora 18:30, pe o pagină cu conținut asociat (cum ar fi un articol despre acțiuni privind schimbările climatice), utilizatorilor a căror locație imprecisă sugerează că aceștia se află într-o zonă urbană.",
@@ -71,6 +73,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Crearea profilurilor pentru publicitate personalizată",
+      "shortName": "Crearea unui profil pentru reclame personalizate",
       "description": "Informațiile despre activitatea dvs. din acest serviciu (cum ar fi formularele pe care le trimiteți, conținutul pe care îl consultați) pot fi stocate și combinate cu alte informații despre dvs. (de exemplu, informații privind activitatea dvs. anterioară de pe acest serviciu și alte site-uri web sau aplicații) sau utilizatori similari. Acestea sunt utilizate apoi pentru a construi sau îmbunătăți un profil despre dvs. (care poate include posibile interese și aspecte personale). Profilul dvs. poate fi utilizat (și mai târziu), de această entitate sau alte entități, pentru a prezenta publicitate care pare mai relevantă pe baza posibilelor dvs. interese.",
       "illustrations": [
         "Dacă citiți mai multe articole despre cele mai bune accesorii de cumpărat pentru biciclete, aceste informații pot fi utilizate pentru a crea un profil despre interesul dvs. față de accesoriile pentru biciclete. Un astfel de profil poate fi utilizat sau îmbunătățit ulterior pe același site web sau pe un alt site web sau aplicație pentru a vă prezenta publicitate pentru un anumit brand de accesorii pentru bicicletă. Dacă vă uitați și la un configurator de preț pentru un vehicul pe un site al unui producător de mașini de lux, aceste informații pot fi combinate cu interesul dvs. legat de biciclete, pentru a perfecționa profilul dvs. și pentru a pleca de la premisa că sunteți interesat(ă) de echipamentele de ciclism de lux.",
@@ -79,6 +82,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Utilizarea profilurilor pentru selectarea publicității personalizate",
+      "shortName": "Afișarea reclamelor personalizate",
       "description": "Publicitatea care vă este prezentată în cadrul acestui serviciu se poate baza pe profilurile dvs. de publicitate, care pot reflecta activitatea dvs. în cadrul acestui serviciu sau pe alte site-uri web sau aplicații (precum formularele pe care le trimiteți, conținutul pe care îl vizualizați), posibilele interese și aspectele personale.",
       "illustrations": [
         "Un comerciant online dorește să facă publicitate unei reduceri limitate la papucii de alergare. Acesta dorește să direcționeze publicitatea către utilizatorii care au vizualizat anterior pantofi de alergat pe aplicațiile mobile. Tehnologiile de urmărire pot fi utilizate pentru a recunoaște faptul că ați utilizat anterior aplicații mobile pentru a vizualiza pantofi de alergare, cu scopul de a vă prezenta reclamele corespunzătoare în aplicație.",
@@ -87,6 +91,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Crearea profilurilor de conținut personalizat",
+      "shortName": "Crearea unui profil pentru conținut personalizat",
       "description": "Informațiile despre activitatea dvs. în cadrul acestui serviciu (de exemplu, formularele pe care le trimiteți, conținutul fără caracter publicitar) pot fi stocate și combinate cu alte informații despre dvs. (cum ar fi activitatea dvs. anterioară în cadrul acestui serviciu sau pe alte site-uri web sau aplicații) sau utilizatori similari. Acestea sunt utilizate apoi pentru a construi sau îmbunătăți un profil despre dvs. (care ar putea include, de exemplu, posibile interese și aspecte personale). Profilul dvs. poate fi utilizat (și ulterior) pentru a prezenta conținut care pare mai relevant în baza posibilelor dvs. interese, cum ar fi prin adaptarea ordinii în care vă este afișat conținutul, astfel încât să fie și mai ușor pentru dvs. să găsiți conținut care se potrivește intereselor dvs.",
       "illustrations": [
         "Citiți mai multe articole despre cum să construiți o casă în copac pe o platformă de socializare. Aceste informații pot fi adăugate la un profil pentru a marca interesul dvs. față de conținutul legat de natură, precum și ghidurile de bricolaj (cu obiectivul de a permite personalizarea conținutului, astfel că, de exemplu, vi se prezintă pe viitor mai multe postări despre bloguri și articole legate de case construite în copac și cabane din lemn).",
@@ -95,6 +100,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Utilizarea profilurilor pentru selectarea conținutului personalizat",
+      "shortName": "Afișarea conținutului personalizat",
       "description": "Conținutul care v-a fost prezentat în cadrul acestui serviciu se poate baza pe profilurile dvs. de personalizare a conținutului, care pot reflecta activitatea dvs. pe acestea sau în cadrul altor servicii (de exemplu, formularele pe care le trimiteți, conținutul pe care îl vizualizați), posibilele interese și aspectele personale. De exemplu, acesta poate fi utilizat pentru adaptarea ordinii în care conținutul vă este afișat, astfel încât să fie și mai ușor pentru dvs. să găsiți conținut (fără caracter publicitar) care să corespundă intereselor dvs.",
       "illustrations": [
         "Citiți articole despre mâncarea vegetariană pe o platformă de socializare și apoi utilizați aplicația de gătit a unei companii neafiliate. Profilul construit despre dvs. pe platforma de socializare va fi utilizat pentru a vă prezenta rețete vegetariene pe ecranul de întâmpinare al aplicației de gătit.",
@@ -103,6 +109,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Măsurarea performanței reclamelor",
+      "shortName": "Măsurarea performanței reclamelor",
       "description": "Informațiile privind publicitatea care vă este prezentată și modul în care interacționați cu aceasta pot fi utilizate pentru a stabili cât de bine a funcționat o reclamă pentru dvs. sau pentru alți utilizatori și dacă au fost atinse obiectivele acesteia. De exemplu, dacă ați vizualizat o reclamă, dacă ați făcut clic pe ea, dacă v-a determinat să cumpărați un produs sau să vizitați un site web etc. Acest lucru este foarte util pentru a înțelege relevanța campaniilor publicitare.",
       "illustrations": [
         "Ați făcut clic pe o reclamă despre o reducere de „black Friday” promovată de un magazin online pe site-ul web al unui editor și ați achiziționat un produs.Clicul dvs. va fi asociat cu această achiziție. Interacțiunea dvs. și cea a altor utilizatori va fi măsurată pentru a afla câte clicuri pe reclamă au dus la o achiziție.",
@@ -111,6 +118,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Măsurarea performanței conținutului",
+      "shortName": "Măsurarea performanței conținutului",
       "description": "Informațiile cu privire la conținutul care vă este prezentat și la modul în care interacționați cu acesta pot fi utilizate pentru a stabili dacă, de exemplu, conținutul (fără caracter publicitar) a ajuns la publicul vizat și dacă corespunde intereselor dvs. De exemplu, indiferent dacă citiți un articol, vizionați un videoclip, ascultați un podcast sau vizualizați o descriere a produsului, cât timp petreceți pe acest serviciu și pe paginile web pe care le vizitați etc. Acest lucru este foarte util pentru a înțelege relevanța conținutului (fără caracter publicitar) care vă este prezentat.",
       "illustrations": [
         "Ați citit o postare de blog despre drumeții pe o aplicație mobilă a unui editor și ați urmat un link către o postare recomandată și conexă. Interacțiunile dvs. vor fi înregistrate pentru a arăta că postarea inițială despre drumeții v-a fost utilă și că a reușit să vă facă să fiți interesați și de postarea conexă. Această măsurare va fi făcută pentru a ști dacă trebuie produse pe viitor mai multe postări despre drumeții și pentru a ști unde trebuie plasate pe ecranul de pornire al aplicației mobile.",
@@ -119,6 +127,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Înțelegerea publicului prin statistici sau combinații de date din surse diferite",
+      "shortName": "Înțelegerea publicului nostru prin statistici",
       "description": "Înțelegerea publicului prin statistici sau combinații de date din surse diferite Rapoartele pot fi generate pe baza combinației de seturi de date (cum ar fi profilurile de utilizator, statisticile, cercetarea de piață, datele analitice) cu privire la interacțiunile dvs. și cele ale altor utilizatori cu conținut publicitar sau (fără caracter publicitar) pentru a identifica caracteristicile comune (de exemplu, pentru a determina care audiențe țintă sunt mai receptive la o campanie publicitară sau la un anumit conținut).",
       "illustrations": [
         "Proprietarul unei librării online dorește raportarea comercială care să arate proporția vizitatorilor care au consultat și au părăsit site-ul său fără să facă achiziții sau au consultat și cumpărat ultima autobiografie a unei celebrități din luna respectivă, precum și vârsta medie și distribuția bărbați/femei a fiecărei categorii. Datele referitoare la navigarea dvs. pe site-ul său și la caracteristicile dvs. personale sunt apoi utilizate și combinate cu alte astfel de date pentru a produce aceste statistici.",
@@ -127,6 +136,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Dezvoltarea și îmbunătățirea serviciilor",
+      "shortName": "Îmbunătățirea serviciilor noastre",
       "description": "Informațiile despre activitatea dvs. în cadrul acestui serviciu, cum ar fi interacțiunea dvs. cu reclamele sau conținutul, pot fi foarte utile pentru a îmbunătăți produsele și serviciile și pentru a construi noi produse și servicii pe baza interacțiunilor cu utilizatorul, a tipului de public etc. Acest scop specific nu include dezvoltarea sau îmbunătățirea profilurilor de utilizator și a identificatorilor.",
       "illustrations": [
         "O platformă de tehnologie care lucrează cu un furnizor de rețele de socializare observă o creștere a utilizatorilor de aplicații mobile și observă pe baza profilurilor acestora că mulți dintre ei se conectează prin conexiuni mobile. Aceasta utilizează o nouă tehnologie pentru a furniza reclame formatate pentru dispozitive mobile și cu lățime de bandă redusă, pentru a îmbunătăți performanța acestora.",
@@ -135,6 +145,7 @@ export const ro: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Utilizarea datelor limitate pentru a selecta conținutul",
+      "shortName": "Afișarea conținutului pe baza unor date limitate",
       "description": "Conținutul prezentat în acest serviciu se poate baza pe date limitate, cum ar fi site-ul web sau aplicația pe care o utilizați, locația dvs. imprecisă, tipul dispozitivului dvs. sau conținutul cu care interacționați (sau ați interacționat) (de exemplu, pentru a limita numărul de prezentări ale unui videoclip sau ale unui articol).",
       "illustrations": [
         "O revistă de turism a publicat un articol pe site-ul său despre noile cursuri online propuse de o școală de limbi străine, pentru a îmbunătăți experiențele de călătorie în străinătate. Postările de pe blogul școlii sunt introduse direct în partea de jos a paginii și selectate pe baza locației dvs. imprecise (de exemplu, postările de pe blog care explică programa de curs pentru limbile diferite de cea din țara în care vă aflați).",
@@ -213,5 +224,9 @@ export const ro: ConsentLocaleBundle = {
     "44": "Conținut personalizat",
     "45": "Publicitate bazată pe date limitate, măsurători de publicitate, cercetarea audienței și dezvoltarea serviciilor",
     "1": "Date precise de geolocație și identificarea prin scanarea dispozitivului"
+  },
+  "stackSummaries": {
+    "26": "Reclame și conținut personalizate și măsurarea performanței acestora",
+    "42": "Reclame și conținut personalizate, măsurarea performanței acestora și îmbunătățirea serviciilor noastre"
   }
 };

@@ -25,7 +25,7 @@ export const nl: ConsentLocaleBundle = {
     "vendors.consent": "Toestemming",
     "details.examples": "Voorbeelden",
     "details.vendors": "Leveranciers",
-    "firstLayer.title": "{appName} vraagt je toestemming om je persoonsgegevens te gebruiken voor:",
+    "firstLayer.title": "{appName} wil je persoonsgegevens gebruiken",
     "firstLayer.body": "Je persoonsgegevens worden verwerkt en informatie van je apparaat (cookies, unieke ID’s en andere apparaatgegevens) kan worden opgeslagen door, geraadpleegd door en gedeeld met {count} partners, of specifiek door deze app worden gebruikt.",
     "manage.consentWithCount.one": "Toestemming ({count} leverancier)",
     "manage.consentWithCount.other": "Toestemming ({count} leveranciers)",
@@ -54,6 +54,7 @@ export const nl: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Informatie op een apparaat opslaan en/of openen",
+      "shortName": "Informatie op een apparaat opslaan en/of openen",
       "description": "Cookies, apparaat- of soortgelijke online-identificatoren (bijv. login-identificatiemiddelen, willekeurig toegewezen identificatiemiddelen, netwerk-gebaseerde identificatiemiddelen) samen met andere informatie (bijv. browsertype en informatie, taal, schermgrootte, ondersteunde technologieën enz.) kunnen op uw apparaat worden opgeslagen of gelezen om dat apparaat telkens wanneer het verbinding maakt met een app of met een website te herkennen, voor een of meer van de hier gepresenteerde doeleinden.",
       "illustrations": [
         "De meeste doeleinden die in deze kennisgeving worden uitgelegd, zijn van de opslag of toegang afhankelijk van informatie vanaf uw apparaat wanneer u een app gebruikt of een website bezoekt. Een leverancier of uitgever moet bijvoorbeeld mogelijk een cookie op uw apparaat opslaan tijdens uw eerste bezoek aan een website, om uw apparaat te kunnen herkennen tijdens uw volgende bezoeken (door elke keer toegang te krijgen tot deze cookie)."
@@ -61,6 +62,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Beperkte gegevens gebruiken om advertenties te selecteren",
+      "shortName": "Advertenties tonen op basis van beperkte gegevens",
       "description": "Advertenties die u op deze dienst worden aangeboden, kunnen gebaseerd zijn op beperkte gegevens, zoals de website of app die u gebruikt, uw niet-precieze locatie, uw apparaattype of welke content u gebruikt of hebt gebruikt (bijvoorbeeld om het aantal keren dat een advertentie aan u getoond wordt te beperken).",
       "illustrations": [
         "Een autofabrikant wil zijn elektrische voertuigen na kantooruren bij milieubewuste gebruikers promoten die in de stad wonen. De advertentie wordt na 18.30 uur getoond op een pagina met gerelateerde content (zoals een artikel over maatregelen ter bestrijding van de klimaatverandering) aan gebruikers van wie de niet-precieze locatie suggereert dat ze zich in een stedelijke omgeving bevinden.",
@@ -69,6 +71,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Profielen aanmaken ten behoeve van gepersonaliseerde advertenties",
+      "shortName": "Een profiel maken voor gepersonaliseerde advertenties",
       "description": "Informatie over uw activiteit op deze dienst (zoals formulieren die u indient, content die u bekijkt) kan worden opgeslagen en gecombineerd met andere informatie over u (bijvoorbeeld informatie uit uw eerdere activiteit op deze dienst en andere websites of apps) of soortgelijke gebruikers. Deze wordt vervolgens gebruikt om een profiel over u aan te maken of te verbeteren (met daarin bijvoorbeeld mogelijke interesses en persoonlijke aspecten). Uw profiel kan (ook later) door deze en andere rechtspersonen worden gebruikt om advertenties te tonen die relevanter lijken te zijn uitgaande van uw mogelijke interesses.",
       "illustrations": [
         "Als u verschillende artikelen leest over de beste fietsaccessoires om te kopen, kan deze informatie worden gebruikt om een profiel te creëren over uw interesse in fietsaccessoires. Een dergelijk profiel kan later worden gebruikt of verbeterd, op dezelfde of een andere website of app, om u advertenties te tonen voor een bepaald merk fietsaccessoires. Als u ook naar een voertuigconfigurator kijkt op de website van een fabrikant van luxe auto’s, kan deze informatie worden gecombineerd met uw interesse in fietsen om uw profiel te verfijnen en tot de aanname te komen dat u in luxe fietsartikelen geïnteresseerd bent.",
@@ -77,6 +80,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Profielen gebruiken voor de selectie van gepersonaliseerde advertenties",
+      "shortName": "Gepersonaliseerde advertenties tonen",
       "description": "Advertenties die u op deze dienst worden aangeboden, kunnen gebaseerd zijn op uw advertentieprofielen, die mogelijk uw activiteit op deze dienst of andere websites of apps (zoals de formulieren die u indient, content die u bekijkt), mogelijke interesses en/of persoonlijke aspecten weerspiegelen.",
       "illustrations": [
         "Een online verkoper wil reclame maken voor een beperkte uitverkoop van hardloopschoenen. De verkoper wil advertenties richten op gebruikers die op hun mobiele app eerder naar hardloopschoenen hebben gekeken. Trackingtechnologieën kunnen worden gebruikt om te herkennen dat u de mobiele app eerder hebt gebruikt om hardloopschoenen te bekijken, zodat u in de app de bijbehorende advertentie te zien krijgt.",
@@ -85,6 +89,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Profielen aanmaken ter personalisatie van content",
+      "shortName": "Een profiel maken voor gepersonaliseerde content",
       "description": "Informatie over uw activiteit op deze dienst (bijvoorbeeld formulieren die u indient, non-advertentiecontent die u bekijkt) kan worden opgeslagen en gecombineerd met andere gegevens over u (zoals uw eerdere activiteit op deze dienst of andere websites of apps) of soortgelijke gebruikers. Deze wordt vervolgens gebruikt om een profiel over u aan te maken of te verbeteren (met daarin bijvoorbeeld mogelijke interesses en persoonlijke aspecten). Uw profiel kan (ook later) worden gebruikt om content te tonen die relevanter lijkt te zijn uitgaande van uw mogelijke interesses, zoals door de volgorde aan te passen waarin content aan u wordt getoond, zodat het voor u nog gemakkelijker is om content te vinden die overeenkomt met uw interesses.",
       "illustrations": [
         "U leest verschillende artikelen over het bouwen van een boomhut op een socialemediaplatform. Deze informatie kan worden toegevoegd aan een profiel om uw interesse in bepaalde content met betrekking tot buitenactiviteiten en doe-het-zelven aan te geven (met als doel de personalisatie van content mogelijk te maken, zodat u in de toekomst bijvoorbeeld meer blogberichten en artikelen over boomhutten en boshutten te zien krijgt).",
@@ -93,6 +98,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Profielen gebruiken ter selectie van gepersonaliseerde content",
+      "shortName": "Gepersonaliseerde content tonen",
       "description": "Content die u op deze dienst wordt aangeboden, kan gebaseerd zijn op uw contentpersonalisatieprofielen, die mogelijk uw activiteit op deze of andere diensten (bijvoorbeeld de formulieren die u indient, content die u bekijkt), mogelijke interesses en/of persoonlijke aspecten weerspiegelen. Dit kan bijvoorbeeld worden gebruikt om de volgorde aan te passen waarin content aan u wordt getoond, zodat het voor u nog gemakkelijker is om (non-advertentie-) content te vinden die overeenkomt met uw interesses.”",
       "illustrations": [
         "U leest artikelen over vegetarisch eten op een socialemediaplatform en gebruikt vervolgens de kookapp van een niet-gerelateerd bedrijf. Het profiel dat over u is aangemaakt op het socialemediaplatform wordt gebruikt om u vegetarische recepten te tonen op het welkomstscherm van de kookapp.",
@@ -101,6 +107,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "7": {
       "name": "De prestaties van advertenties meten",
+      "shortName": "Meten hoe advertenties presteren",
       "description": "Informatie over welke advertentie er aan u wordt getoond en hoe u erop reageert, kan worden gebruikt om te bepalen hoe goed een advertentie in relatie tot u of andere gebruikers heeft gewerkt en of de doelen van de advertentie zijn bereikt. Bijvoorbeeld of u een advertentie hebt gezien, of u erop hebt geklikt, of de advertentie u ertoe heeft gebracht om een product te kopen of een website te bezoeken enz. Dit is zeer nuttig om de relevantie van reclamecampagnes in kaart te brengen.",
       "illustrations": [
         "U hebt op een advertentie geklikt over een “Black Friday”-korting die door een online winkel op de website van een uitgever wordt aangeboden en een product gekocht. Uw klik wordt gekoppeld aan deze aankoop. Uw interactie en die van andere gebruikers wordt gemeten om te weten hoeveel klikken op de advertentie tot een aankoop hebben geleid.",
@@ -109,6 +116,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Contentprestaties meten",
+      "shortName": "Meten hoe content presteert",
       "description": "Informatie over welke content er aan u wordt gepresenteerd en hoe u erop reageert, kan worden gebruikt om te bepalen of de (non-advertentie)-content bijvoorbeeld het beoogde publiek heeft bereikt en met uw interesses overeenkomt. Bijvoorbeeld of u een artikel leest, een video bekijkt, naar een podcast luistert of een productbeschrijving bekijkt, hoeveel tijd u aan deze dienst hebt besteed en de webpagina’s die u bezoekt enz. Dit is zeer nuttig om de relevantie van (non-advertentie)-content in kaart te brengen. die aan u wordt getoond.",
       "illustrations": [
         "U hebt in een mobiele app van een uitgever een blogbericht gelezen over wandelen en een link gevolgd naar een aanbevolen en gerelateerd bericht. Uw interacties zullen worden vastgelegd om aan te tonen dat het eerste bericht over wandelen voor u relevant was en dat het bericht erin is geslaagd om voor het gerelateerde bericht uw interesse te wekken. Dit wordt gemeten om te weten of er in de toekomst meer berichten over wandelen moeten worden geplaatst en waar deze op het startscherm van de mobiele app zouden moeten worden geplaatst.",
@@ -117,6 +125,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Publieksgroepen begrijpen aan de hand van statistieken of combinaties van gegevens uit verschillende bronnen",
+      "shortName": "Ons publiek begrijpen met statistieken",
       "description": "Rapporten kunnen worden gegenereerd op basis van een combinatie van gegevenssets (zoals gebruikersprofielen, statistieken, marktonderzoek, analysegegevens) met betrekking tot uw interacties en die van andere gebruikers met advertenties of (non-advertentie)-content om gemeenschappelijke kenmerken te identificeren (bijvoorbeeld om te bepalen welke doelgroepen meer ontvankelijk zijn voor een advertentiecampagne of voor bepaalde content).",
       "illustrations": [
         "De eigenaar van een online boekwinkel wil een commerciële rapportage met het percentage bezoekers dat zijn site heeft geraadpleegd en verlaten zonder te kopen, of dat de laatste autobiografie van een beroemdheid van die maand heeft geraadpleegd en gekocht, evenals de gemiddelde leeftijd en de man/vrouw-verdeling voor elke categorie. Gegevens met betrekking tot uw navigatie op de website en uw persoonlijke kenmerken worden vervolgens gebruikt en met andere dergelijke gegevens gecombineerd om deze statistieken te produceren.",
@@ -125,6 +134,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Diensten ontwikkelen en verbeteren",
+      "shortName": "Onze diensten verbeteren",
       "description": "Informatie over uw activiteit op deze dienst, zoals uw interactie met advertenties of content, kan zeer nuttig zijn bij het verbeteren van producten en diensten en de creatie van nieuwe producten en diensten op basis van gebruikersinteracties, het type publiek enz. Dit specifieke doeleinde heeft geen betrekking op de ontwikkeling of verbetering van gebruikersprofielen en identificatoren.",
       "illustrations": [
         "Een technologieplatform dat samenwerkt met een aanbieder van sociale media neemt een groei waar in het aantal gebruikers van mobiele apps en ziet op basis van hun profielen dat velen van hen verbinding maken via mobiele verbindingen. Het platform maakt gebruik van een nieuwe technologie om advertenties aan te bieden die zijn geformatteerd voor mobiele apparaten en die een lage bandbreedte hebben, met als doel zijn prestaties te verbeteren.",
@@ -133,6 +143,7 @@ export const nl: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Beperkte gegevens gebruiken om content te selecteren",
+      "shortName": "Content tonen op basis van beperkte gegevens",
       "description": "Content die u op deze dienst worden aangeboden, kan gebaseerd zijn op beperkte gegevens, zoals de website of app die u gebruikt, uw niet-precieze locatie, uw apparaattype of welke content u gebruikt of hebt gebruikt, (bijvoorbeeld om het aantal keren dat een video of artikel aan u getoond wordt te beperken).",
       "illustrations": [
         "Een reismagazine heeft op zijn website een artikel gepubliceerd over de nieuwe online cursussen die door een talencursussenaanbieder worden aangeboden om de reiservaring in het buitenland te verbeteren. De blogberichten van de aanbieder worden direct onderaan de pagina ingevoegd en geselecteerd op basis van uw niet-precieze locatie (bijvoorbeeld blogberichten waarin het cursuscurriculum wordt uitgelegd voor andere talen dan de taal van het land waarin u zich bevindt).",
@@ -211,5 +222,9 @@ export const nl: ConsentLocaleBundle = {
     "43": "Content gebaseerd op beperkte gegevens en contentmetingen",
     "44": "Gepersonaliseerde content",
     "45": "Advertenties op basis van beperkte gegevens, advertentiemetingen, doelgroepenonderzoek en ontwikkeling van diensten"
+  },
+  "stackSummaries": {
+    "26": "Gepersonaliseerde advertenties en content, en meten hoe ze presteren",
+    "42": "Gepersonaliseerde advertenties en content, meten hoe ze presteren en onze diensten verbeteren"
   }
 };

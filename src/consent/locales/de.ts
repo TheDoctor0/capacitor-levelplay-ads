@@ -25,7 +25,7 @@ export const de: ConsentLocaleBundle = {
     "vendors.consent": "Einwilligung",
     "details.examples": "Beispiele",
     "details.vendors": "Anbieter",
-    "firstLayer.title": "{appName} bittet um Ihre Einwilligung, Ihre personenbezogenen Daten für folgende Zwecke zu nutzen:",
+    "firstLayer.title": "{appName} möchte Ihre personenbezogenen Daten verwenden",
     "firstLayer.body": "Ihre personenbezogenen Daten werden verarbeitet, und Informationen von Ihrem Gerät (Cookies, eindeutige Kennungen und andere Gerätedaten) können von {count} Partnern gespeichert, abgerufen und mit ihnen geteilt oder speziell von dieser App genutzt werden.",
     "manage.consentWithCount.one": "Einwilligung ({count} Anbieter)",
     "manage.consentWithCount.other": "Einwilligung ({count} Anbieter)",
@@ -54,6 +54,7 @@ export const de: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Speichern von oder Zugriff auf Informationen auf einem Endgerät",
+      "shortName": "Speichern von oder Zugriff auf Informationen auf einem Endgerät",
       "description": "Cookies, Endgeräte- oder ähnliche Online-Kennungen (z. B. login-basierte Kennungen, zufällig generierte Kennungen, netzwerkbasierte Kennungen) können zusammen mit anderen Informationen (z. B. Browsertyp und Browserinformationen, Sprache, Bildschirmgröße, unterstützte Technologien usw.) auf Ihrem Endgerät gespeichert oder von dort ausgelesen werden, um es jedes Mal wiederzuerkennen, wenn es eine App oder einer Webseite aufruft. Dies geschieht für einen oder mehrere der hier aufgeführten Verarbeitungszwecke.",
       "illustrations": [
         "Die meisten in dieser Mitteilung erläuterten Verarbeitungszwecke beruhen auf der Speicherung von oder dem Zugriff auf Informationen auf Ihrem Endgerät, wenn Sie eine App verwenden oder eine Webseite besuchen. So kann es beispielsweise erforderlich sein, dass ein Anbieter oder Webseitenbetreiber bei Ihrem ersten Besuch einer Webseite ein Cookie auf Ihrem Endgerät speichert, um dieses bei Ihren nächsten Besuchen wiederzuerkennen (indem er dieses Cookie jedes Mal erneut abruft)."
@@ -61,6 +62,7 @@ export const de: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Verwendung reduzierter Daten zur Auswahl von Werbeanzeigen",
+      "shortName": "Anzeige von Werbung auf Basis reduzierter Daten",
       "description": "Werbeanzeigen, die Ihnen auf diesem Dienst präsentiert werden, können auf reduzierten Daten basieren, wie z. B. der Webseite oder App, die Sie gerade verwenden, Ihrem ungefähren Standort, Ihrem Gerätetyp oder den Inhalten, mit denen Sie interagieren (oder interagiert haben) (z. B., um die Anzeigefrequenz der Werbung zu begrenzen, die Ihnen ausgespielt werden).",
       "illustrations": [
         "Ein Autohersteller will seine Elektrofahrzeuge bei umweltbewussten Nutzern, die in der Stadt leben, nach Feierabend bewerben.Die Werbung wird Benutzern, deren ungefährerer Standort darauf hindeutet, dass sie sich in einem städtischen Raum befinden, nach 18:30 Uhr auf einer Seite mit ähnlichen Inhalten (z. B. einem Artikel über Klimaschutzmaßnahmen) angezeigt.",
@@ -69,6 +71,7 @@ export const de: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Erstellung von Profilen für personalisierte Werbung",
+      "shortName": "Erstellung eines Profils für personalisierte Werbung",
       "description": "Informationen über Ihre Aktivitäten auf diesem Dienst (wie ausgefüllte Formulare, angesehene Inhalte) können gespeichert und mit anderen Informationen über Sie (z. B. Informationen aus Ihrer vorherigen Aktivität auf diesem Dienst oder anderen Webseiten oder Apps) oder ähnlichen Benutzern kombiniert werden. Diese werden dann verwendet, um ein Profil über Sie zu erstellen oder zu verbessern (dies kann z. B. mögliche Interessen und persönliche Merkmale beinhalten). Ihr Profil kann (auch zu einem späteren Zeitpunkt) verwendet werden, um es zu ermöglichen, Ihnen Werbung zu präsentieren, die aufgrund Ihrer möglichen Interessen für Sie wahrscheinlich relevanter ist.",
       "illustrations": [
         "Wenn Sie beispielsweise mehrere Artikel über das beste Fahrradzubehör im Handel lesen, können diese Informationen verwendet werden, um ein Profil über Ihr Interesse an Fahrradzubehör zu erstellen. Ein solches Profil kann zu einem späteren Zeitpunkt auf derselben oder einer anderen Webseite oder App verwendet oder verbessert werden, um Ihnen Werbung für eine bestimmte Fahrradzubehörmarke anzuzeigen. Wenn Sie sich auch einen Konfigurator für ein Fahrzeug auf der Webseite eines Luxusautoherstellers ansehen, können diese Informationen mit Ihrem Interesse an Fahrrädern kombiniert werden, um Ihr Profil zu verfeinern, und zur Annahme führen, dass Sie an Luxusfahrradausrüstung interessiert sind.",
@@ -77,6 +80,7 @@ export const de: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Verwendung von Profilen zur Auswahl personalisierter Werbung",
+      "shortName": "Anzeige personalisierter Werbung",
       "description": "Werbung, die Ihnen auf diesem Dienst angezeigt wird, kann auf Ihrem Werbeprofil basieren.  Dieses Werbeprofil kann Ihre Aktivitäten (wie ausgefüllte Formulare, angesehene Inhalte) auf diesem Dienst oder anderen Webseiten oder Apps, mögliche Interessen und persönliche Merkmale beinhalten.",
       "illustrations": [
         "Ein Online-Händler möchte einen begrenzten Ausverkauf für Laufschuhe bewerben.Er möchte gezielt Werbung für Benutzer schalten, die sich zuvor Laufschuhe in seiner mobilen App angesehen haben.Tracking-Technologien können verwendet werden, um festzustellen, ob Sie die mobile App in der Vergangenheit verwendet haben, um nach Laufschuhen zu suchen, und um Ihnen so die entsprechende Werbung in der App anzuzeigen.",
@@ -85,6 +89,7 @@ export const de: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Erstellung von Profilen zur Personalisierung von Inhalten",
+      "shortName": "Erstellung eines Profils für personalisierte Inhalte",
       "description": "Informationen über Ihre Aktivitäten auf diesem Dienst (wie zum Beispiel: ausgefüllte Formulare, angesehene nicht werbliche Inhalte) können gespeichert und mit anderen Informationen über Sie (wie Ihrer vorherigen Aktivität auf diesem Dienst oder anderen Webseiten oder Apps) oder ähnlichen Benutzern kombiniert werden.Diese werden dann verwendet, um ein Profil über Sie zu erstellen oder zu ergänzen (dies kann z.B. mögliche Interessen und persönliche Merkmale beinhalten). Ihr Profil kann (auch zu einem späteren Zeitpunkt) verwendet werden, um Ihnen Inhalte anzuzeigen, die aufgrund Ihrer möglichen Interessen für Sie wahrscheinlich relevanter sind, indem z. B. die Reihenfolge, in der Ihnen Inhalte angezeigt werden, geändert wird, um es Ihnen noch leichter zu machen, Inhalte zu finden, die Ihren Interessen entsprechen.",
       "illustrations": [
         "Sie lesen auf einer Social-Media-Plattform mehrere Artikel darüber, wie man ein Baumhaus baut. Diese Information kann einem Profil hinzugefügt werden, um Ihr Interesse an Inhalten zu Aktivitäten im Freien sowie an Do-it-yourself-Anleitungen festzuhalten (mit dem Ziel, die Personalisierung von Inhalten zu ermöglichen, sodass Ihnen beispielsweise in Zukunft mehr Blog-Posts und Artikel über Baumhäuser und Holzhütten präsentiert werden).",
@@ -93,6 +98,7 @@ export const de: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Verwendung von Profilen zur Auswahl personalisierter Inhalte",
+      "shortName": "Anzeige personalisierter Inhalte",
       "description": "Inhalte, die Ihnen auf diesem Dienst präsentiert werden, können auf Ihren Inhaltsprofilen basieren, die Ihre Aktivitäten auf diesem oder anderen Diensten (wie Formulare, die Sie einreichen, Inhalte, die Sie sich ansehen), mögliche Interessen und persönliche Aspekte widerspiegeln können. Dies kann beispielsweise dazu genutzt werden, um die Reihenfolge anzupassen, in der Ihnen Inhalte angezeigt werden, um es Ihnen noch leichter zu machen, (Nicht-Werbe-)Inhalte zu finden, die Ihren Interessen entsprechen.",
       "illustrations": [
         "Sie lesen auf einer Social-Media-Plattform Artikel über vegetarisches Essen und verwenden dann die Koch-App eines von der Plattform unabhängigen Unternehmens. Das Profil, das über Sie auf der Social-Media-Plattform erstellt wurde, wird verwendet, um Ihnen auf der Startseite der Koch-App vegetarische Rezepte zu präsentieren.",
@@ -101,6 +107,7 @@ export const de: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Messung der Werbeleistung",
+      "shortName": "Messung der Werbeleistung",
       "description": "Informationen darüber, welche Werbung Ihnen präsentiert wird und wie Sie damit interagieren, können verwendet werden, um festzustellen, wie sehr eine Werbung Sie oder andere Benutzer angesprochen hat und ob die Ziele der Werbekampagne erreicht wurden. Die Informationen umfassen zum Beispiel, ob Sie sich eine Anzeige angesehen haben, ob Sie daraufgeklickt haben, ob sie Sie dazu animiert hat, ein Produkt zu kaufen oder eine Webseite zu besuchen usw. Diese Informationen sind hilfreich, um die Relevanz von Werbekampagnen zu ermitteln.",
       "illustrations": [
         "Sie haben auf der Webseite eines Webseitenbetreibers auf eine Werbung über einen „Black Friday“-Rabatt eines Online-Shops geklickt und ein Produkt gekauft. Ihr Klick wird mit diesem Kauf verknüpft. Ihre Interaktion und die anderer Benutzer wird gemessen, um herauszufinden, wie viele Klicks auf die Anzeige zu einem Kauf geführt haben.",
@@ -109,6 +116,7 @@ export const de: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Messung der Performance von Inhalten",
+      "shortName": "Messung der Leistung von Inhalten",
       "description": "Informationen darüber, welche Werbung Ihnen präsentiert wird und wie Sie damit interagieren, können dazu verwendet werden festzustellen, ob (nicht werbliche) Inhalte z. B. die beabsichtigte Zielgruppe erreicht und Ihren Interessen entsprochen haben. Dazu gehören beispielsweise Informationen darüber, ob Sie einen bestimmten Artikel gelesen, sich ein bestimmtes Video angesehen, einen bestimmten Podcast angehört oder sich eine bestimmte Produktbeschreibung angesehen haben, wie viel Zeit Sie auf diesem Dienst und den von Ihnen besuchten Webseiten verbracht haben usw. Diese Informationen helfen dabei, die Relevanz von (nicht werblichen) Inhalten, die Ihnen angezeigt werden, zu ermitteln.",
       "illustrations": [
         "Sie haben in der mobilen App eines App-Betreibers einen Blog-Post zum Thema Wandern gelesen und einen Link zu einem empfohlenen ähnlichen Post angetippt. Ihre Interaktionen werden aufgezeichnet, um festzuhalten, dass der erste Post zum Thema Wandern für Sie nützlich war und dass er Sie erfolgreich zum Lesen des ähnlichen Posts animiert hat. Diese Informationen werden gemessen, um herauszufinden, ob in Zukunft mehr Posts zum Thema Wandern verfasst werden sollen und wo sie auf dem Startbildschirm der mobilen App platziert werden sollten.",
@@ -117,6 +125,7 @@ export const de: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Analyse von Zielgruppen durch Statistiken oder Kombinationen von Daten aus verschiedenen Quellen",
+      "shortName": "Verständnis unserer Zielgruppe durch Statistiken",
       "description": "Basierend auf der Kombination von Datensätzen (wie Benutzerprofilen, Statistiken, Marktforschung, Analysedaten) können Berichte über Ihre Interaktionen und die anderer Benutzer mit Werbe- oder (nicht werblichen) Inhalten erstellt werden, um gemeinsame Merkmale zu ermitteln (z. B., um festzustellen, welche Zielgruppen für eine Werbekampagne oder für bestimmte Inhalte empfänglich sind).",
       "illustrations": [
         "Der Eigentümer eines Online-Buchhandels möchte eine Auswertung, wie viele Besucher seine Webseite besucht haben, ohne etwas zu kaufen, oder wie viele die Webseite besucht haben, um die neuste Promi-Biographie des Monats zu kaufen, sowie das Durchschnittsalter der Besucher und wie viele davon männlich bzw. weiblich sind, aufgeteilt je nach Kategorie. Daten über Ihre Navigation auf der Webseite und Ihre persönlichen Merkmale werden dann verwendet und mit anderen solcher Daten kombiniert, um diese Statistiken zu erstellen.",
@@ -125,6 +134,7 @@ export const de: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Entwicklung und Verbesserung der Angebote",
+      "shortName": "Verbesserung unserer Angebote",
       "description": "Informationen über Ihre Aktivitäten auf diesem Angebot, wie z. B. Ihre Interaktion mit Anzeigen oder Inhalten, können dabei helfen, Produkte und Angebote zu verbessern und neue Produkte und Angebote zu entwickeln basierend auf Benutzerinteraktionen, der Art der Zielgruppe usw. Dieser Verarbeitungszweck umfasst nicht die Entwicklung, Ergänzung oder Verbesserung von Benutzerprofilen und Kennungen.",
       "illustrations": [
         "Eine Technologieplattform, die mit einem Social-Media-Anbieter zusammenarbeitet, stellt ein Wachstum in den Nutzerzahlen ihrer mobilen App fest und erkennt basierend auf den Benutzerprofilen, dass viele von ihnen sich über mobile Verbindungen einwählen. Die Plattform verwendet zur Verbesserung der Ladegeschwindigkeit von Anzeigen eine neue Technologie zur Auslieferung von Werbung, die für mobile Endgeräte optimiert ist und eine geringe Bandbreite benötigt.",
@@ -133,6 +143,7 @@ export const de: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Verwendung reduzierter Daten zur Auswahl von Inhalten",
+      "shortName": "Anzeige von Inhalten auf Basis reduzierter Daten",
       "description": "Inhalte, die Ihnen auf diesem Dienst präsentiert werden, können auf reduzierten Daten basieren, wie z. B. der Webseite oder App, die Sie verwenden, Ihrem ungefähren Standort, Ihrem Endgerätetyp oder der Information, mit welchen Inhalten Sie interagieren (oder interagiert haben) (z. B. zur Begrenzung wie häufig Ihnen ein Video oder ein Artikel angezeigt wird).",
       "illustrations": [
         "Ein Reisemagazin hat auf seiner Webseite einen Artikel über die neuen Online-Kurse veröffentlicht, die von einer Sprachschule angeboten werden, um die Reiseerfahrungen im Ausland zu verbessern. Die Blog-Posts der Reiseschule werden direkt am Ende der Seite eingefügt und basierend auf Ihrem ungefähren Standort ausgewählt (z. B. Blog-Posts mit dem Lehrplan für den Kurs einer Sprache, die nicht die Sprache Ihres Landes ist).",
@@ -211,5 +222,9 @@ export const de: ConsentLocaleBundle = {
     "43": "Inhalte basierend auf einer reduzierten Menge von Daten und Messung der Performance von Inhalten",
     "44": "Personalisierte Inhalte",
     "45": "Werbung auf der Grundlage begrenzter Daten, Messung der Werbeleistung, Zielgruppenforschung und Entwicklung von Dienstleistungen"
+  },
+  "stackSummaries": {
+    "26": "Personalisierte Werbung und Inhalte sowie Messung ihrer Leistung",
+    "42": "Personalisierte Werbung und Inhalte, Messung ihrer Leistung und Verbesserung unserer Angebote"
   }
 };

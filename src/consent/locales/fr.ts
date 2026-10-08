@@ -25,7 +25,7 @@ export const fr: ConsentLocaleBundle = {
     "vendors.consent": "Consentement",
     "details.examples": "Exemples",
     "details.vendors": "Fournisseurs",
-    "firstLayer.title": "{appName} demande votre consentement pour utiliser vos données personnelles afin de :",
+    "firstLayer.title": "{appName} souhaite utiliser vos données personnelles",
     "firstLayer.body": "Vos données personnelles seront traitées et les informations de votre appareil (cookies, identifiants uniques et autres données de l’appareil) peuvent être stockées, consultées et partagées avec {count} partenaires, ou utilisées spécifiquement par cette application.",
     "manage.consentWithCount.one": "Consentement ({count} fournisseur)",
     "manage.consentWithCount.other": "Consentement ({count} fournisseurs)",
@@ -54,6 +54,7 @@ export const fr: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Stocker et/ou accéder à des informations sur un appareil",
+      "shortName": "Stocker et/ou accéder à des informations sur un appareil",
       "description": "Les cookies, appareils ou identifiants en ligne similaires (par ex. identifiants de connexion, identifiants assignés de façon aléatoire, identifiants réseau) ainsi que toutes autres informations (par ex. type et informations de navigateur, langue, taille d’écran, technologies prises en charge, etc.) peuvent être conservés ou lus sur votre appareil pour reconnaître celui-ci à chacune de ses connexions à une application ou à un site Web, pour une ou plusieurs des finalités présentées ici.",
       "illustrations": [
         "La plupart des finalités expliquées dans le présent avis dépendent du stockage ou de l’accès aux informations à partir de votre appareil lorsque vous utilisez une application ou consultez un site Web. Par exemple, un fournisseur ou un éditeur peut avoir besoin de mémoriser un cookie sur votre appareil lors de votre première consultation sur un site Web afin de pouvoir reconnaître votre appareil lors de vos prochaines visites (en accédant à ce cookie à chaque connexion)."
@@ -61,6 +62,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Utiliser des données limitées pour sélectionner la publicité",
+      "shortName": "Afficher des publicités basées sur des données limitées",
       "description": "La publicité qui vous est présentée sur ce service peut être basée sur des données limitées, telles que le site Web ou l’application que vous utilisez, votre emplacement approximatif, votre type d’appareil ou les contenus avec lesquels vous interagissez (ou avez interagi) (par exemple, pour limiter le nombre de fois où une publicité donnée vous est diffusée).",
       "illustrations": [
         "Un constructeur automobile souhaite promouvoir ses véhicules électriques auprès d’utilisateurs soucieux de l’environnement vivant en ville après les heures de bureau. La publicité est présentée sur une page avec du contenu connexe (tel qu’un article sur les actions de changement climatique) après 18 h 30 aux utilisateurs dont l’emplacement approximatif suggère qu’ils se trouvent en zone urbaine.",
@@ -69,6 +71,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Créer des profils pour la publicité personnalisée",
+      "shortName": "Créer un profil pour la publicité personnalisée",
       "description": "Les informations sur votre activité sur ce service (comme les formulaires que vous soumettez, les contenus que vous consultez) peuvent être conservées et conjuguées à d’autres informations vous concernant (par exemple, les informations de votre activité précédente sur ce service et d’autres sites Web ou applications) ou concernant des utilisateurs similaires. Ces informations servent ensuite à créer ou à améliorer un profil vous concernant (qui peut comporter d’éventuels centres d’intérêt et renseignements personnels). Votre profil peut être utilisé (également ultérieurement) pour présenter des publicités qui semblent plus pertinentes en fonction de vos centres d’intérêt éventuels par cette entité et d’autres entités.",
       "illustrations": [
         "Si vous lisez plusieurs articles sur les meilleurs accessoires de vélo à acheter, ces informations pourraient servir à créer un profil sur votre centre d’intérêt pour les accessoires de vélo. Un tel profil peut être utilisé ou amélioré ultérieurement, sur le même site Web ou toute autre application pour vous présenter des publicités d’une marque d’accessoires de vélo spécifique. Si vous regardez également un outil de configuration pour un véhicule sur le site Web d’un constructeur automobile de luxe, ces informations pourraient être conjuguées à votre centre d’intérêt pour les vélos afin d’affiner votre profil et de supposer que vous portez un intérêt particulier pour des équipements de cyclisme de luxe.",
@@ -77,6 +80,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Utiliser des profils pour sélectionner des publicités personnalisées",
+      "shortName": "Afficher des publicités personnalisées",
       "description": "La publicité qui vous est présentée sur ce service peut être basée sur vos profils publicitaires, qui peuvent être créés en fonction de votre activité sur ce service ou d’autres sites Web ou applications (comme les formulaires que vous soumettez, les contenus que vous consultez), ainsi que sur vos éventuels centres d’intérêt et renseignements personnels.",
       "illustrations": [
         "Un détaillant en ligne souhaite faire la publicité d’une vente limitée de chaussures de course. Il souhaite cibler la publicité pour les utilisateurs ayant déjà regardé des chaussures de running sur son application mobile. Les technologies de suivi peuvent être utilisées pour reconnaître que vous avez déjà utilisé l’application mobile pour consulter des chaussures de course afin de vous présenter la publicité correspondante sur l’application.",
@@ -85,6 +89,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Créer des profils de contenus personnalisés",
+      "shortName": "Créer un profil pour des contenus personnalisés",
       "description": "Les informations concernant votre activité sur ce service (par exemple, les formulaires que vous soumettez, les contenus non publicitaires que vous consultez) peuvent être mémorisées et conjuguées à d’autres informations vous concernant (tels que les informations de votre activité précédente sur ce service ou d’autres sites Web ou applications) ou concernant des utilisateurs similaires. Ces informations servent ensuite à créer ou à améliorer un profil vous concernant (qui peut comporter, par exemple, d’éventuels centres d’intérêt et renseignements personnels). Votre profil peut servir (également à toute date ultérieure) à présenter des contenus qui semblent plus pertinents par rapport à vos éventuels centres d’intérêt, par exemple en adaptant l’ordre dans lequel les contenus vous sont présentés afin qu’il soit d’autant plus facile pour vous de trouver des contenus correspondant à vos centres d’intérêt.",
       "illustrations": [
         "Ces informations peuvent être ajoutées à un profil pour consigner votre intérêt pour les contenus liés aux activités en extérieur ainsi que pour les guides de bricolage (en vue de permettre la personnalisation des contenus afin que par exemple, vous receviez davantage de billets de blog et d’articles sur les maisons dans les arbres et les cabanes en bois à l’avenir).",
@@ -93,6 +98,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Utiliser des profils pour sélectionner des contenus personnalisés",
+      "shortName": "Afficher des contenus personnalisés",
       "description": "Les contenus qui vous sont présentés sur ce service peuvent être basés sur vos profils de personnalisation de contenu qui peuvent correspondre à votre activité sur ce service ou d’autres services (par exemple, les formulaires que vous soumettez, le contenu que vous consultez, les éventuels centres d’intérêt et renseignements personnels). Cela peut par exemple être utilisé en adaptant l’ordre de présentation des contenus afin qu’il soit d’autant plus facile pour vous de trouver (sans publicité) des contenus correspondant à vos centres d’intérêt.",
       "illustrations": [
         "Vous lisez des articles sur la nourriture végétarienne sur une plateforme de réseaux sociaux, puis vous utilisez l’application de cuisine d’une entreprise indépendante. Le profil créé à votre sujet sur la plateforme de réseaux sociaux servira à vous présenter des recettes végétariennes sur l’écran d’accueil de l’application de cuisine.",
@@ -101,6 +107,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Mesurer la performance des publicités",
+      "shortName": "Mesurer la performance des publicités",
       "description": "Les informations concernant la publicité qui vous est présentée et la manière dont vous interagissez avec elles peuvent être exploitées pour déterminer dans quelle mesure une publicité a été efficace pour vous ou d’autres utilisateurs et si les objectifs de la publicité ont été atteints. Par exemple, si vous avez vu une publicité, si vous avez cliqué dessus, si elle vous a conduit à acheter un produit ou à visiter un site Web, etc. Ces informations s’avèrent très utiles pour appréhender la pertinence des campagnes publicitaires.",
       "illustrations": [
         "Vous avez cliqué sur une publicité concernant une remise « Black Friday » d’une boutique en ligne sur un site Web et acheté un produit. Votre clic sera lié à cet achat. Votre interaction ainsi que  celle des autres utilisateurs seront mesurées pour déterminer le nombre de clics effectués sur la publicité qui ont abouti à un achat.",
@@ -109,6 +116,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Mesurer la performance des contenus",
+      "shortName": "Mesurer la performance des contenus",
       "description": "Les informations concernant les contenus qui vous sont présentés et la manière dont vous interagissez avec ceux-ci peuvent servir à déterminer si des contenus (non publicitaires), par exemple, ont atteint leur public cible et correspondent à vos centres d’intérêt. Par exemple, si vous lisez un article, visionnez une vidéo, écoutez un podcast ou consultez une description de produit, combien de temps avez-vous passé sur ce service et les pages Web que vous visitez, etc. Ces informations s’avèrent très utiles pour comprendre la pertinence des contenus (non publicitaires) qui vous sont présentés.",
       "illustrations": [
         "Vous avez lu un article de blog sur la randonnée sur une application mobile d’un éditeur et suivi un lien vers un article recommandé et connexe. Vos interactions seront enregistrées de sorte à préciser que la publication initiale sur la randonnée vous a été utile et qu'elle a réussi à susciter votre intérêt pour la publication liée. Cela sera mesuré pour savoir s’il faut produire davantage de publications sur la randonnée à l’avenir et où les placer sur l’écran d’accueil de l’application mobile.",
@@ -117,6 +125,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Comprendre les publics par le biais de statistiques ou de combinaisons de données provenant de différentes sources",
+      "shortName": "Comprendre notre audience grâce à des statistiques",
       "description": "Des rapports peuvent être générés en fonction de la combinaison d’ensembles de données (comme les profils d’utilisateurs, les statistiques, les études de marché, les données analytiques) concernant vos interactions et celles d’autres utilisateurs avec des contenus publicitaires ou (non publicitaires) afin d’identifier les caractéristiques communes (par exemple, pour déterminer quels publics cibles sont les plus réceptifs à une campagne publicitaire ou à certains contenus).",
       "illustrations": [
         "Le propriétaire d’une librairie en ligne souhaite obtenir des rapports commerciaux montrant la proportion de visiteurs ayant consulté et quitté son site sans acheter, ou ayant consulté et acheté la dernière autobiographie du mois, ainsi que l’âge moyen et la répartition hommes/femmes pour chaque catégorie. Les données relatives à votre navigation sur son site et à vos caractéristiques personnelles sont ensuite utilisées et combinées avec d’autres données de ce type pour produire ces statistiques.",
@@ -125,6 +134,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Développer et améliorer les services",
+      "shortName": "Améliorer nos services",
       "description": "Les informations sur votre activité sur ce service, telles que vos interactions avec des publicités ou du contenu, peuvent être très utiles pour améliorer les produits et services et pour créer de nouveaux produits et services en fonction des interactions des utilisateurs, du type d’audience, etc. Cette finalité spécifique n’inclut pas le développement ou l’amélioration des profils et des identifiants des utilisateurs.",
       "illustrations": [
         "Une plateforme technologique travaillant avec un fournisseur de réseaux sociaux constate une croissance des utilisateurs d’applications mobiles, et voit en fonction de leurs profils que beaucoup d’entre eux se connectent via des connexions mobiles. Il utilise une nouvelle technologie pour diffuser des publicités formatées pour les appareils mobiles et à faible bande passante afin d’améliorer leurs performances.",
@@ -133,6 +143,7 @@ export const fr: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Utiliser des données limitées pour sélectionner le contenu",
+      "shortName": "Afficher des contenus basés sur des données limitées",
       "description": "Le contenu qui vous est présenté sur ce service peut être basé sur des données limitées, telles que le site Web ou l’application que vous utilisez, votre emplacement non précis, votre type d’appareil ou le contenu avec lequel vous interagissez (ou avez interagi) (par exemple, pour limiter le nombre de diffusions d’une vidéo ou d’un article à votre attention).",
       "illustrations": [
         "Un magazine de voyage a publié un article sur son site Web sur les nouveaux cours en ligne proposés par une école de langues, afin d’améliorer les expériences de voyage à l’étranger. Les articles de blog de l’école sont insérés directement au bas de la page et sélectionnés en fonction de votre emplacement non précis (par exemple, les articles de blog expliquant le programme du cours pour différentes langues que la langue du pays dans lequel vous vous trouvez).",
@@ -211,5 +222,9 @@ export const fr: ConsentLocaleBundle = {
     "44": "Contenu personnalisé",
     "45": "Publicité basée sur des données limitées, des mesures de performances des publicités, des études d’audience et le développement de services",
     "1": "Données de géolocalisation précises et identification par analyse de l’appareil"
+  },
+  "stackSummaries": {
+    "26": "Publicités et contenus personnalisés, et mesure de leur performance",
+    "42": "Publicités et contenus personnalisés, mesure de leur performance et amélioration de nos services"
   }
 };

@@ -25,7 +25,7 @@ export const en: ConsentLocaleBundle = {
     "vendors.consent": "Consent",
     "details.examples": "Examples",
     "details.vendors": "Vendors",
-    "firstLayer.title": "{appName} asks for your consent to use your personal data to:",
+    "firstLayer.title": "{appName} wants to use your personal data",
     "firstLayer.body": "Your personal data will be processed and information from your device (cookies, unique identifiers, and other device data) may be stored by, accessed by and shared with {count} partners, or used specifically by this app.",
     "manage.consentWithCount.one": "Consent ({count} vendor)",
     "manage.consentWithCount.other": "Consent ({count} vendors)",
@@ -54,6 +54,7 @@ export const en: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Store and/or access information on a device",
+      "shortName": "Store and/or access information on a device",
       "description": "Cookies, device or similar online identifiers (e.g. login-based identifiers, randomly assigned identifiers, network based identifiers) together with other information (e.g. browser type and information, language, screen size, supported technologies etc.) can be stored or read on your device to recognise it each time it connects to an app or to a website, for one or several of the purposes presented here.",
       "illustrations": [
         "Most purposes explained in this notice rely on the storage or accessing of information from your device when you use an app or visit a website. For example, a vendor or publisher might need to store a cookie on your device during your first visit on a website, to be able to recognise your device during your next visits (by accessing this cookie each time)."
@@ -61,6 +62,7 @@ export const en: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Use limited data to select advertising",
+      "shortName": "Show ads based on limited data",
       "description": "Advertising presented to you on this service can be based on limited data, such as the website or app you are using, your non-precise location, your device type or which content you are (or have been) interacting with (for example, to limit the number of times an ad is presented to you).",
       "illustrations": [
         "A car manufacturer wants to promote its electric vehicles to environmentally conscious users living in the city after office hours. The advertising is presented on a page with related content (such as an article on climate change actions) after 6:30 p.m. to users whose non-precise location suggests that they are in an urban zone.",
@@ -69,6 +71,7 @@ export const en: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Create profiles for personalised advertising",
+      "shortName": "Build a profile for personalised ads",
       "description": "Information about your activity on this service (such as forms you submit, content you look at) can be stored and combined with other information about you (for example, information from your previous activity on this service and other websites or apps) or similar users. This is then used to build or improve a profile about you (that might include possible interests and personal aspects). Your profile can be used (also later) to present advertising that appears more relevant based on your possible interests by this and other entities.",
       "illustrations": [
         "If you read several articles about the best bike accessories to buy, this information could be used to create a profile about your interest in bike accessories. Such a profile may be used or improved later on, on the same or a different website or app to present you with advertising for a particular bike accessory brand. If you also look at a configurator for a vehicle on a luxury car manufacturer website, this information could be combined with your interest in bikes to refine your profile and make an assumption that you are interested in luxury cycling gear.",
@@ -77,6 +80,7 @@ export const en: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Use profiles to select personalised advertising",
+      "shortName": "Show you personalised ads",
       "description": "Advertising presented to you on this service can be based on your advertising profiles, which can reflect your activity on this service or other websites or apps (like the forms you submit, content you look at), possible interests and personal aspects.",
       "illustrations": [
         "An online retailer wants to advertise a limited sale on running shoes. It wants to target advertising to users who previously looked at running shoes on its mobile app. Tracking technologies might be used to recognise that you have previously used the mobile app to consult running shoes, in order to present you with the corresponding advertisement on the app.",
@@ -85,6 +89,7 @@ export const en: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Create profiles to personalise content",
+      "shortName": "Build a profile for personalised content",
       "description": "Information about your activity on this service (for instance, forms you submit, non-advertising content you look at) can be stored and combined with other information about you (such as your previous activity on this service or other websites or apps) or similar users. This is then used to build or improve a profile about you (which might for example include possible interests and personal aspects). Your profile can be used (also later) to present content that appears more relevant based on your possible interests, such as by adapting the order in which content is shown to you, so that it is even easier for you to find content that matches your interests.",
       "illustrations": [
         "You read several articles on how to build a treehouse on a social media platform. This information might be added to a profile to mark your interest in content related to outdoors as well as do-it-yourself guides (with the objective of allowing the personalisation of content, so that for example you are presented with more blog posts and articles on treehouses and wood cabins in the future).",
@@ -93,6 +98,7 @@ export const en: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Use profiles to select personalised content",
+      "shortName": "Show you personalised content",
       "description": "Content presented to you on this service can be based on your content personalisation profiles, which can reflect your activity on this or other services (for instance, the forms you submit, content you look at), possible interests and personal aspects. This can for example be used to adapt the order in which content is shown to you, so that it is even easier for you to find (non-advertising) content that matches your interests.",
       "illustrations": [
         "You read articles on vegetarian food on a social media platform and then use the cooking app of an unrelated company. The profile built about you on the social media platform will be used to present you vegetarian recipes on the welcome screen of the cooking app.",
@@ -101,6 +107,7 @@ export const en: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Measure advertising performance",
+      "shortName": "Measure how ads perform",
       "description": "Information regarding which advertising is presented to you and how you interact with it can be used to determine how well an advert has worked for you or other users and whether the goals of the advertising were reached. For instance, whether you saw an ad, whether you clicked on it, whether it led you to buy a product or visit a website, etc. This is very helpful to understand the relevance of advertising campaigns.",
       "illustrations": [
         "You have clicked on an advertisement about a “black Friday” discount by an online shop on the website of a publisher and purchased a product. Your click will be linked to this purchase. Your interaction and that of other users will be measured to know how many clicks on the ad led to a purchase.",
@@ -109,6 +116,7 @@ export const en: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Measure content performance",
+      "shortName": "Measure how content performs",
       "description": "Information regarding which content is presented to you and how you interact with it can be used to determine whether the (non-advertising) content e.g. reached its intended audience and matched your interests. For instance, whether you read an article, watch a video, listen to a podcast or look at a product description, how long you spent on this service and the web pages you visit etc. This is very helpful to understand the relevance of (non-advertising) content that is shown to you.",
       "illustrations": [
         "You have read a blog post about hiking on a mobile app of a publisher and followed a link to a recommended and related post. Your interactions will be recorded as showing that the initial hiking post was useful to you and that it was successful in interesting you in the related post. This will be measured to know whether to produce more posts on hiking in the future and where to place them on the home screen of the mobile app.",
@@ -117,6 +125,7 @@ export const en: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Understand audiences through statistics or combinations of data from different sources",
+      "shortName": "Understand our audience through statistics",
       "description": "Reports can be generated based on the combination of data sets (like user profiles, statistics, market research, analytics data) regarding your interactions and those of other users with advertising or (non-advertising) content to identify common characteristics (for instance, to determine which target audiences are more receptive to an ad campaign or to certain contents).",
       "illustrations": [
         "The owner of an online bookstore wants commercial reporting showing the proportion of visitors who consulted and left its site without buying, or consulted and bought the last celebrity autobiography of the month, as well as the average age and the male/female distribution of each category. Data relating to your navigation on its site and to your personal characteristics is then used and combined with other such data to produce these statistics.",
@@ -125,6 +134,7 @@ export const en: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Develop and improve services",
+      "shortName": "Improve our services",
       "description": "Information about your activity on this service, such as your interaction with ads or content, can be very helpful to improve products and services and to build new products and services based on user interactions, the type of audience, etc. This specific purpose does not include the development or improvement of user profiles and identifiers.",
       "illustrations": [
         "A technology platform working with a social media provider notices a growth in mobile app users, and sees based on their profiles that many of them are connecting through mobile connections. It uses a new technology to deliver ads that are formatted for mobile devices and that are low-bandwidth, to improve their performance.",
@@ -133,6 +143,7 @@ export const en: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Use limited data to select content",
+      "shortName": "Show content based on limited data",
       "description": "Content presented to you on this service can be based on limited data, such as the website or app you are using, your non-precise location, your device type, or which content you are (or have been) interacting with (for example, to limit the number of times a video or an article is presented to you).",
       "illustrations": [
         "A travel magazine has published an article on its website about the new online courses proposed by a language school, to improve travelling experiences abroad. The school’s blog posts are inserted directly at the bottom of the page, and selected on the basis of your non-precise location (for instance, blog posts explaining the course curriculum for different languages than the language of the country you are situated in).",
@@ -211,5 +222,9 @@ export const en: ConsentLocaleBundle = {
     "43": "Content based on limited data and content measurement",
     "44": "Personalised content",
     "45": "Advertising based on limited data, advertising measurement, audience research and services development"
+  },
+  "stackSummaries": {
+    "26": "Personalised ads and content, and measuring how they perform",
+    "42": "Personalised ads and content, measuring how they perform, and improving our services"
   }
 };

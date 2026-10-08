@@ -25,7 +25,7 @@ export const sk: ConsentLocaleBundle = {
     "vendors.consent": "Súhlas",
     "details.examples": "Príklady",
     "details.vendors": "Dodávatelia",
-    "firstLayer.title": "{appName} žiada o váš súhlas s použitím vašich osobných údajov na:",
+    "firstLayer.title": "{appName} chce používať vaše osobné údaje",
     "firstLayer.body": "Vaše osobné údaje budú spracované a informácie z vášho zariadenia (súbory cookie, jedinečné identifikátory a ďalšie údaje o zariadení) môžu byť ukladané, sprístupňované a zdieľané s {count} partnermi alebo používané výlučne touto aplikáciou.",
     "manage.consentWithCount.one": "Súhlas ({count} dodávateľ)",
     "manage.consentWithCount.few": "Súhlas ({count} dodávatelia)",
@@ -56,6 +56,7 @@ export const sk: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Uchovávanie alebo prístup k informáciám na zariadení",
+      "shortName": "Uchovávanie alebo prístup k informáciám na zariadení",
       "description": "Súbory cookie, identifikátory zariadenia alebo podobné online identifikátory (napr. identifikátory založené na prihlásení, náhodne pridelené identifikátory, identifikátory založené na sieti) spolu s inými informáciami (napr. typ a informácie prehliadača, jazyk, veľkosť obrazovky, podporované technológie atď.) je možné uložiť alebo prečítať na vašom zariadení, ktoré bude rozpoznané pri každom pripojení k aplikácii alebo webovej stránke na jeden alebo viac tu uvedených účelov.",
       "illustrations": [
         "Väčšina účelov vysvetlených v tomto oznámení sa pri používaní aplikácie alebo návšteve webovej stránky spolieha na uchovávanie alebo prístup k informáciám z vášho zariadenia. Napríklad dodávateľ alebo vydavateľ bude musieť uložiť súbor cookie do vášho zariadenia počas vašej prvej návštevy na webovej stránke na rozpoznanie vášho zariadenia počas vašich ďalších návštev (pri každom prístupe k tomuto súboru cookie)."
@@ -63,6 +64,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Použiť obmedzené údaje na výber reklamy",
+      "shortName": "Zobrazovanie reklám na základe obmedzených údajov",
       "description": "Reklama, ktorá vám bude prezentovaná v tejto službe, môže byť založená na obmedzených údajoch, ako je webová stránka alebo aplikácia, ktorú používate, vaša nepresná poloha, typ vášho zariadenia alebo obsah, s ktorým interagujete (alebo ste interagovali) (napríklad za účelom obmedzenia počtu zobrazení reklamy).",
       "illustrations": [
         "Výrobca automobilov chce propagovať svoje elektrické vozidlá ekologicky uvedomelým používateľom po pracovnom čase žijúcim v meste. Reklama je prezentovaná na stránke so súvisiacim obsahom (napríklad článok o opatreniach spojených s klimatickými zmenami) po 18:30 používateľom, ktorých nepresná poloha naznačuje, že žijú v mestskej zóne.",
@@ -71,6 +73,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Vytvoriť profily pre personalizovanú reklamu",
+      "shortName": "Vytváranie profilu pre personalizované reklamy",
       "description": "Informácie o vašej aktivite v tejto službe (napríklad formuláre, ktoré odošlete, obsah, ktorý si prezeráte) môžu byť uschované a spájané s inými informáciami o vás (napríklad informácie z vašej predchádzajúcej aktivity v tejto službe a na iných webových stránkach alebo aplikáciách) alebo podobných používateľoch. Tieto informácie sa potom použijú na vytvorenie alebo zlepšenie profilu o vás (čo môže zahŕňať možné záujmy a osobné aspekty). Takto váš profil môžu použiť (aj neskôr) iné subjekty na prezentovanie reklamy, ktorá sa zdá byť relevantnejšia na základe vašich možných záujmov.",
       "illustrations": [
         "Ak si prečítate niekoľko článkov o najlepších cyklistických doplnkoch, tieto informácie by sa mohli použiť na vytvorenie profilu o vašom záujme, ktorý sa týka cyklistických doplnkov. Takýto profil sa môže neskôr použiť alebo vylepšiť na tej istej alebo inej webovej stránke alebo v inej aplikácii, aby sa vám zobrazovala reklama pre konkrétnu značku cyklistických doplnkov. Ak sa tiež pozriete na konfigurátor vozidla na webovej stránke výrobcu luxusných automobilov, tieto informácie by sa mohli spojiť s vaším záujmom o bicykle na upresnenie svojho profilu a predpokladu, že máte záujem o luxusné cyklistické vybavenie.",
@@ -79,6 +82,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Použiť profily na výber personalizovanej reklamy",
+      "shortName": "Zobrazovanie personalizovaných reklám",
       "description": "Reklama, ktorá vám bude prezentovaná v tejto službe, môže byť založená na vašich reklamných profiloch, ktoré môžu odrážať vašu aktivitu v tejto službe alebo iných webových stránkach alebo aplikáciách (ako sú formuláre, ktoré odošlete, obsah, ktorý si prezeráte), možné záujmy a osobné aspekty.",
       "illustrations": [
         "Online predajca chce propagovať obmedzený výpredaj bežeckých topánok. Reklamu chce zamerať na používateľov, ktorí si predtým prezerali bežecké topánky vo svojej mobilnej aplikácii. Na predstavenie príslušnej reklamy v aplikácii môžu byť použité sledovacie technológie na rozpoznanie toho, že ste v minulosti používali mobilnú aplikáciu na konzultáciu bežeckej obuvi.",
@@ -87,6 +91,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Vytvoriť profily na prispôsobenie obsahu",
+      "shortName": "Vytváranie profilu pre personalizovaný obsah",
       "description": "Informácie o vašej aktivite v tejto službe (napríklad formuláre, ktoré odošlete, nereklamný obsah, ktorý si prezeráte) môžu byť uložené a spojené s inými informáciami o vás (napríklad vaša predchádzajúca aktivita v tejto službe alebo na iných webových stránkach alebo aplikáciách) alebo podobných používateľoch. Tieto informácie sa potom použijú na vytvorenie alebo zlepšenie profilu o vás (čo môže napríklad zahŕňať možné záujmy a osobné aspekty). Váš profil je možné použiť (aj neskôr) na prezentovanie obsahu, ktorý sa zdá relevantnejší na základe vašich možných záujmov, napríklad prispôsobením poradia, v akom sa vám obsah zobrazuje, vďaka čomu ešte ľahšie vyhľadáte obsah, ktorý zodpovedá vašim záujmom.",
       "illustrations": [
         "Na platforme sociálnych sietí ste si prečítali niekoľko článkov o tom, ako postaviť domček na strome. Tieto informácie môžu byť pridané do profilu na označenie vášho záujmu o obsah súvisiaci s outdoor aktivitami, ale aj návodmi pre domácich majstrov (s cieľom umožniť prispôsobenie obsahu, aby ste napríklad v budúcnosti dostávali ďalšie blogové príspevky a články o domčekoch na strome a drevených chatkách).",
@@ -95,6 +100,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Použiť profily na výber prispôsobeného obsahu",
+      "shortName": "Zobrazovanie personalizovaného obsahu",
       "description": "Obsah prezentovaný v tejto službe môže byť založený na vašich profiloch personalizácie obsahu, ktoré môžu odrážať vašu aktivitu v tejto alebo iných službách (napríklad formuláre, ktoré odošlete, obsah, ktorý si prezeráte), možných záujmoch a osobných aspektoch. Dá sa to napríklad použiť na prispôsobenie poradia, v ktorom sa vám obsah zobrazuje, vďaka čomu ešte ľahšie vyhľadáte (nereklamný) obsah, ktorý zodpovedá vašim záujmom.",
       "illustrations": [
         "Čítate články o vegetariánskom jedle na platforme sociálnych sietí a potom používate aplikáciu na varenie nesúvisiacej spoločnosti. Profil vytvorený o vás na platforme sociálnych sietí sa použije na prezentáciu vegetariánskych receptov na uvítacej obrazovke aplikácie na varenie.",
@@ -103,6 +109,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Meranie výkonnosti reklamy",
+      "shortName": "Meranie výkonnosti reklám",
       "description": "Informácie o tom, ktorá reklama je vám prezentovaná a ako s ňou komunikujete, možno použiť na určenie toho, ako dobre reklama fungovala vo vašom prípade alebo v prípade iných používateľov a či boli dosiahnuté ciele reklamy. Napríklad, či ste videli reklamu, či ste na ňu klikli, či vás viedla ku kúpe produktu alebo návšteve webovej stránky atď. Je veľmi užitočné pochopiť relevantnosť reklamných kampaní.",
       "illustrations": [
         "Klikli ste na reklamu o zľave na „black Friday“ v internetovom obchode na webovej stránke vydavateľa a kúpili ste si produkt. Vaše kliknutie bude prepojené s týmto nákupom. Bude sa merať vaša interakcia a interakcia iných používateľov, aby sa zistilo, koľko kliknutí na reklamu viedlo k nákupu.",
@@ -111,6 +118,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Meranie výkonnosti obsahu",
+      "shortName": "Meranie výkonnosti obsahu",
       "description": "Informácie o tom, aký obsah je vám prezentovaný a ako s ním komunikujete, možno použiť na určenie toho, či sa (nereklamný) obsah, napr., dostal k určenému publiku a zodpovedal vašim záujmom. Napríklad, či si prečítate článok, pozriete video, vypočujte podcast alebo si prečítate popis produktu, aký dlhý čas ste strávili v tejto službe a na webových stránkach, ktoré navštevujete atď. Je veľmi užitočné pochopiť relevantnosť (nereklamného) obsahu, ktorý sa vám zobrazuje.",
       "illustrations": [
         "Prečítali ste si blogový príspevok o turistike v mobilnej aplikácii vydavateľa a klikli ste na odkaz na odporúčaný a súvisiaci príspevok. Vaše interakcie budú zaznamenané ako dôkaz toho, že počiatočný príspevok o turistike bol pre vás užitočný a úspešný v tom zmysle, že vyvolal u vás záujem o súvisiaci príspevok. Na základe meraní týchto informácií budeme vedieť, či v budúcnosti vytvoríme viac príspevkov o turistike a kam ich umiestnime na domovskú obrazovku mobilnej aplikácie.",
@@ -119,6 +127,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Pochopiť cieľové skupiny na základe štatistík alebo spájania údajov z rôznych zdrojov",
+      "shortName": "Spoznávanie nášho publika pomocou štatistík",
       "description": "Správy sa dajú generovať na základe spájania súborov údajov (napr. používateľské profily, štatistiky, prieskum trhu, analytické údaje) týkajúcich sa vašich interakcií a interakcií iných používateľov s reklamným alebo (nereklamným) obsahom na identifikáciu bežných charakteristík (napríklad na určenie toho, ktoré cieľová skupina je vnímavejšie voči reklamnej kampani alebo určitému obsahu).",
       "illustrations": [
         "Majiteľ online kníhkupectva žiada o obchodný výkaz podielu návštevníkov, ktorí konzultovali a opustili stránku bez nákupu alebo konzultovali a kúpili si poslednú autobiografiu osobnosti mesiaca, ako aj priemerného veku a podielu mužov/žien v každej kategórii. Na vytvorenie týchto štatistík sa potom použijú údaje týkajúce sa vašej návštevy na stránke a vašich osobných charakteristík a spoja sa s inými takýmito údajmi.",
@@ -127,6 +136,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Vývoj a zlepšovanie služieb",
+      "shortName": "Zlepšovanie našich služieb",
       "description": "Informácie o vašej aktivite v tejto službe, napr. vaša reakcia na reklamy alebo obsah, môžu byť veľmi užitočné pri zlepšovaní produktov a služieb a pri vytváraní nových produktov a služieb na základe interakcií s používateľmi, typu cieľovej skupiny atď. Tento konkrétny účel nezahŕňa vývoj ani zlepšovanie používateľských profilov a identifikátorov.",
       "illustrations": [
         "Technologická platforma, ktorá spolupracuje s poskytovateľom sociálnych sietí, si všimne nárast používateľov mobilných aplikácií a na základe profilov vidí, že mnohí z nich sa pripájajú z mobilných pripojení. Používa novú technológiu na zobrazovanie reklám, ktoré sú formátované pre mobilné zariadenia a nízkopásmové, na zlepšenie ich výkonu.",
@@ -135,6 +145,7 @@ export const sk: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Použitie obmedzených údajov na výber obsahu",
+      "shortName": "Zobrazovanie obsahu na základe obmedzených údajov",
       "description": "Obsah prezentovaný v tejto službe môže byť založený na obmedzených údajoch, ako je webová stránka alebo aplikácia, ktorú používate, vaša nepresná poloha, typ vášho zariadenia alebo obsah, s ktorým interagujete (alebo ste interagovali) (napríklad na obmedzenie počtu zobrazení videa alebo článku).",
       "illustrations": [
         "Časopis o cestovaní zverejnil na svojej webovej stránke článok o nových online kurzoch navrhnutých jazykovou školou na zlepšenie skúseností pri cestovaní do zahraničia. Príspevky školského blogu sa vkladajú priamo do spodnej časti stránky a vyberajú sa na základe vašej nepresnej polohy (napríklad blogové príspevky vysvetľujúce učebné osnovy pre iné jazyky ako je jazyk krajiny, v ktorej sa nachádzate).",
@@ -213,5 +224,9 @@ export const sk: ConsentLocaleBundle = {
     "44": "Personalizovaný obsah",
     "45": "Reklama založená na obmedzených údajoch, meraní reklamy, prieskume cieľových skupín a vývoji služieb",
     "1": "Presné údaje o geografickej polohe a identifikácia skenovaním zariadenia"
+  },
+  "stackSummaries": {
+    "26": "Personalizované reklamy a obsah a meranie ich výkonnosti",
+    "42": "Personalizované reklamy a obsah, meranie ich výkonnosti a zlepšovanie našich služieb"
   }
 };

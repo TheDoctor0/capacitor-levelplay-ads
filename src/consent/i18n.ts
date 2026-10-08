@@ -60,6 +60,7 @@ function mergeBundles(base: ConsentLocaleBundle, override?: ConsentLocaleBundle)
     specialFeatures: { ...base.specialFeatures, ...override.specialFeatures },
     dataCategories: { ...base.dataCategories, ...override.dataCategories },
     stacks: { ...base.stacks, ...override.stacks },
+    stackSummaries: { ...base.stackSummaries, ...override.stackSummaries },
     countries: { ...base.countries, ...override.countries },
   };
 }
@@ -113,6 +114,18 @@ export class I18n {
 
   stack(id: string): string | undefined {
     return this.active.stacks?.[id] ?? en.stacks?.[id];
+  }
+
+  /** First-layer summary for a stack: the plain-language one, else the official stack name. */
+  stackSummary(id: string): string | undefined {
+    return this.active.stackSummaries?.[id] ?? this.stack(id);
+  }
+
+  /** First-layer label for a purpose: its short name, else the official name. */
+  purposeShortName(id: number): string {
+    const purpose = this.purpose(id);
+
+    return purpose.shortName ?? purpose.name;
   }
 
   /** Country name: explicit bundle entry, then `Intl.DisplayNames`, then the raw code. */

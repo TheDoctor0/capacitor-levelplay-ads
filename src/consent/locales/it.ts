@@ -25,7 +25,7 @@ export const it: ConsentLocaleBundle = {
     "vendors.consent": "Consenso",
     "details.examples": "Esempi",
     "details.vendors": "Fornitori",
-    "firstLayer.title": "{appName} chiede il tuo consenso per utilizzare i tuoi dati personali per:",
+    "firstLayer.title": "{appName} vuole utilizzare i tuoi dati personali",
     "firstLayer.body": "I tuoi dati personali saranno trattati e le informazioni del tuo dispositivo (cookie, identificatori univoci e altri dati del dispositivo) potranno essere memorizzate, consultate e condivise con {count} partner, oppure utilizzate specificamente da questa app.",
     "manage.consentWithCount.one": "Consenso ({count} fornitore)",
     "manage.consentWithCount.other": "Consenso ({count} fornitori)",
@@ -54,6 +54,7 @@ export const it: ConsentLocaleBundle = {
   "purposes": {
     "1": {
       "name": "Archiviare informazioni su dispositivo e/o accedervi",
+      "shortName": "Archiviare informazioni su dispositivo e/o accedervi",
       "description": "Cookie, identificatori del dispositivo o analoghi identificatori online (ad es. identificatori basati sull’accesso, identificatori assegnati casualmente, identificatori basati sulla rete) insieme ad altre informazioni (ad es. tipo di browser e informazioni sul browser, lingua, dimensioni dello schermo, tecnologie supportate, ecc.) possono essere archiviati sul o letti dal dispositivo dell’utente per riconoscerlo ogni volta che l’utente si connette a un’app o a un sito web, per una o più finalità qui presentate.",
       "illustrations": [
         "La maggior parte delle finalità illustrate nella presente informativa si basa sull’archiviazione delle o l’accesso alle informazioni del dispositivo dell’utente durante l’uso di un’app o la visita di un sito web. Ad esempio, un fornitore o un editore potrebbe avere l’esigenza di memorizzare un cookie sul dispositivo dell’utente nel corso della sua prima visita di un sito web per poter riconoscere il dispositivo alle visite successive (accedendo di volta in volta a tale cookie)."
@@ -61,6 +62,7 @@ export const it: ConsentLocaleBundle = {
     },
     "2": {
       "name": "Utilizzare dati limitati per la selezione della pubblicità",
+      "shortName": "Mostrare annunci basati su dati limitati",
       "description": "La pubblicità presentata all’utente su questo servizio può basarsi su dati limitati, come il sito web o l’app in uso, la posizione approssimativa, il tipo di dispositivo dell’utente o il contenuto con cui interagisce (o ha interagito) (ad esempio, per limitare il numero di volte in cui un annuncio viene presentato all’utente).",
       "illustrations": [
         "Una casa automobilistica vuole promuovere i propri veicoli elettrici ad utenti attenti all’ambiente che permangono in città dopo l’orario di ufficio. La pubblicità viene presentata dopo le 18:30 su una pagina con contenuti correlati (come un articolo sulle azioni per contrastare il cambiamento climatico) a utenti la cui posizione approssimativa suggerisce che si trovino in una zona urbana.",
@@ -69,6 +71,7 @@ export const it: ConsentLocaleBundle = {
     },
     "3": {
       "name": "Creare profili per la pubblicità personalizzata",
+      "shortName": "Creare un profilo per la pubblicità personalizzata",
       "description": "Le informazioni sull’attività dell’utente su questo servizio (come i moduli inviati, i contenuti visualizzati) possono essere archiviate e combinate con altre informazioni riguardanti l’utente (ad esempio, informazioni tratte dall’attività precedente dell’utente sul servizio e su altri siti web o app) o utenti simili. Tali informazioni vengono, quindi, impiegate per creare o migliorare un profilo dell’utente (che potrebbe includere eventuali interessi e aspetti personali). Questa o altre entità potrebbero avvalersi del profilo dell’utente (anche in seguito) per presentare annunci più pertinenti sulla base dei possibili interessi dell’utente.",
       "illustrations": [
         "Se l’utente legge diversi articoli sui migliori accessori per bicicletta da acquistare, tali informazioni potrebbero essere utilizzate per creare un profilo sull’interesse dell’utente per gli accessori per bicicletta. Tale profilo può essere usato o migliorato in seguito, sugli stessi siti web o app o su siti web o app diversi, per presentare all’utente annunci su una determinata marca di accessori per bicicletta. Inoltre, se l’utente cerca un configuratore per veicoli sul sito web di un produttore di automobili di lusso, tali informazioni potrebbero essere combinate con il suo interesse per le biciclette per perfezionarne il profilo e supporre che all’utente interessi l’attrezzatura da ciclismo di lusso.",
@@ -77,6 +80,7 @@ export const it: ConsentLocaleBundle = {
     },
     "4": {
       "name": "Utilizzare profili per la selezione di pubblicità personalizzata",
+      "shortName": "Mostrare pubblicità personalizzata",
       "description": "La pubblicità presentata all’utente sul servizio può basarsi sui suoi profili pubblicitari, che possono riflettere l’attività sul servizio o su altri siti web o app (come i moduli inviati, i contenuti visualizzati), possibili interessi e aspetti personali dell’utente.",
       "illustrations": [
         "Un rivenditore online vuole pubblicizzare una vendita limitata di scarpe da corsa. Vuole rivolgere gli annunci agli utenti che in precedenza avevano guardato scarpe da corsa sulla sua app mobile. Il riconoscimento dell’utente che ha precedentemente utilizzato l’app mobile per guardare scarpe da corsa, al fine di presentargli la pubblicità corrispondente sull’app, potrebbe realizzarsi tramite tecnologie di tracciamento.",
@@ -85,6 +89,7 @@ export const it: ConsentLocaleBundle = {
     },
     "5": {
       "name": "Creare profili per la personalizzazione dei contenuti",
+      "shortName": "Creare un profilo per contenuti personalizzati",
       "description": "Le informazioni sull’attività dell’utente sul questo servizio (ad esempio, i moduli inviati, i contenuti non pubblicitari visualizzati) possono essere archiviate e combinate con altre informazioni riguardanti l’utente (quali informazioni tratte dall’attività precedente dell’utente sul servizio o su altri siti web o app) o utenti simili. Tali informazioni vengono, quindi, impiegate per creare o migliorare un profilo dell’utente (il che potrebbe includere, ad esempio, possibili interessi e aspetti personali). Il profilo dell’utente può essere utilizzato (anche successivamente) per presentare contenuti che, a giudicare dai possibili interessi dell’utente, appaiono più pertinenti, ad esempio adattando l’ordine in cui i contenuti vengono mostrati, in modo da rendere ancora più facile per l’utente trovare contenuti che rispondano ai suoi interessi.",
       "illustrations": [
         "L’utente ha letto diversi articoli su una piattaforma di social media su come costruire una casa sull’albero. Queste informazioni potrebbero essere aggiunte al profilo per contrassegnare l’interesse dell’utente verso contenuti relativi all’outdoor e alle guide sul fai-da-te (con l’obiettivo di consentire la personalizzazione dei contenuti, in modo da presentare in futuro, ad esempio, più post di blog e articoli su case sull’albero e baite di legno).",
@@ -93,6 +98,7 @@ export const it: ConsentLocaleBundle = {
     },
     "6": {
       "name": "Utilizzare profili per la selezione di contenuti personalizzati",
+      "shortName": "Mostrare contenuti personalizzati",
       "description": "I contenuti presentati all’utente sul servizio possono basarsi sui suoi profili per la personalizzazione dei contenuti, che possono riflettere la sua attività su questo o altri servizi (ad esempio, i moduli inviati, i contenuti visualizzati), eventuali interessi e aspetti personali. Ciò può essere utilizzato, ad esempio, per adattare l’ordine in cui i contenuti vengono mostrati all’utente, in modo da rendere ancora più facile per l’utente trovare contenuti (non pubblicitari) che rispondano ai suoi interessi.",
       "illustrations": [
         "L’utente legge degli articoli sull’alimentazione vegetariana su una piattaforma di social media e poi usa l’app di cucina di un’azienda non correlata. Il profilo creato sull’utente sulla piattaforma di social media sarà utilizzato per presentare delle ricette vegetariane nella schermata di benvenuto dell’app di cucina.",
@@ -101,6 +107,7 @@ export const it: ConsentLocaleBundle = {
     },
     "7": {
       "name": "Misurare le prestazioni degli annunci",
+      "shortName": "Misurare le prestazioni degli annunci",
       "description": "Le informazioni relative alla pubblicità presentata all’utente e al modo in cui l’utente interagisce con essa possono essere utilizzate per determinare il livello di efficacia di una pubblicità riguardo all’utente o ad altri utenti e se gli obiettivi della pubblicità sono stati raggiunti. Ad esempio, se l’utente ha visualizzato un annuncio, vi ha cliccato sopra, ha indotto l’utente ad acquistare un prodotto o a visitare un sito web, ecc. Ciò è molto utile per comprendere la pertinenza delle campagne pubblicitarie.",
       "illustrations": [
         "L’utente ha fatto clic su una pubblicità relativa a uno sconto per il “black Friday” da un negozio online sul sito web di un editore e ha acquistato un prodotto. Il clic dell’utente sarà collegato all’acquisto. L’interazione dell’utente e quella di altri utenti saranno valutate per sapere quanti clic sulla pubblicità hanno dato luogo a un acquisto.",
@@ -109,6 +116,7 @@ export const it: ConsentLocaleBundle = {
     },
     "8": {
       "name": "Misurare le prestazioni dei contenuti",
+      "shortName": "Misurare le prestazioni dei contenuti",
       "description": "Le informazioni relative ai contenuti presentati all’utente e al modo in cui l’utente interagisce con essi possono essere utilizzate per stabilire se i contenuti (non pubblicitari) hanno raggiunto, ad es., il pubblico previsto e incontrato i suoi interessi. Ad esempio, se l’utente legge un articolo, guarda un video, ascolta un podcast o guarda la descrizione di un prodotto, quanto tempo trascorre sul servizio, le pagine web visitate, ecc. Ciò è molto utile per comprendere la pertinenza dei contenuti (non pubblicitari) che vengono mostrati all’utente.",
       "illustrations": [
         "L’utente ha letto un post di un blog sulle escursioni su un’app mobile di un editore e ha seguito un link a un post attinente consigliato. Le interazioni dell’utente registrate dimostreranno che il post iniziale sull’escursionismo si è rivelato utile e capace di suscitare l’interesse dell’utente per il post correlato. Tale circostanza sarà valutata per sapere se produrre più post sull’escursionismo in futuro e dove posizionarli nella schermata iniziale dell’app mobile.",
@@ -117,6 +125,7 @@ export const it: ConsentLocaleBundle = {
     },
     "9": {
       "name": "Comprendere il pubblico attraverso statistiche o la combinazione di dati provenienti da fonti diverse",
+      "shortName": "Conoscere il nostro pubblico tramite statistiche",
       "description": "I report possono essere generati in base alla combinazione di set di dati (come profili utente, statistiche, ricerche di mercato, dati analitici) riguardanti le interazioni dell’utente e quelle di altri utenti con contenuti pubblicitari o (non pubblicitari) al fine di identificare caratteristiche comuni (ad esempio, per determinare quale pubblico di riferimento è più ricettivo a una campagna pubblicitaria o a determinati contenuti).",
       "illustrations": [
         "Il proprietario di una libreria online desidera un report commerciale che mostri la percentuale di visitatori che hanno consultato e lasciato il suo sito senza fare acquisti o hanno consultato e acquistato l’ultima autobiografia delle celebrità del mese, nonché l’età media e la distribuzione di genere per ciascuna categoria. I dati relativi alla navigazione dell’utente sul sito e alle sue caratteristiche personali vengono quindi utilizzati e combinati con altri dati di questo tipo per produrre le statistiche.",
@@ -125,6 +134,7 @@ export const it: ConsentLocaleBundle = {
     },
     "10": {
       "name": "Sviluppare e migliorare i servizi",
+      "shortName": "Migliorare i nostri servizi",
       "description": "Le informazioni sull’attività dell’utente sul servizio, come l’interazione con annunci o contenuti, possono essere molto utili per migliorare prodotti e servizi e creare nuovi prodotti e servizi basati sulle interazioni dell’utente, il tipo di pubblico, ecc. Questa specifica finalità non include lo sviluppo o il miglioramento dei profili utente e degli identificatori.",
       "illustrations": [
         "Una piattaforma tecnologica che collabora con un fornitore di social media nota una crescita degli utenti di app mobili e constata dai rispettivi profili che molti di loro si connettono attraverso connessioni mobili. Impiega una nuova tecnologia per fornire annunci formattati per i dispositivi mobili e a bassa larghezza di banda al fine di migliorarne le prestazioni.",
@@ -133,6 +143,7 @@ export const it: ConsentLocaleBundle = {
     },
     "11": {
       "name": "Utilizzare dati limitati per la selezione dei contenuti",
+      "shortName": "Mostrare contenuti basati su dati limitati",
       "description": "I contenuti presentati all’utente sul servizio possono basarsi su dati limitati, come il sito web o l’app in uso, la posizione approssimativa, il tipo di dispositivo dell’utente o il contenuto con cui interagisce (o ha interagito) (ad esempio, per limitare il numero di volte in cui un video o un articolo viene presentato all’utente).",
       "illustrations": [
         "Una rivista di viaggi ha pubblicato un articolo sul suo sito web sui nuovi corsi online proposti da una scuola di lingue, al fine di migliorare le esperienze di viaggio all’estero. I post del blog della scuola vengono inseriti direttamente in fondo alla pagina e selezionati in base alla posizione approssimativa dell’utente (ad esempio, i post del blog che illustrano l’offerta formativa del corso per lingue diverse da quella del paese in cui si trova l’utente).",
@@ -211,5 +222,9 @@ export const it: ConsentLocaleBundle = {
     "44": "Contenuti personalizzati",
     "45": "Pubblicità basata su dati limitati, misurazione degli annunci, ricerche sul pubblico e sviluppo di servizi",
     "1": "Dati di geolocalizzazione precisi e identificazione attraverso la scansione del dispositivo"
+  },
+  "stackSummaries": {
+    "26": "Pubblicità e contenuti personalizzati e misurazione delle loro prestazioni",
+    "42": "Pubblicità e contenuti personalizzati, misurazione delle loro prestazioni e miglioramento dei nostri servizi"
   }
 };

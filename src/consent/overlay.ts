@@ -320,8 +320,8 @@ class ConsentModal {
     const covering = Object.entries(STACK_PURPOSES)
       .filter(([, purposes]) => [...declared].every((purpose) => purposes.includes(purpose)))
       .sort(([, a], [, b]) => a.length - b.length);
-    const stackName = covering.length ? this.i18n.stack(covering[0][0]) : undefined;
-    return stackName ?? [...declared].map((purpose) => this.i18n.purpose(purpose).name).join(', ');
+    const stackName = covering.length ? this.i18n.stackSummary(covering[0][0]) : undefined;
+    return stackName ?? [...declared].map((purpose) => this.i18n.purposeShortName(purpose)).join(', ');
   }
 
   // ---------------------------------------------------------------------------
@@ -341,7 +341,7 @@ class ConsentModal {
       ),
     ]
       .sort((a, b) => a - b)
-      .map((purpose) => h('li', {}, [t.purpose(purpose).name]));
+      .map((purpose) => h('li', {}, [t.purposeShortName(purpose)]));
     declaredSpecialFeatures(this.config).forEach((feature) =>
       learnMoreItems.push(h('li', {}, [t.specialFeature(feature).name])),
     );
@@ -364,7 +364,7 @@ class ConsentModal {
           h('div', { class: 'prow' }, [icon(ICON.person, 'pic'), h('span', { class: 'ptxt' }, [this.summaryText()])]),
           h('div', { class: 'prow' }, [
             icon(ICON.devices, 'pic'),
-            h('span', { class: 'ptxt' }, [t.purpose(STORE_ACCESS_DEVICE_PURPOSE).name]),
+            h('span', { class: 'ptxt' }, [t.purposeShortName(STORE_ACCESS_DEVICE_PURPOSE)]),
           ]),
           h(
             'button',

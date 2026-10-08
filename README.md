@@ -965,25 +965,27 @@ official IAB translations bundled with the plugin.
 Localized copy for the custom modal. Every section is optional and merged
 over the built-in bundle for the locale, then over English.
 
-| Prop                  | Type                                                                                                          | Description                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| **`ui`**              | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | UI chrome strings (titles, buttons, section headers). Supports `{var}`. |
-| **`purposes`**        | <code><a href="#record">Record</a>&lt;string, <a href="#consentpurposetext">ConsentPurposeText</a>&gt;</code> | IAB purpose texts, keyed by purpose ID.                                 |
-| **`specialFeatures`** | <code><a href="#record">Record</a>&lt;string, <a href="#consentpurposetext">ConsentPurposeText</a>&gt;</code> | IAB special-feature texts, keyed by special-feature ID.                 |
-| **`dataCategories`**  | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | IAB data-category names, keyed by data-category ID.                     |
-| **`stacks`**          | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | IAB stack names, keyed by stack ID — the first-layer purpose summary.   |
-| **`countries`**       | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | Country names, keyed by ISO-3166 code (overrides `Intl.DisplayNames`).  |
+| Prop                  | Type                                                                                                          | Description                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **`ui`**              | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | UI chrome strings (titles, buttons, section headers). Supports `{var}`.                          |
+| **`purposes`**        | <code><a href="#record">Record</a>&lt;string, <a href="#consentpurposetext">ConsentPurposeText</a>&gt;</code> | IAB purpose texts, keyed by purpose ID.                                                          |
+| **`specialFeatures`** | <code><a href="#record">Record</a>&lt;string, <a href="#consentpurposetext">ConsentPurposeText</a>&gt;</code> | IAB special-feature texts, keyed by special-feature ID.                                          |
+| **`dataCategories`**  | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | IAB data-category names, keyed by data-category ID.                                              |
+| **`stacks`**          | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | IAB stack names, keyed by stack ID — the first-layer purpose summary.                            |
+| **`stackSummaries`**  | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | Plain-language first-layer summaries, keyed by stack ID; preferred over the official stack name. |
+| **`countries`**       | <code><a href="#record">Record</a>&lt;string, string&gt;</code>                                               | Country names, keyed by ISO-3166 code (overrides `Intl.DisplayNames`).                           |
 
 
 #### ConsentPurposeText
 
 Name, description and examples of one IAB purpose or special feature.
 
-| Prop                | Type                  |
-| ------------------- | --------------------- |
-| **`name`**          | <code>string</code>   |
-| **`description`**   | <code>string</code>   |
-| **`illustrations`** | <code>string[]</code> |
+| Prop                | Type                  | Description                                                                                |
+| ------------------- | --------------------- | ------------------------------------------------------------------------------------------ |
+| **`name`**          | <code>string</code>   |                                                                                            |
+| **`shortName`**     | <code>string</code>   | Plain-language label for the first layer; the official `name` stays on the detail screens. |
+| **`description`**   | <code>string</code>   |                                                                                            |
+| **`illustrations`** | <code>string[]</code> |                                                                                            |
 
 
 #### GlobalVendorList
@@ -1099,9 +1101,7 @@ Vendor groups in "Vendor preferences", shown in this order.
 
 Construct a type with a set of properties K of type T
 
-<code>{
- [P in K]: T;
- }</code>
+<code>{ [P in K]: T; }</code>
 
 
 #### BannerPosition
