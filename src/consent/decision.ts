@@ -130,6 +130,16 @@ export function isAdsGranted(config: ConsentServicesConfig, choice: ConsentChoic
   return choice.purposeConsents.includes(STORE_ACCESS_DEVICE_PURPOSE) && adNetworkGranted;
 }
 
+/**
+ * LevelPlay's global GDPR consent: the `mediation` service's own grant, or —
+ * when no service is marked `mediation` — {@link isAdsGranted}.
+ */
+export function isMediationGranted(config: ConsentServicesConfig, choice: ConsentChoice): boolean {
+  const mediationService = config.services.find((service) => service.mediation);
+
+  return mediationService ? isServiceGranted(choice, mediationService) : isAdsGranted(config, choice);
+}
+
 export function toDecision(
   choice: ConsentChoice,
   meta: { revision: string; jurisdiction: ConsentJurisdiction; explicit: boolean; now: number },

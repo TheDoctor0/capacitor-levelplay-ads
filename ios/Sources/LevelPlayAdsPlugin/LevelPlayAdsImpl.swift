@@ -167,17 +167,17 @@ import IronSource
         applyNetworkConsents(granted: granted, networkConsents: networkConsents)
     }
 
-    /// Per-network replace-all GDPR map from the rich modal's toggles. Falls back
-    /// to a single global `all` grant when no service declared a network.
+    /// Global GDPR flag + per-network replace-all map from the rich modal's toggles
+    /// (same calls as Android's PrivacyExecutor).
     public func applyNetworkConsents(granted: Bool, networkConsents: [String: Bool]) {
 #if canImport(IronSource)
+        LevelPlay.setConsent(granted)
         for (network, value) in networkConsents where !network.isEmpty {
             gdprConsents[network] = NSNumber(value: value)
         }
-        if gdprConsents.isEmpty {
-            gdprConsents["all"] = NSNumber(value: granted)
+        if !gdprConsents.isEmpty {
+            LPMPrivacySettings.setGDPRConsents(gdprConsents)
         }
-        LPMPrivacySettings.setGDPRConsents(gdprConsents)
 #endif
     }
 
@@ -443,13 +443,13 @@ import IronSource
     /// `granted` global GDPR flag + per-network replace-all consent map.
     public func applyUserConsent(granted: Bool, networks: [String]) {
 #if canImport(IronSource)
+        LevelPlay.setConsent(granted)
         for network in networks where !network.isEmpty {
             gdprConsents[network] = NSNumber(value: granted)
         }
-        if gdprConsents.isEmpty {
-            gdprConsents["all"] = NSNumber(value: granted)
+        if !gdprConsents.isEmpty {
+            LPMPrivacySettings.setGDPRConsents(gdprConsents)
         }
-        LPMPrivacySettings.setGDPRConsents(gdprConsents)
 #endif
     }
 

@@ -435,11 +435,20 @@ export interface ConsentService {
   /** Display name — a proper noun, language-neutral. */
   name: string;
   /**
-   * LevelPlay mediation network key this service maps to, e.g. `'unityads'`,
-   * `'meta'`, `'pangle'`. When set, the service's grant is forwarded to
-   * LevelPlay as a per-network GDPR consent. Omit for non-mediation services.
+   * LevelPlay network key this service maps to — the exact, case-sensitive
+   * adapter name LevelPlay matches on, e.g. `'UnityAds'`, `'Facebook'`,
+   * `'Pangle'`, `'InMobi'`, `'IronSource'`. When set, the service's grant is
+   * forwarded to LevelPlay as a per-network GDPR consent; an unknown key is
+   * silently ignored by LevelPlay. Omit for non-mediation services.
    */
   network?: string;
+  /**
+   * Marks the mediation SDK itself (LevelPlay / ironSource). Its grant drives
+   * LevelPlay's global GDPR consent, which covers LevelPlay and any network
+   * without its own entry. Without a `mediation` service the global flag is
+   * granted when any ad network is.
+   */
+  mediation?: boolean;
   /**
    * Group shown in "Vendor preferences". `essential` services (crash reporting,
    * purchases) have no toggle and are always granted. When no service declares
@@ -543,7 +552,7 @@ export interface ConsentDecision {
 export interface PersistConsentOptions {
   /** The `IABTCF_*` key → value map to write to the platform key store. */
   keys: Record<string, string | number>;
-  /** Global GDPR consent flag forwarded to LevelPlay. */
+  /** Global GDPR consent flag forwarded to LevelPlay (the `mediation` service's grant). */
   granted: boolean;
   /**
    * Per-network GDPR consent, keyed by LevelPlay network key. Forwarded to

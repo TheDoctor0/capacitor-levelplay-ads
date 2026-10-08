@@ -13,6 +13,7 @@ import {
   grantedServiceIds,
   initialChoice,
   isAdsGranted,
+  isMediationGranted,
   isDecisionCurrent,
   migratedRefusal,
   networkConsents,
@@ -106,7 +107,7 @@ async function applyDecision(
 
   const data = await bridge.persistConsent({
     keys,
-    granted,
+    granted: isMediationGranted(config, decision),
     networkConsents: gdprApplies ? networkConsents(config, decision) : {},
     consentedServiceIds,
     decisionJson: JSON.stringify(decision),
