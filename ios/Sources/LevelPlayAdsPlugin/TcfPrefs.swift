@@ -3,6 +3,7 @@ import Foundation
 /// IAB TCF v2.2 key access in NSUserDefaults. Mirrors the Android
 /// `TcfPrefs` helper so both platforms share the read/write contract.
 enum TcfPrefs {
+    static let tcfKeyPrefix = "IABTCF_"
     static let tcString = "IABTCF_TCString"
     static let gdprApplies = "IABTCF_gdprApplies"
     static let cmpSdkID = "IABTCF_CmpSdkID"
@@ -54,6 +55,10 @@ enum TcfPrefs {
     /// else as strings (e.g. the binary `IABTCF_PurposeConsents` field).
     static func writeKeys(_ keys: [String: Any]) {
         let d = UserDefaults.standard
+        // Drop every TCF key first (old vendor IDs, other CMPs' extras) so only this decision remains.
+        d.dictionaryRepresentation().keys
+            .filter { $0.hasPrefix(tcfKeyPrefix) }
+            .forEach { d.removeObject(forKey: $0) }
         for (key, value) in keys {
             if let number = value as? NSNumber {
                 d.set(number.intValue, forKey: key)

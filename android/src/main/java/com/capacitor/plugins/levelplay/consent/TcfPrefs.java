@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public final class TcfPrefs {
 
+    private static final String TCF_KEY_PREFIX = "IABTCF_";
     public static final String KEY_TC_STRING = "IABTCF_TCString";
     public static final String KEY_GDPR_APPLIES = "IABTCF_gdprApplies";
     public static final String KEY_CMP_SDK_ID = "IABTCF_CmpSdkID";
@@ -90,7 +91,12 @@ public final class TcfPrefs {
      * others as strings (e.g. the binary {@code IABTCF_PurposeConsents} field).
      */
     public static void writeKeys(Context ctx, Map<String, Object> keys) {
-        SharedPreferences.Editor e = prefs(ctx).edit();
+        SharedPreferences prefs = prefs(ctx);
+        SharedPreferences.Editor e = prefs.edit();
+        // Drop every TCF key first (old vendor IDs, other CMPs' extras) so only this decision remains.
+        for (String existing : prefs.getAll().keySet()) {
+            if (existing.startsWith(TCF_KEY_PREFIX)) e.remove(existing);
+        }
         for (Map.Entry<String, Object> entry : keys.entrySet()) {
             Object v = entry.getValue();
             if (v instanceof Integer) {
