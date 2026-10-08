@@ -25,7 +25,7 @@ export const ru: ConsentLocaleBundle = {
     "vendors.consent": "Согласие",
     "details.examples": "Примеры",
     "details.vendors": "Поставщики",
-    "firstLayer.title": "{appName} хочет использовать ваши персональные данные",
+    "firstLayer.title": "{appName} запрашивает ваше согласие на использование ваших персональных данных для:",
     "firstLayer.body": "Ваши персональные данные будут обрабатываться, а информация с вашего устройства (файлы cookie, уникальные идентификаторы и другие данные устройства) может храниться, считываться и передаваться {count} партнёрам или использоваться только этим приложением.",
     "manage.consentWithCount.one": "Согласие ({count} поставщик)",
     "manage.consentWithCount.few": "Согласие ({count} поставщика)",

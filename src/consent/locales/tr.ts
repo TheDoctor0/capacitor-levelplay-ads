@@ -25,7 +25,7 @@ export const tr: ConsentLocaleBundle = {
     "vendors.consent": "Onay",
     "details.examples": "Örnekler",
     "details.vendors": "Tedarikçiler",
-    "firstLayer.title": "{appName} kişisel verilerinizi kullanmak istiyor",
+    "firstLayer.title": "{appName}, kişisel verilerinizi aşağıdaki amaçlarla kullanmak için onayınızı istiyor:",
     "firstLayer.body": "Kişisel verileriniz işlenecek ve cihazınızdaki bilgiler (çerezler, benzersiz tanımlayıcılar ve diğer cihaz verileri) {count} iş ortağı tarafından saklanabilir, erişilebilir ve onlarla paylaşılabilir ya da yalnızca bu uygulama tarafından kullanılabilir.",
     "manage.consentWithCount.one": "Onay ({count} tedarikçi)",
     "manage.consentWithCount.other": "Onay ({count} tedarikçi)",

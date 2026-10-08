@@ -25,7 +25,7 @@ export const pl: ConsentLocaleBundle = {
     "vendors.consent": "Zgoda",
     "details.examples": "Przykłady",
     "details.vendors": "Dostawcy",
-    "firstLayer.title": "{appName} chce wykorzystywać Twoje dane osobowe",
+    "firstLayer.title": "{appName} prosi o Twoją zgodę na wykorzystanie Twoich danych osobowych w celu:",
     "firstLayer.body": "Twoje dane osobowe będą przetwarzane, a informacje z Twojego urządzenia (pliki cookie, unikalne identyfikatory i inne dane urządzenia) mogą być przechowywane, odczytywane i udostępniane {count} partnerom lub wykorzystywane wyłącznie przez tę aplikację.",
     "manage.consentWithCount.one": "Zgoda ({count} dostawca)",
     "manage.consentWithCount.few": "Zgoda ({count} dostawcy)",

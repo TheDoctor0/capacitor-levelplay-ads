@@ -25,7 +25,7 @@ export const ro: ConsentLocaleBundle = {
     "vendors.consent": "Consimțământ",
     "details.examples": "Exemple",
     "details.vendors": "Furnizori",
-    "firstLayer.title": "{appName} dorește să vă folosească datele personale",
+    "firstLayer.title": "{appName} vă solicită consimțământul pentru a vă folosi datele personale pentru:",
     "firstLayer.body": "Datele dumneavoastră personale vor fi prelucrate, iar informațiile de pe dispozitiv (cookie-uri, identificatori unici și alte date ale dispozitivului) pot fi stocate, accesate și partajate cu {count} parteneri sau folosite exclusiv de această aplicație.",
     "manage.consentWithCount.one": "Consimțământ ({count} furnizor)",
     "manage.consentWithCount.few": "Consimțământ ({count} furnizori)",

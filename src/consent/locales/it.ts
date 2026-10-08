@@ -25,7 +25,7 @@ export const it: ConsentLocaleBundle = {
     "vendors.consent": "Consenso",
     "details.examples": "Esempi",
     "details.vendors": "Fornitori",
-    "firstLayer.title": "{appName} vuole utilizzare i tuoi dati personali",
+    "firstLayer.title": "{appName} chiede il tuo consenso per utilizzare i tuoi dati personali per:",
     "firstLayer.body": "I tuoi dati personali saranno trattati e le informazioni del tuo dispositivo (cookie, identificatori univoci e altri dati del dispositivo) potranno essere memorizzate, consultate e condivise con {count} partner, oppure utilizzate specificamente da questa app.",
     "manage.consentWithCount.one": "Consenso ({count} fornitore)",
     "manage.consentWithCount.other": "Consenso ({count} fornitori)",

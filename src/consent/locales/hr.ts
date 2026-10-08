@@ -25,7 +25,7 @@ export const hr: ConsentLocaleBundle = {
     "vendors.consent": "Privola",
     "details.examples": "Primjeri",
     "details.vendors": "Dobavljači",
-    "firstLayer.title": "{appName} želi koristiti vaše osobne podatke",
+    "firstLayer.title": "{appName} traži vašu privolu za korištenje vaših osobnih podataka za:",
     "firstLayer.body": "Vaši osobni podaci bit će obrađeni, a informacije s vašeg uređaja (kolačići, jedinstveni identifikatori i drugi podaci o uređaju) mogu se pohranjivati, njima se može pristupati i dijeliti ih s {count} partnera ili ih može koristiti isključivo ova aplikacija.",
     "manage.consentWithCount.one": "Privola ({count} dobavljač)",
     "manage.consentWithCount.few": "Privola ({count} dobavljača)",

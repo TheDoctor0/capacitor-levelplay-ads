@@ -25,7 +25,7 @@ export const sk: ConsentLocaleBundle = {
     "vendors.consent": "Súhlas",
     "details.examples": "Príklady",
     "details.vendors": "Dodávatelia",
-    "firstLayer.title": "{appName} chce používať vaše osobné údaje",
+    "firstLayer.title": "{appName} žiada o váš súhlas s použitím vašich osobných údajov na:",
     "firstLayer.body": "Vaše osobné údaje budú spracované a informácie z vášho zariadenia (súbory cookie, jedinečné identifikátory a ďalšie údaje o zariadení) môžu byť ukladané, sprístupňované a zdieľané s {count} partnermi alebo používané výlučne touto aplikáciou.",
     "manage.consentWithCount.one": "Súhlas ({count} dodávateľ)",
     "manage.consentWithCount.few": "Súhlas ({count} dodávatelia)",

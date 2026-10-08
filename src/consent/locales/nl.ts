@@ -25,7 +25,7 @@ export const nl: ConsentLocaleBundle = {
     "vendors.consent": "Toestemming",
     "details.examples": "Voorbeelden",
     "details.vendors": "Leveranciers",
-    "firstLayer.title": "{appName} wil je persoonsgegevens gebruiken",
+    "firstLayer.title": "{appName} vraagt je toestemming om je persoonsgegevens te gebruiken voor:",
     "firstLayer.body": "Je persoonsgegevens worden verwerkt en informatie van je apparaat (cookies, unieke ID’s en andere apparaatgegevens) kan worden opgeslagen door, geraadpleegd door en gedeeld met {count} partners, of specifiek door deze app worden gebruikt.",
     "manage.consentWithCount.one": "Toestemming ({count} leverancier)",
     "manage.consentWithCount.other": "Toestemming ({count} leveranciers)",
